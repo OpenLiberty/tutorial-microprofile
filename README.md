@@ -1,150 +1,100 @@
-# MicroProfile Tutorial (Still Under Construction)
-This tutorial contains 5 sub modules that demonstrate different MicroProfile technologies. Each module can be completed independent of one another by navigating to the required branch with the finished code from the previous module being provided for you. This README will also change depending on the branch you select to give you specific instructions on how to finish each module.
+# Module 2
+## Still under construction!!!
+## About this module
+In this module we will demonstrait how to use the MicroProfile fallback feature. This is usefull when you have a problem with one of your micro-services and they become unreachable or unresponsive. This module is a continuation of module 1 but we have provided the finished code to module 1 for you in the module2 branch.
 
-## Tutorial Theme
+1. Firstly we will need to create a fallback method that will called when we can no longer talk to our microservice.
+2. Then we will need to create a fallback microservice that can be used when the first desired on is no longer reachable.
+3. Finally we need to test this is working by shutting down micro-service two and trying to comunicate with our space station from the front-end. If we still recieve data back from the space station then we know our fallback code is working.
 
-We have decided to go with a space theme for this tutorial to keep in line with the Open Liberty theme.
+## Before We Start
+Make sure you have all the prerequisites installed before continuing with these instructions.
+Clone down this repository 
 
-Think of the front-end web application as the on board computer on the space ship you are currently flying.
+`https://github.com/OpenLiberty/tutorial-microprofile.git` 
 
-The Gateway is one of the galaxies comunication carriers that enable your ships computer to talk to other devices in the galaxy.
+and navigate to the repository you just cloned and change branch to module 1 `tutorial-microprofile`
 
-Microservice A will act as a space ship and provide current information via rest api calls such as the operating system the ship is running on and it's architecture etc.
+`git checkout module2`
 
-Microservice B will act as a space stations on board computer that will provide current information about the station such as currently docked ships, personal, location and information about the technology used on the station.
-
-The fallback microservice B will provide older information about the space station incase the stations on board computer fails so that a connection can still be made to the station rather than space ships not being able to comunicate with the station at all.
-
-### Prerequisites
-1. Maven (https://maven.apache.org/install.html) - for building, testing and running our microservices
-2. npm (https://www.npmjs.com/get-npm) - for installing Angular and the Angular CLI
-3. Angular (https://www.npmjs.com/package/angular) - for building and running our web application
-4. Angular CLI (https://cli.angular.io/)
-4. Git CLI (https://git-scm.com/downloads) - for downloading the source files for this tutorial
-5. A Java IDE (Eclipse, Visual Studio Code, Netbeans etc) - for coding our tutorial
-6. Connection to the Internet - to pull down the required dependancies
-
-
-### To Note!
-
-We understand that normally you would have a separate repository for each microservice but to make this tutorial easier to consume we have decided to keep all the source in one repository to save the user having to download multiple repositories.
-
-We are planning to extent this tutorial to use Docker, Kuberneties and other technologies but we wanted to limit the prerequisites so that users can get up and ready quickly.
-
-## Information About The Files We Have Provided
-We have provided some file for you to make this tutorial easier to consume that I will talk about here.
-Firstly we have provided you with the basic directory structure for all the microservices.
-Then we have provided you with a pom.xml file that is used by maven to build your microservices and download all the required dependancies. In this file you can set what the application is named `<app.name>LibertyMicroServiceOne-1.0</app.name>`, the ports assigned to Liberty 
+## Adding The Fallback Code
+1. Make sure you are in the root directory of the repository you downloaded and navigate into the following directoy `microservice-gateway/src/main/java/application/rest` and open the file called `Proxy.java`
+2. We now need to add the following import to the top of the file:
 ```
-<testServerHttpPort>9090</testServerHttpPort> <testServerHttpsPort>9444</testServerHttpsPort>
+import javax.enterprise.context.ApplicationScoped;
 ```
-the dependancies you require like microProfile 1.2
+3. Next we need to change the application scope !Need reason why!!!! by adding the following annotation above the class
 ```
-<dependency>
-    <groupId>org.eclipse.microprofile</groupId>
-    <artifactId>microprofile</artifactId>
-    <version>1.2</version>
-    <scope>provided</scope>
-    <type>pom</type>
-</dependency>
+@ApplicationScoped
+public class Proxy{
 ```
-and the applicaiton server you are using so in our case open Liberty
+4. Next we need to add annotations to the methods that make the http connections to our back-end microservices:
 ```
-<plugin>
-    <groupId>net.wasdev.wlp.maven.plugins</groupId>
-    <artifactId>liberty-maven-plugin</artifactId>
-    <version>2.1</version>
-        <extensions>true</extensions>
-            <configuration>
-                <assemblyArtifact>
-                    <groupId>io.openliberty</groupId>
-                    <artifactId>openliberty-runtime</artifactId>
-                    <version>17.0.0.3</version>
-                    <type>zip</type>
-                </assemblyArtifact>
-                    <configFile>${basedir}/src/main/liberty/config/server.xml</configFile>
-                    <serverEnv>${basedir}/src/main/liberty/config/server.env</serverEnv>
-                    <jvmOptionsFile>${basedir}/src/main/liberty/config/jvm.options</jvmOptionsFile>
-                    <packageFile>${package.file}</packageFile>
-                    <include>${packaging.type}</include>
-                    <bootstrapProperties>
-                        <default.http.port>${testServerHttpPort}</default.http.port>
-                        <default.https.port>${testServerHttpsPort}</default.https.port>
-                    </bootstrapProperties>
-            </configuration>
-                <executions>
-                    <execution>
-                        <id>install-liberty</id>
-                        <phase>prepare-package</phase>
-                        <goals>
-                            <goal>install-server</goal>
-                        </goals>
-                    </execution>
-                <execution>
-                    <id>package-app</id>
-                    <phase>package</phase>
-                    <goals>
-                        <goal>package-server</goal>
-                    </goals>
-                </execution>
-                <execution>
-                    <id>test-start-server</id>
-                    <phase>pre-integration-test</phase>
-                    <goals>
-                        <goal>test-start-server</goal>
-                    </goals>
-                </execution>
-                <execution>
-                    <id>test-stop-server</id>
-                    <phase>post-integration-test</phase>
-                        <goals>
-                            <goal>test-stop-server</goal>
-                        </goals>
-                </execution>
-            </executions>
-        </plugin>
+  @Retry(retryOn=NullPointerException.class, maxRetries=2)
+  @Fallback(fallbackMethod= "sendFaultGetRequest")
+```
+The `@Retry` annotation allows you to set what exception you want your method to fail with and how many times you want to retry before the fallback method is called.
+
+The `@Fallback` annotation allows you to set what method is called when the set Exception is thrown.
+
+5. Now we need to add our fallback methods to the Proxy.java class that are called when we are unable to communicate with our desired micro-service:
+```
+  //This method is used as a fallback if the above method fails to connect to the desired microservice
+  public JsonObject sendFaultGetRequest(String server, String endpoint) {
+    HttpURLConnection connection = null;
+    BufferedReader reader = null;
+    String json = null;
+
+    try {
+      System.out.println("Attempting to connect to backup microservice!");
+      URL resetEndpoint = new URL(backupMicroservice1 + endpoint);
+      connection = (HttpURLConnection) resetEndpoint.openConnection();
+      connection.setRequestMethod("GET");
+
+      reader = new BufferedReader(new InputStreamReader(connection.getInputStream()));
+      StringBuilder jsonSb = new StringBuilder();
+      String line = null;
+      while ((line = reader.readLine()) != null) {
+        jsonSb.append(line);
+      }
+      json = jsonSb.toString();
+    } 
+    catch (Exception e) {
+      // Need to return better exception here!!!
+      System.out.println("Backup Microservice connection failed! : " + backupMicroservice1);
+      e.printStackTrace();
+    }
+
+    public JsonObject sendFaultPostRequest(String server, String endpoint) {
+    HttpURLConnection connection = null;
+    BufferedReader reader = null;
+    String json = null;
+    try {
+      URL resetEndpoint = new URL(backupMicroservice1 + endpoint);
+      connection = (HttpURLConnection) resetEndpoint.openConnection();
+      // Set request method to GET as required from the API
+      connection.setRequestMethod("POST");
+
+      reader = new BufferedReader(new InputStreamReader(connection.getInputStream()));
+      StringBuilder jsonSb = new StringBuilder();
+      String line = null;
+      while ((line = reader.readLine()) != null) {
+        jsonSb.append(line);
+      }
+      json = jsonSb.toString();
+    } 
+    catch (Exception e) {
+      // Need to return better exception here!!!
+      System.out.println("Backup Microservice connection failed! : " + backupMicroservice1);
+      e.printStackTrace();
+    }
+      //return json;
+      JsonReader jsonReader = Json.createReader(new StringReader(json));
+      JsonObject object = jsonReader.readObject();
+      jsonReader.close();
+      return object;
+  }
 ```
 
-We have also provided you with a file named server.xml  that you will use to configure our liberty server. The server.xml files are located in all the microservice directories in this repo `<microservice-***>/src/main/liberty/config/`
-```
-<server description="Sample Liberty server">
-
-  <featureManager>
-      <feature>jaxrs-2.0</feature>
-      <feature>jsonp-1.0</feature>
-      <feature>microprofile-1.2</feature>
-  </featureManager>
-
-  <httpEndpoint httpPort="9091" httpsPort="${default.https.port}"
-      id="defaultHttpEndpoint" host="*" />
-</server>
-```
-Above is the contents of the server.xml file. The section:
-`<featureManager>` allows you to define what Liberty features your require in your server.
-The `<httpEndpoint>` section
-
-## Information Regarding Each Module
-
-### Module 1
-
-Will teach you how to create a simple front end using Angular, two back end microservices and a simple gateway that will allow communications between the front-end and the back-end. This will demonstrate three different technologies: JAX-RS, CDI and JSON-P.
-
-### Module 2
-
-This will show you how to create another simple micoservice that we will use as a fall back if our desired microservice is un-reachable. We will then add code to the gateway to enable this feature and test it using the front end web application. This module demonstraits the fault tolerance feature in MicroProfile.
-
-## !!!The following modules are still work in progress!!!
-
-### Module 3
-
-This module will show you how to secure your microservices using JWT and add login information into Open Liberty.
-
-### Module 4
-
-This will teach you how to externalise your configuration so that you can change information such as the micro-servcice endpoints.
-
-### Module 5
-
-This module will show you how to take advantage of the Health and Metrics features added into MicroProfile 1.2 to see if your microservices are responding and provide metric information regarding these services such as CPU load, JVM usage and many other useful information.
-
-
+## Creating The Fallback Micro-Service
+Some basic files have been provided for you such as a basic pom file for building our application with maven, a License file, some basic Open Liberty configuration in the form of xml and the directory structure required for this microservice. More information about these files can be found in the README in the master branch in this repo.
