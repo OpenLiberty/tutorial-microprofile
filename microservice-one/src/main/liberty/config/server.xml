@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<server description="Sample Liberty server">
+
+  <featureManager>
+      <feature>jaxrs-2.0</feature>
+      <feature>jsonp-1.0</feature>
+      <feature>microprofile-1.2</feature>
+      <feature>appSecurity-2.0</feature>
+      <feature>servlet-3.0</feature>
+  </featureManager>
+
+<applicationManager autoExpand="true" />
+<quickStartSecurity userName="confAdmin" userPassword="microprofile"/>
+<keyStore id="defaultKeyStore" password="mpKeystore"/> (edited)
+
+  <httpEndpoint httpPort="9090" httpsPort="9490"
+      id="defaultHttpEndpoint" host="*" />
+
+</server>
