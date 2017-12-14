@@ -1,0 +1,13 @@
+html{
+    background-color:  #010b19;
+    font-family: "Helvetica Neue",Helvetica,Arial,sans-serif;
+  }
+  
+html {
+    height: 100%;
+    -webkit-background-size: cover;
+    -moz-background-size: cover;
+    -o-background-size: cover;
+    background-size: cover;
+    /* background-image: linear-gradient(+90deg, #586381 0%, #373954 100%); */
+}

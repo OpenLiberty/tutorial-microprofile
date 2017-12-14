@@ -1,0 +1,20 @@
+<server description="Sample Liberty server">
+
+  <featureManager>
+      <feature>jaxrs-2.0</feature>
+      <feature>jsonp-1.0</feature>
+      <feature>microprofile-1.2</feature>
+  </featureManager>
+
+<!-- enables security-->
+<quickStartSecurity userName="confAdmin" userPassword="microprofile"/>
+<keyStore id="defaultKeyStore" password="mpKeystore"/>
+<keyStore id="defaultTrustStore" location="C:\work\microProfileDemo\microservice-gateway\target\liberty\wlp\usr\servers\defaultServer\resources\security\truststore1.jks" password="mpKeystore"/> 
+
+<ssl id="defaultSSLConfig"
+     trustStoreRef="defaultTrustStore" clientAuthenticationSupported="true" />
+
+  <httpEndpoint httpPort="9080" httpsPort="9480"
+      id="defaultHttpEndpoint" host="*" />
+
+</server>

@@ -1,0 +1,85 @@
+<!-- The app component template is the root component template of the application, 
+it contains a router-outlet directive for displaying the contents of each view 
+based on the current route, and an alert directive for displaying alert messages 
+from anywhere in the system. -->
+
+
+
+
+<html>
+    <div style="text-align:center">
+        <h1>
+            Liberty MicroProfile Dashboard
+        </h1>
+    </div>
+    <section class="login">
+      <alert></alert>
+      <router-outlet></router-outlet>
+    </section>
+    <section class= "microservice serviceA">
+      <h2> Your Spaceship Details: </h2>
+      <table>
+        <tr>
+          <th> Operating System </th>
+          <td> {{os}} </td>
+        </tr>
+        <tr>
+          <th> OS version </th>
+          <td> {{osVersion}} </td>
+        </tr>
+        <tr>
+          <th> OS Language </th>
+          <td> {{osLanguage}} </td>
+        </tr>
+        <tr>
+          <th> UserName </th>
+          <td> {{user}} </td>
+        </tr>
+        <tr>
+          <th> User Home </th>
+          <td> {{userHome}} </td>
+        </tr>
+        <br>
+        <br>
+        <img src="assets/logo.png" width="180" align="middle">
+      </table>
+      <button class="testingButton" type="button" (click)="healthStatusOne()">Health Status</button>
+      <h2 *ngIf="outcome1 !== undefined" class="health-{{outcome1.toLowerCase()}}">{{outcome1}}</h2>
+      <button class="testingButton" type="button" (click)="metricsStatusOne()">Metrics Status</button>
+    </section>
+
+    <section *ngIf="metricsOne === undefined"  class= "microservice serviceB">
+      <h2> The Neighbouring Spaceship's Details: </h2>
+      <table>
+        <tr>
+          <th> Ship Name </th>
+          <td> {{shipName}} </td>
+        </tr>
+        <tr>
+          <th> Ship Type </th>
+          <td> {{shipType}} </td>
+        </tr>
+      </table>
+      <button class="testingButton" type="button" (click)="healthStatusTwo()">Health Status</button>
+      <h2 *ngIf="outcome2 !== undefined" class="health-{{outcome2.toLowerCase()}}">{{outcome2}}</h2>
+      <button class="testingButton" type="button" (click)="metricsStatusTwo()">Metrics Status</button>
+      <h2>{{outcome2}}</h2>
+    </section>
+
+    <section *ngIf="metricsOne !== undefined"  class= "microservice serviceB">
+      <div class="metrics">
+        <h2> Microservice One Metrics </h2>
+        <pre> {{metricsOne}} </pre>
+      </div>
+      <button class="testingButton" type="button" (click)="closeStatusMetricsOne()">Close</button>
+    </section>
+
+    <section *ngIf="metricsTwo !== undefined"  class= "microservice serviceA">
+      <div class="metrics">
+        <h2> Microservice Two Metrics </h2>
+        <pre> {{metricsTwo}} </pre>
+      </div>
+      <button class="testingButton" type="button" (click)="closeStatusMetricsTwo()">Close</button>
+    </section>
+
+    </html>
