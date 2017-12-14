@@ -35,6 +35,14 @@ public class Gateway {
   }
 
   @GET
+  @Path("/systeminfo")
+  @Produces(MediaType.APPLICATION_JSON)
+  public JsonObject systemProps() throws Exception{
+    String endpoint = "/rest/systeminfo";
+    return proxy.sendGetRequest(microservice1, endpoint);
+  }
+
+  @GET
   @Path("/shipList")
   @Produces(MediaType.APPLICATION_JSON)
   public JsonObject listSpaceships() throws NullPointerException{
