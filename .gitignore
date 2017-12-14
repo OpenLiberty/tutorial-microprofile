@@ -1,1 +1,4 @@
-target/
+microservice-gateway/target/
+microservice-one/target/
+microservice-two/target/
+microservice-two-fallback/target/
