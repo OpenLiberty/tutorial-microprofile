@@ -1,6 +1,7 @@
 package application.rest;
 
 import javax.ws.rs.GET;
+
 import javax.ws.rs.HeaderParam;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
@@ -13,6 +14,13 @@ import javax.ws.rs.core.Response;
 import javax.json.JsonObject;
 
 import java.io.IOException;
+
+
+import javax.ws.rs.POST;
+import javax.ws.rs.Path;
+import javax.ws.rs.Produces;
+import javax.ws.rs.core.MediaType;
+import javax.json.JsonObject;
 
 import javax.inject.Inject;
 
@@ -28,6 +36,7 @@ public class Gateway {
   @GET
   @Path("/json")
   @Produces(MediaType.APPLICATION_JSON)
+
   public JsonObject test() throws IOException{
     String endpoint = "/rest/json";
     return proxy.sendGetRequest(microservice1, endpoint);
@@ -42,9 +51,22 @@ public class Gateway {
   }
 
   @GET
+
   @Path("/shipList")
   @Produces(MediaType.APPLICATION_JSON)
   public JsonObject listSpaceships() throws IOException{
+
+  @Path("/systeminfo")
+  @Produces(MediaType.APPLICATION_JSON)
+  public JsonObject systemProps() throws Exception{
+    String endpoint = "/rest/systeminfo";
+    return proxy.sendGetRequest(microservice1, endpoint);
+  }
+
+  @GET
+  @Path("/shipList")
+  @Produces(MediaType.APPLICATION_JSON)
+  public JsonObject listSpaceships() throws NullPointerException{
     String endpoint = "/rest/shipList";
     return proxy.sendGetRequest(microservice2, endpoint);
   }
@@ -52,6 +74,7 @@ public class Gateway {
   @GET
   @Path("/aliens/list")
   @Produces(MediaType.APPLICATION_JSON)
+
   public JsonObject listAliens() throws IOException{
     String endpoint = "/rest/aliens/list";
     return proxy.sendGetRequest(microservice2, endpoint);
@@ -90,8 +113,7 @@ public class Gateway {
     System.out.println("auth: " + auth);
     return proxy.sendStringGetRequest("https://localhost:9490", endpoint, auth);
   }
-
-
+    
   @GET
   @Path("/metrics2")
   @Produces(MediaType.TEXT_PLAIN)

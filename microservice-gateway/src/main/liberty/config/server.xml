@@ -16,5 +16,4 @@
 
   <httpEndpoint httpPort="9080" httpsPort="9480"
       id="defaultHttpEndpoint" host="*" />
-
 </server>

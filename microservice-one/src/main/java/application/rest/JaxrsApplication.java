@@ -19,6 +19,7 @@ public class JaxrsApplication extends Application {
 
     public JaxrsApplication() {
         //Uses a single LibertyRestEndpoint class to manage the endpoint in jaxrs
+
         singletons.add(new LibertyRestEndpoint());
     }
     
@@ -35,6 +36,5 @@ public class JaxrsApplication extends Application {
     @Override
     public Set<Object> getSingletons() {
         return singletons;
-    }
-    
+    }    
 }

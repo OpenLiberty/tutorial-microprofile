@@ -1,5 +1,6 @@
 package application.rest;
 
+
 import java.util.HashSet;
 import java.util.Set;
 
@@ -37,4 +38,11 @@ public class JaxrsApplication extends Application {
         return singletons;
     }
     
+=======
+import javax.ws.rs.ApplicationPath;
+import javax.ws.rs.core.Application;
+
+@ApplicationPath("/rest")
+public class JaxrsApplication extends Application {
+
 }

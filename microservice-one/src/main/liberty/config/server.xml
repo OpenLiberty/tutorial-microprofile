@@ -6,6 +6,8 @@
       <feature>jaxrs-2.0</feature>
       <feature>jsonp-1.0</feature>
       <feature>microprofile-1.2</feature>
+      <feature>appSecurity-2.0</feature>
+      <feature>servlet-3.0</feature>
   </featureManager>
 
 <applicationManager autoExpand="true" />

@@ -9,6 +9,8 @@ import org.eclipse.microprofile.metrics.MetricRegistry;
 import org.eclipse.microprofile.metrics.annotation.Timed;
 
 import javax.json.JsonObject;
+import javax.json.JsonObjectBuilder;
+
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import javax.json.Json;
@@ -44,13 +46,36 @@ public class LibertyRestEndpoint {
     @GET
     @Path("/systemprops")
     @Timed
-    public JsonObject getSystemInfo() {
+    public JsonObject getSystemProps() {
         JsonObject value = Json.createObjectBuilder()
         .add("os", System.getProperty("os.name"))
         .add("osVersion", System.getProperty("os.version"))
         .add("osLanguage", System.getProperty("user.language"))
         .add("user", System.getProperty("user.name"))
         .add("userHome", System.getProperty("user.home"))
+        .build();
+        return value;
+    }
+
+    @GET
+    @Path("/systeminfo")
+    @Timed
+    public JsonObject getSystemInfo() {
+        JsonObjectBuilder builder = Json.createObjectBuilder();
+        System.getProperties()
+                  .entrySet()
+                  .stream()
+                  .forEach(entry -> builder.add((String)entry.getKey(),
+                                                (String)entry.getValue()));
+        JsonObject jsnobj = builder.build();
+        
+        //Get specific system props from our JSON Object
+        JsonObject value = Json.createObjectBuilder()
+        .add("os", jsnobj.getString("os.name"))
+        .add("osVersion", jsnobj.getString("os.version"))
+        .add("osLanguage", jsnobj.getString("user.language"))
+        .add("user", jsnobj.getString("user.name"))
+        .add("userHome", jsnobj.getString("user.home"))
         .build();
         return value;
     }

@@ -11,6 +11,8 @@ import java.io.InputStreamReader;
 import java.io.StringReader;
 import java.net.HttpURLConnection;
 import javax.net.ssl.HttpsURLConnection;
+import java.net.HttpURLConnection;
+
 import java.net.URL;
 import org.eclipse.microprofile.faulttolerance.*;
 
@@ -67,7 +69,6 @@ public class Proxy{
       URL resetEndpoint = new URL(backupMicroservice1 + endpoint);
       connection = (HttpURLConnection) resetEndpoint.openConnection();
       connection.setRequestMethod("GET");
-
       System.out.println("resetEndpoint" + resetEndpoint);
 
       reader = new BufferedReader(new InputStreamReader(connection.getInputStream()));
@@ -152,9 +153,6 @@ public class Proxy{
       jsonReader.close();
       return object;
   }
-
-
-
 
   public String sendStringGetRequest(String server, String endpoint, String auth) throws NullPointerException {
     HttpsURLConnection connection = null;
