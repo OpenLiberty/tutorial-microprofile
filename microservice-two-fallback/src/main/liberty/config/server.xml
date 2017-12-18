@@ -1,0 +1,11 @@
+<server description="Sample Liberty server">
+
+  <featureManager>
+      <feature>jaxrs-2.0</feature>
+      <feature>jsonp-1.0</feature>
+      <feature>microprofile-1.2</feature>
+  </featureManager>
+
+  <httpEndpoint httpPort="9092" httpsPort="9492"
+      id="defaultHttpEndpoint" host="*" />
+</server>
