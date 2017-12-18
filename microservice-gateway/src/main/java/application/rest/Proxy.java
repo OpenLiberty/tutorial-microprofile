@@ -6,9 +6,13 @@ import javax.json.JsonReader;
 import javax.json.Json;
 
 import java.io.BufferedReader;
+import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.StringReader;
 import java.net.HttpURLConnection;
+import javax.net.ssl.HttpsURLConnection;
+import java.net.HttpURLConnection;
+
 import java.net.URL;
 import org.eclipse.microprofile.faulttolerance.*;
 
@@ -23,7 +27,7 @@ public class Proxy{
   //Method that takes a GET request from the front end and sends that to the desired back-end microservice
   @Retry(retryOn=NullPointerException.class, maxRetries=2)
   @Fallback(fallbackMethod= "sendFaultGetRequest")
-  public JsonObject sendGetRequest(String server, String endpoint) throws NullPointerException {
+  public JsonObject sendGetRequest(String server, String endpoint) throws IOException {
     HttpURLConnection connection = null;
     BufferedReader reader = null;
     String json = null;
@@ -41,13 +45,17 @@ public class Proxy{
       }
       json = jsonSb.toString();
     } catch (Exception e) {
+      System.out.println("json: " + json);
+      System.out.println("message: " + e.getMessage());
       System.out.println("You have not been able to connect to your desired microservice: " + server);
+      e.printStackTrace();
+      throw e; 
     }
-        //return json;
-        JsonReader jsonReader = Json.createReader(new StringReader(json));
-        JsonObject object = jsonReader.readObject();
-        jsonReader.close();
-        return object;
+    //return json;
+    JsonReader jsonReader = Json.createReader(new StringReader(json));
+    JsonObject object = jsonReader.readObject();
+    jsonReader.close();
+    return object;
   }
 
   //This method is used as a fallback if the above method fails to connect to the desired microservice
@@ -61,6 +69,7 @@ public class Proxy{
       URL resetEndpoint = new URL(backupMicroservice1 + endpoint);
       connection = (HttpURLConnection) resetEndpoint.openConnection();
       connection.setRequestMethod("GET");
+      System.out.println("resetEndpoint" + resetEndpoint);
 
       reader = new BufferedReader(new InputStreamReader(connection.getInputStream()));
       StringBuilder jsonSb = new StringBuilder();
@@ -143,5 +152,34 @@ public class Proxy{
       JsonObject object = jsonReader.readObject();
       jsonReader.close();
       return object;
+  }
+
+  public String sendStringGetRequest(String server, String endpoint, String auth) throws NullPointerException {
+    HttpsURLConnection connection = null;
+    BufferedReader reader = null;
+    String json = null;
+
+    try {
+      URL resetEndpoint = new URL(server + endpoint);
+      connection = (HttpsURLConnection) resetEndpoint.openConnection();
+      connection.setRequestProperty("Authorization", auth);
+      // Set request method to GET as required from the API
+      connection.setRequestMethod("GET");
+      reader = new BufferedReader(new InputStreamReader(connection.getInputStream()));
+      System.out.println("TESTING!!!");
+      StringBuilder jsonSb = new StringBuilder();
+      String line = null;
+      while ((line = reader.readLine()) != null) {
+        jsonSb.append(line);
+      }
+      json = jsonSb.toString();
+    } catch (Exception e) {
+      System.out.println("You have not been able to connect to your desired microservice: " + server);
+    }
+        //return json;
+        //JsonReader jsonReader = Json.createReader(new StringReader(json));
+        //JsonObject object = jsonReader.readObject();
+        //jsonReader.close();
+        return json;
   }
 }

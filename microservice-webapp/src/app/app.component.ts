@@ -24,8 +24,9 @@ export class AppComponent implements OnInit {
   serverEndpoint2 = "http://localhost:9080/LibertyGateway-1.0/rest/shipList";
   healthOneEndpoint = "http://localhost:9080/LibertyGateway-1.0/rest/health1";
   healthTwoEndpoint = "http://localhost:9080/LibertyGateway-1.0/rest/health2";
-  //metricsOneEndpoint = "http://localhost:9090/metrics";
-  metricsOneEndpoint = "https://localhost:9490/metrics";
+  metricsOneEndpoint = "http://localhost:9080/LibertyGateway-1.0/rest/metrics1";
+  metricsTwoEndpoint = "http://localhost:9080/LibertyGateway-1.0/rest/metrics2";
+
 
   os: string;
   osVersion: string;
@@ -37,6 +38,8 @@ export class AppComponent implements OnInit {
   outcome1: string;
   outcome2: string;
   metricsOne: string = undefined;
+  metricsTwo: string = undefined;
+
 
 
   constructor(private http: HttpClient) {}
@@ -64,6 +67,7 @@ export class AppComponent implements OnInit {
         console.log("data - health 1: ", data);
         this.outcome1 = data["outcome"];
         this.outcome1 = "DOWN";
+
       });
     } else {
       this.outcome1 = undefined;
@@ -78,9 +82,39 @@ export class AppComponent implements OnInit {
   }
 
   metricsStatusOne() {
-    // this.http.get(this.metricsOneEndpoint, {responseType: 'text'}).subscribe(data => {
-    //   console.log("data-metrics: ", data);
-    // });
+    var token = "Basic " + btoa("confAdmin" + ":" + "microprofile");
+    this.http.get(this.metricsOneEndpoint, 
+      { 
+        headers: new HttpHeaders().set('Authorization', token), 
+        responseType: 'text'
+      })
+      .subscribe(data => {
+        this.metricsOne = data;
+        this.metricsOne = this.metricsOne.replace(/(base:)+/g, '\nbase:').replace(/(application:)+/g, '\napplication:');
+      });
+  }
+
+  metricsStatusTwo() {
+    var token = "Basic " + btoa("confAdmin" + ":" + "microprofile");
+    this.http.get(this.metricsTwoEndpoint, 
+      { 
+        headers: new HttpHeaders().set('Authorization', token), 
+        responseType: 'text'
+      })
+      .subscribe(data => {
+        this.metricsTwo = data;
+        this.metricsTwo = this.metricsTwo.replace(/(base:)+/g, '\nbase:').replace(/(application:)+/g, '\napplication:');
+      });
+  }
+
+  closeStatusMetricsOne(){
+    this.metricsOne = undefined;
+  }
+
+  closeStatusMetricsTwo(){
+    this.metricsTwo = undefined;
+  }
+
     
     this.metricsOne = `
     # TYPE base:classloader_total_loaded_class_count counter
@@ -142,7 +176,6 @@ export class AppComponent implements OnInit {
     console.log(this.metricsOne);
 
   }
-
   closeStatus(){
     this.metricsOne = undefined;
   }

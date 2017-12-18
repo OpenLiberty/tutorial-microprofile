@@ -10,6 +10,7 @@ import org.eclipse.microprofile.metrics.annotation.Timed;
 
 import javax.json.JsonObject;
 import javax.json.JsonObjectBuilder;
+
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import javax.json.Json;
@@ -23,7 +24,7 @@ public class LibertyRestEndpoint {
     //private JaxrsManager jaxrsManager;
 
     /**
-     * Instantiate a StatsManager locally which will not be in the CDI context
+     * Instantiate a JaxrsManager locally which will not be in the CDI context
      * 
      * @param jaxrsManager
      */

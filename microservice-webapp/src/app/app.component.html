@@ -61,6 +61,8 @@ from anywhere in the system. -->
         </tr>
       </table>
       <button class="testingButton" type="button" (click)="healthStatusTwo()">Health Status</button>
+      <h2 *ngIf="outcome2 !== undefined" class="health-{{outcome2.toLowerCase()}}">{{outcome2}}</h2>
+      <button class="testingButton" type="button" (click)="metricsStatusTwo()">Metrics Status</button>
       <h2>{{outcome2}}</h2>
     </section>
 
@@ -69,9 +71,17 @@ from anywhere in the system. -->
         <h2> Microservice One Metrics </h2>
         <pre> {{metricsOne}} </pre>
       </div>
-      <button class="testingButton" type="button" (click)="closeStatus()">Close</button>
+
+      <button class="testingButton" type="button" (click)="closeStatusMetricsOne()">Close</button>
     </section>
 
-    
-
+    <section *ngIf="metricsTwo !== undefined"  class= "microservice serviceA">
+      <div class="metrics">
+        <h2> Microservice Two Metrics </h2>
+        <pre> {{metricsTwo}} </pre>
+      </div>
+      <button class="testingButton" type="button" (click)="closeStatusMetricsTwo()">Close</button>
+    </section>
+      <button class="testingButton" type="button" (click)="closeStatus()">Close</button>
+    </section>
     </html>
