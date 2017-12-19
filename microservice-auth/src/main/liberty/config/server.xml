@@ -1,0 +1,36 @@
+<server description="new server">
+
+    <!-- Enable features -->
+    <featureManager>
+        <feature>webProfile-7.0</feature>
+        <feature>localConnector-1.0</feature>
+        <feature>jwt-1.0</feature>
+    </featureManager>
+    
+     <keyStore id="defaultKeyStore" password="keyspass"/>
+
+    <basicRegistry id="basic" realm="OpBasicRealm">
+         <user name="testuser" password="testuserpwd"/>
+         <user name="user1" password="security"/>
+         <user name="user2" password="security"/>
+         
+       <group name="admins">
+          <member name="testuser"/> 
+          <member name="user1"/>           
+       </group>
+		
+       <group name="users">
+          <member name="user1"/>
+          <member name="user2"/>
+       </group>
+    </basicRegistry>
+    
+    <!-- To access this server from a remote client add a host attribute to the following element, e.g. host="*" -->
+    <httpEndpoint httpPort="9110" httpsPort="9124" id="defaultHttpEndpoint"/>
+                  
+    <!-- Automatically expand WAR files and EAR files -->
+    <applicationManager autoExpand="true"/>
+
+
+    <applicationMonitor updateTrigger="mbean"/>
+</server>
