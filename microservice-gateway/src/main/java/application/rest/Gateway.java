@@ -1,6 +1,21 @@
 package application.rest;
 
 import javax.ws.rs.GET;
+
+import javax.ws.rs.HeaderParam;
+import javax.ws.rs.POST;
+import javax.ws.rs.Path;
+import javax.ws.rs.Produces;
+import javax.ws.rs.core.Context;
+import javax.ws.rs.core.HttpHeaders;
+import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
+
+import javax.json.JsonObject;
+
+import java.io.IOException;
+
+
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
@@ -21,7 +36,8 @@ public class Gateway {
   @GET
   @Path("/json")
   @Produces(MediaType.APPLICATION_JSON)
-  public JsonObject test() throws Exception{
+
+  public JsonObject test() throws IOException{
     String endpoint = "/rest/json";
     return proxy.sendGetRequest(microservice1, endpoint);
   }
@@ -29,12 +45,17 @@ public class Gateway {
   @GET
   @Path("/systemprops")
   @Produces(MediaType.APPLICATION_JSON)
-  public JsonObject systemProps() throws Exception{
+  public JsonObject systemProps() throws IOException{
     String endpoint = "/rest/systemprops";
     return proxy.sendGetRequest(microservice1, endpoint);
   }
 
   @GET
+
+  @Path("/shipList")
+  @Produces(MediaType.APPLICATION_JSON)
+  public JsonObject listSpaceships() throws IOException{
+
   @Path("/systeminfo")
   @Produces(MediaType.APPLICATION_JSON)
   public JsonObject systemProps() throws Exception{
@@ -53,7 +74,8 @@ public class Gateway {
   @GET
   @Path("/aliens/list")
   @Produces(MediaType.APPLICATION_JSON)
-  public JsonObject listAliens() throws Exception{
+
+  public JsonObject listAliens() throws IOException{
     String endpoint = "/rest/aliens/list";
     return proxy.sendGetRequest(microservice2, endpoint);
   }
@@ -62,7 +84,7 @@ public class Gateway {
   @POST
   @Path("/aliens/new")
   @Produces(MediaType.APPLICATION_JSON)
-  public JsonObject addAliens() {
+  public JsonObject addAliens() throws IOException{
     String endpoint = "/rest/aliens/new";
     return proxy.sendPostRequest(microservice2, endpoint);
   }
@@ -70,7 +92,7 @@ public class Gateway {
   @GET
   @Path("/health1")
   @Produces(MediaType.APPLICATION_JSON)
-  public JsonObject getMicroserviceOneHealth() {
+  public JsonObject getMicroserviceOneHealth() throws IOException{
     String endpoint = "/health";
     return proxy.sendGetRequest("http://localhost:9090", endpoint);
   }
@@ -78,16 +100,26 @@ public class Gateway {
   @GET
   @Path("/health2")
   @Produces(MediaType.APPLICATION_JSON)
-  public JsonObject getMicroserviceTwoHealth() {
+  public JsonObject getMicroserviceTwoHealth() throws IOException{
     String endpoint = "/health";
     return proxy.sendGetRequest("http://localhost:9091", endpoint);
   }
 
   @GET
   @Path("/metrics1")
-  @Produces(MediaType.APPLICATION_JSON)
-  public JsonObject getMicroserviceOneMetrics() {
+  @Produces(MediaType.TEXT_PLAIN)
+  public String getMicroserviceOneMetrics(@HeaderParam("Authorization") String auth) {
     String endpoint = "/metrics";
-    return proxy.sendGetRequest("https://localhost:9490", endpoint);
+    System.out.println("auth: " + auth);
+    return proxy.sendStringGetRequest("https://localhost:9490", endpoint, auth);
   }
-}
+    
+  @GET
+  @Path("/metrics2")
+  @Produces(MediaType.TEXT_PLAIN)
+  public String getMicroserviceTwoMetrics(@HeaderParam("Authorization") String auth) {
+    String endpoint = "/metrics";
+    System.out.println("auth: " + auth);
+    return proxy.sendStringGetRequest("https://localhost:9491", endpoint, auth);
+  }
+} 
