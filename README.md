@@ -22,7 +22,7 @@ This module demonstrates how to secure a microservice using MicroProfile JWT.  T
 
 ### Module 4
 
-This module demonstrates how to externalize microservice configuration, such as http ports, using MicroProfile Config.  Externalizing configuration means a microservice can be deployed to different environments without the needs for a re-build and full re-testing.
+This module demonstrates how to externalize microservice configuration, such as http ports, using MicroProfile Config.  Externalizing configuration means a microservice can be deployed to different environments without the need for a re-build and full re-testing.
 
 ### Module 5
 
