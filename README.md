@@ -3,12 +3,12 @@ This tutorial contains 5 sub modules that demonstrate different MicroProfile tec
 
 ## Module 5
 
-#About this module 
+### About this module 
 
 This module will show you how to take advantage of the Health and Metrics features added into MicroProfile 1.2 to see if your microservices are responding and provide metric information regarding these services such as CPU load, JVM usage and many other useful information.
  
 
-#Before we start
+### Before we start
 
 Make sure you have all the prerequisites installed before continuing with these instructions. Clone down this repository
 
@@ -19,13 +19,13 @@ and navigate to the repository you just cloned and change branch to module 5 tut
 git checkout `module5`
 
 
-#Health
+### Health
 
 A health check is a MicroProfile Health API implementation that is provided by a microservice. We use health checks to assess the health of a service.
 
 Some basic files have been provided for you such as a basic pom file for building our application with maven, a License file, some basic Open Liberty configuration in the form of xml and the directory structure required for this microservice.
 
-#Assessing health of microservice
+### Assessing health of microservice
 
 1. Navigate into the following directory `microservice-gateway/src/main/java/application/rest/Gateway.java`
 2. We will use this file for listing all the seperate REST API calls we require from our back-end microservices. Firstly add all the required imports needed for this class specified below:
@@ -56,7 +56,7 @@ import javax.inject.Inject;
 5. To display the health from the gateway go to `http://localhost:9080/LibertyGateway-1.0/rest/health1`
 
 
-#Metrics
+### Metrics
 
 You can use the MicroProfile metrics API to add metrics to your applications. The MicroProfile metrics API is similar to the Dropwizard metrics API.
 
@@ -69,7 +69,7 @@ When you use the MicroProfile metrics API, you can perform the following functio
 Some basic files have been provided for you such as a basic pom file for building our application with maven, a License file, some basic Open Liberty configuration in the form of xml and the directory structure required for this microservice.
 
 
-#Displaying metrics
+### Displaying metrics
 
 1. We navigate into `microservice-one/src/main/java/application/rest` and create a new file `JaxrsManager.java`.
 2. Add the required imports
@@ -145,7 +145,7 @@ public class JaxrsManager {
 ```
 
 4. Next we need to update the `LibertyRestEnpoint.java` which is located in the same folder as the `JaxrsManager.java` to look like the example below adding the @ApplicationScoped annotation which creates the object once for the duration of the application. The @Timed annotation denotes a timer, which tracks duration of the annotated object. We add these annotations so we can register the metrics for the endpoints in the file.
-
+```
 @Path("/")
 @ApplicationScoped
 @Produces(MediaType.APPLICATION_JSON)
@@ -210,6 +210,7 @@ public class LibertyRestEndpoint {
       return value;
   }
 }
+```
 
 5. Navigate into the following directory `microservice-one/src/main/java/application/rest/JaxrsApplication.java`.
 
@@ -265,8 +266,7 @@ public class JaxrsApplication extends Application {
 10. When we go to `http://localhost:9090/metrics` we see JVM information. If we want to display metrics for our application we need to run our application first and then go to `http://localhost:9090/metrics/application`.
 
 
-
-#Application example that uses health and metrics endpoint of the microservice
+### Application example that uses health and metrics endpoint of the microservice
 
 1. Navigate into the following directory `microservice-webapp/src/app/app.component.ts` 
 
