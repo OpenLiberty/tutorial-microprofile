@@ -3,6 +3,8 @@
 ## About this module
 In this module we will demonstrait how to secure your microservices with JWT (Java Web Tokens). This module is still in development and will be provided soon. Please go to module 4 until this module has been compleated!
 
+![Module3](/images/module3.png)
+
 ## Before We Start
 Make sure you have all the prerequisites installed before continuing with these instructions.
 Clone down this repository 
