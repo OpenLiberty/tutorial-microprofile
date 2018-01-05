@@ -6,6 +6,8 @@
 3. Then we will create our second back end micro-service that will provide more JSON information about the space station.
 4. Lastly we will create a front end that will act as your spaceships on board computer. 
 
+![Module 1](/images/module1.png)
+
 ## Before we start
 Make sure you have all the prerequisites installed before continuing with these instructions.
 Clone down this repository 
