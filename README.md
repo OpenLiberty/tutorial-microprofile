@@ -7,6 +7,8 @@ In this module we will demonstrait how to use the MicroProfile fallback feature.
 2. Then we will need to create a fallback microservice that can be used when the first desired on is no longer reachable.
 3. Finally we need to test this is working by shutting down micro-service two and trying to comunicate with our space station from the front-end. If we still recieve data back from the space station then we know our fallback code is working.
 
+![Module2](/images/module2.png)
+
 ## Before We Start
 Make sure you have all the prerequisites installed before continuing with these instructions.
 Clone down this repository 
