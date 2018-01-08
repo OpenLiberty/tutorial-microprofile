@@ -1,150 +1,144 @@
 # MicroProfile Tutorial (Still Under Construction)
-This tutorial contains 5 sub modules that demonstrate different MicroProfile technologies. Each module can be completed independent of one another by navigating to the required branch with the finished code from the previous module being provided for you. This README will also change depending on the branch you select to give you specific instructions on how to finish each module.
 
-## Tutorial Theme
+###About this module
 
-We have decided to go with a space theme for this tutorial to keep in line with the Open Liberty theme.
+In this module, we will demonstrate how to use the MicroProfile Config feature. This feature enables users to separate configuration from code to enable microservices to be successfully run in different environments which require different configurations. This helps to ensure that their microservices are highly portable. MP Config is a solution to externalise configuration from microservices. This module is a continuation of module 3 but we have provided the finished code to module 3 for you in this module 4 branch.
 
-Think of the front-end web application as the on board computer on the space ship you are currently flying.
+1.  Firstly, we need to set our static configuration properties in a static configuration properties file (this could be one of three pre-existing config files).
+2.  Secondly, we need to create a custom configuration file to enable dynamic configuration properties that are able to be updated without restarting the server.
+3.  Finally, we need to test our new dynamic and static configuration properties by changing them. We will be testing the static values by restarting the sever and checking that the config values had been updated and for the dynamic config values that it updates without restarting the server.
 
-The Gateway is one of the galaxies comunication carriers that enable your ships computer to talk to other devices in the galaxy.
+If you need more help in any of the concepts and methods used in this module, please see the two interactive guides on OpenLiberty.io.guides: 
+1.  Using MicroProfile Config for static configuration injection [LINK]
+2.  Advancing the use of MicroProfile Configuration [LINK]
 
-Microservice A will act as a space ship and provide current information via rest api calls such as the operating system the ship is running on and it's architecture etc.
+## Before We Start
 
-Microservice B will act as a space stations on board computer that will provide current information about the station such as currently docked ships, personal, location and information about the technology used on the station.
+Make sure you have all the prerequisites installed before continuing with these instructions. Clone down this repository
+https://github.com/OpenLiberty/tutorial-microprofile.git
+and navigate to the repository you just cloned. Change branch to module 3 *tutorial-microprofile*
+*git checkout module4*
+ 
+### Enabling Static Configuration Properties
+In this section we will be to configure the HTTP and HTTPS port values that the gateway runs on in a static configuration file. 
+1.  Make sure you are in the root directory of the repository you downloaded and navigate into the following directory *microservice-gateway/src/main/java/liberty/config* and open the file called *bootstrap.properties*
+2.  Add the following to this file:
+*default.http.port=9080*
+*default.https.port=9081*
+3.  Navigate to the *server.xml* file in *microservice-gateway/src/main/liberty/config*. In this file add the feature ```<feature>mpConfig-1.1</feature>```. 
+In the same file, replace the httpEndpoint method with the following code:
+```<httpEndpoint host="*"id="defaultHttpEndpoint"httpsPort="${default.https.port}"httpPort="${default.http.port}"/>```
+This will enable the server.xml to peer into the bootstrap.properties file to retrieve the HTTP and HTTPS port values.
+ 
+### Creating a Custom Configuration Properties Source
 
-The fallback microservice B will provide older information about the space station incase the stations on board computer fails so that a connection can still be made to the station rather than space ships not being able to comunicate with the station at all.
+Default config sources (like bootstrap.properties) are static and fixed on application starting, so you cannot modify them while the server is running. However, you can externalize configuration data out of the application package so that the service updates configuration changes dynamically.
 
-### Prerequisites
-1. Maven (https://maven.apache.org/install.html) - for building, testing and running our microservices
-2. npm (https://www.npmjs.com/get-npm) - for installing Angular and the Angular CLI
-3. Angular (https://www.npmjs.com/package/angular) - for building and running our web application
-4. Angular CLI (https://cli.angular.io/)
-4. Git CLI (https://git-scm.com/downloads) - for downloading the source files for this tutorial
-5. A Java IDE (Eclipse, Visual Studio Code, Netbeans etc) - for coding our tutorial
-6. Connection to the Internet - to pull down the required dependancies
+1.  Add a CustomConfig.json file outside of your application. In our example the file path for this json is: 
+*microservice-gateway/CustomConfigSource.json*
 
+2.  In this json file add the following code: 
 
-### To Note!
-
-We understand that normally you would have a separate repository for each microservice but to make this tutorial easier to consume we have decided to keep all the source in one repository to save the user having to download multiple repositories.
-
-We are planning to extent this tutorial to use Docker, Kuberneties and other technologies but we wanted to limit the prerequisites so that users can get up and ready quickly.
-
-## Information About The Files We Have Provided
-We have provided some file for you to make this tutorial easier to consume that I will talk about here.
-Firstly we have provided you with the basic directory structure for all the microservices.
-Then we have provided you with a pom.xml file that is used by maven to build your microservices and download all the required dependancies. In this file you can set what the application is named `<app.name>LibertyMicroServiceOne-1.0</app.name>`, the ports assigned to Liberty 
 ```
-<testServerHttpPort>9090</testServerHttpPort> <testServerHttpsPort>9444</testServerHttpsPort>
-```
-the dependancies you require like microProfile 1.2
-```
-<dependency>
-    <groupId>org.eclipse.microprofile</groupId>
-    <artifactId>microprofile</artifactId>
-    <version>1.2</version>
-    <scope>provided</scope>
-    <type>pom</type>
-</dependency>
-```
-and the applicaiton server you are using so in our case open Liberty
-```
-<plugin>
-    <groupId>net.wasdev.wlp.maven.plugins</groupId>
-    <artifactId>liberty-maven-plugin</artifactId>
-    <version>2.1</version>
-        <extensions>true</extensions>
-            <configuration>
-                <assemblyArtifact>
-                    <groupId>io.openliberty</groupId>
-                    <artifactId>openliberty-runtime</artifactId>
-                    <version>17.0.0.3</version>
-                    <type>zip</type>
-                </assemblyArtifact>
-                    <configFile>${basedir}/src/main/liberty/config/server.xml</configFile>
-                    <serverEnv>${basedir}/src/main/liberty/config/server.env</serverEnv>
-                    <jvmOptionsFile>${basedir}/src/main/liberty/config/jvm.options</jvmOptionsFile>
-                    <packageFile>${package.file}</packageFile>
-                    <include>${packaging.type}</include>
-                    <bootstrapProperties>
-                        <default.http.port>${testServerHttpPort}</default.http.port>
-                        <default.https.port>${testServerHttpsPort}</default.https.port>
-                    </bootstrapProperties>
-            </configuration>
-                <executions>
-                    <execution>
-                        <id>install-liberty</id>
-                        <phase>prepare-package</phase>
-                        <goals>
-                            <goal>install-server</goal>
-                        </goals>
-                    </execution>
-                <execution>
-                    <id>package-app</id>
-                    <phase>package</phase>
-                    <goals>
-                        <goal>package-server</goal>
-                    </goals>
-                </execution>
-                <execution>
-                    <id>test-start-server</id>
-                    <phase>pre-integration-test</phase>
-                    <goals>
-                        <goal>test-start-server</goal>
-                    </goals>
-                </execution>
-                <execution>
-                    <id>test-stop-server</id>
-                    <phase>post-integration-test</phase>
-                        <goals>
-                            <goal>test-stop-server</goal>
-                        </goals>
-                </execution>
-            </executions>
-        </plugin>
+{    “config_ordinal”:700,
+    “userID”:100
+}
 ```
 
-We have also provided you with a file named server.xml  that you will use to configure our liberty server. The server.xml files are located in all the microservice directories in this repo `<microservice-***>/src/main/liberty/config/`
+The config_ordinal property sets the ordinal of the json file, meaning that it determines the order in which the files are prioritised (higher ordinals are prioritised over lower ordinals and so can overwrite property values of the same name in these files with lower ordinals).
+
+3.  Next, we need to create our own custom configuration source by implementing the *org.eclipse.microprofile.config.spi.ConfigSource* interface and using the *java.util.ServiceLoader* mechanism. To do this, navigate to *microservice-gateway/src/main/java/application* and create a file called *CustomConfigSource.java* and input:
+
+[CODE]
+
+The ```setProperties()``` private method reads the key value pairs from the *CustomConfigSource.json* JSON file and writes the information into a map.
+
+4.  To register the custom configuration source, add the full class name in the *start/src/main/resources/META-INF/services/org.eclipse*.microprofile.config.spi.ConfigSource file:
+
+```application.CustomConfigSource```
+ 
+## Enabling Dynamic Configuration Properties
+
+1.  In *microservice-gateway/src/main/java/application/rest* create a new file called *Configuration.java*. In this file input the following:
 ```
-<server description="Sample Liberty server">
+package application.rest;
+import javax.ws.rs.GET;
+import javax.ws.rs.Path;
+import javax.ws.rs.Produces;
+import javax.ws.rs.core.MediaType;
+import javax.json.JsonObject;
+import javax.inject.Inject;
+import javax.json.Json;
+import javax.enterprise.context.RequestScoped;
+import org.eclipse.microprofile.config.inject.ConfigProperty;
+import org.eclipse.microprofile.config.Config;
+import javax.inject.Provider;
 
-  <featureManager>
-      <feature>jaxrs-2.0</feature>
-      <feature>jsonp-1.0</feature>
-      <feature>microprofile-1.2</feature>
-  </featureManager>
-
-  <httpEndpoint httpPort="9091" httpsPort="${default.https.port}"
-      id="defaultHttpEndpoint" host="*" />
-</server>
+@Path("/")
+@RequestScoped
+@Produces(MediaType.APPLICATION_JSON)
+public class Configuration {
+  @Inject
+  private Config config;
+  @Inject @ConfigProperty(name="userID", defaultValue="1000")
+  private Provider<Integer> userID;
+  @GET
+  @Path("/user")
+  public JsonObject getUserID() {
+    JsonObject value = Json.createObjectBuilder()
+    .add("userID", userID.get())
+    .build();
+    return value;
+  }
+}
 ```
-Above is the contents of the server.xml file. The section:
-`<featureManager>` allows you to define what Liberty features your require in your server.
-The `<httpEndpoint>` section
 
-## Information Regarding Each Module
+2. Navigate to the *Gateway.java* file in the same folder and underneath 
+```@Inject
+    private Proxy proxy;
+``` 
+input the following:
 
-### Module 1
+    ```  @Inject
+            private Configuration conf;
+    ```
+ 
+3. Then in *Gateway.java*, inside the *public class Gateway*, add the get request:
 
-Will teach you how to create a simple front end using Angular, two back end microservices and a simple gateway that will allow communications between the front-end and the back-end. This will demonstrate three different technologies: JAX-RS, CDI and JSON-P.
+    ```@GET
+        @Path("/user")
+        @Produces(MediaType.APPLICATION_JSON)
+        public JsonObject getUserId() throws Exception{
+            System.out.println("User ID: " + conf.getUserID());
+            return conf.getUserID();
+            }
+    ```
 
-### Module 2
+4. After this change file location to */microservice-webapp/src/app* and enter into the *app.component.html* file. In this file we need to add an extra row in the *Spaceship Details* table for our new UserID field. To do this find the *Spaceship Details* table and underneath the UserHome row, add the following code:
 
-This will show you how to create another simple micoservice that we will use as a fall back if our desired microservice is un-reachable. We will then add code to the gateway to enable this feature and test it using the front end web application. This module demonstraits the fault tolerance feature in MicroProfile.
+    ``` <tr>
+          <th> User ID </th>
+          <td> {{userID}} </td>
+        </tr>
+    ```
 
-## !!!The following modules are still work in progress!!!
+5. To ensure that our angular front-end can access this UserID endpoint we need to add and configure the endpoint in our *app.component.ts* file, which can be found in the same folder as *app.component.html*. In this file we need to add three things:
+    1) Add the endpoint where all other endpoints are listed:
+        ```userIDEndpoint = "http://localhost:9080/LibertyGateway-1.0/rest/user";```
+    2) Add the output type expected from calling this endpoint where the other output types for all other endpoints are also listed:
+        ```userID: string;```
+    3) Add:
+        ```this.http.get(this.userIDEndpoint, {responseType: 'json'}).subscribe(data => {
+                this.userID = data["userID"]
+            });
+        ```
+        This should be added inside ngOnInit(){}, underneath:
+        ```this.http.get(this.serverEndpoint2, {responseType: 'json'}).subscribe(data => {
+                this.shipName = data["shipName"]
+                this.shipType = data["shipType"]
 
-### Module 3
+            });
+         ``` 
 
-This module will show you how to secure your microservices using JWT and add login information into Open Liberty.
-
-### Module 4
-
-This will teach you how to externalise your configuration so that you can change information such as the micro-servcice endpoints.
-
-### Module 5
-
-This module will show you how to take advantage of the Health and Metrics features added into MicroProfile 1.2 to see if your microservices are responding and provide metric information regarding these services such as CPU load, JVM usage and many other useful information.
-
+Now every time the app is refreshed the UserID value will be updated without having to update the server and restart the application. In order to see this in action, launch your application, then enter into the *Configuration.java* file in *microservice-gateway/src/main/java/application/rest*. In this file update the value assigned to UserID to be any integer. Save this file and go back to the launched application in your browser. Now refresh your application's webpage and you should see that this value has updated itself without having to restart your servers. This is dynamic configuration using MP Config.
 
