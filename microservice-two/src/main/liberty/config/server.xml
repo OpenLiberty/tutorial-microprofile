@@ -4,6 +4,10 @@
       <feature>microprofile-1.2</feature>
   </featureManager>
 
+    <applicationManager autoExpand="true" />
+    <quickStartSecurity userName="confAdmin" userPassword="microprofile"/>
+    <keyStore id="defaultKeyStore" password="mpKeystore"/> (edited)
+
   <httpEndpoint httpPort="9091" httpsPort="9491"
       id="defaultHttpEndpoint" host="*" />
 </server>

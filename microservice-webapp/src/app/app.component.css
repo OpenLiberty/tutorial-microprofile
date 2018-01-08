@@ -15,7 +15,8 @@
   }
 
   .metrics {
-    height: 300px;
+    height: 350px;
+    overflow-y: auto;
   }
 
   .metrics-text {
@@ -53,12 +54,4 @@ pre{
   .testingButton{
     margin-top: 50px;
     margin-left: 250px; 
-  }
-
-  .health-up {
-    color: green;
-  }
-
-  .health-down {
-    color: red;
   }

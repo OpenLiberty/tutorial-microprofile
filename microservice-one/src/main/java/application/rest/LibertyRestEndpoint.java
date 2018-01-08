@@ -4,46 +4,43 @@ import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
-
-import org.eclipse.microprofile.metrics.MetricRegistry;
-import org.eclipse.microprofile.metrics.annotation.Timed;
-
 import javax.json.JsonObject;
-import javax.enterprise.context.ApplicationScoped;
-import javax.inject.Inject;
 import javax.json.Json;
 
 @Path("/")
-@ApplicationScoped
-@Produces(MediaType.APPLICATION_JSON)
 public class LibertyRestEndpoint {
 
-    private JaxrsManager jaxrsManager;
-    //private JaxrsManager jaxrsManager;
-
-    /**
-     * Instantiate a StatsManager locally which will not be in the CDI context
-     * 
-     * @param jaxrsManager
-     */
-    @Inject
-    private void setup (MetricRegistry registry) {
-        //this.jaxrsManager = jaxrsManager;
-        this.jaxrsManager = new JaxrsManager();
-    }
-
-
+    @GET
+    public String hello() {
+        return "Hello from the REST endpoint! I am alive!";
+    } 
     @GET
     @Path("/json")
-    @Timed
+    @Produces(MediaType.APPLICATION_JSON)
     public JsonObject restTest1() {
         //return "This is a test message to test the back end microservice";
-        return jaxrsManager.getTestData();
+        JsonObject value = Json.createObjectBuilder()
+        .add("firstName", "Jamie")
+        .add("lastName", "Coleman")
+        .add("age", 25)
+        .add("address", Json.createObjectBuilder()
+            .add("streetAddress", "1 Hurlsey Park")
+            .add("city", "Winchester")
+            .add("County", "Hampshire")
+            .add("postalCode", "SO17 1PR"))
+        .add("phoneNumber", Json.createArrayBuilder()
+            .add(Json.createObjectBuilder()
+                .add("type", "home")
+                .add("number", "212 555-1234"))
+            .add(Json.createObjectBuilder()
+                .add("type", "fax")
+                .add("number", "646 555-4567")))
+        .build();
+        return value;
     }
-
     @GET
     @Path("/systemprops")
-    @Timed
+    @Produces(MediaType.APPLICATION_JSON)
     public JsonObject getSystemInfo() {
         JsonObject value = Json.createObjectBuilder()
         .add("os", System.getProperty("os.name"))
