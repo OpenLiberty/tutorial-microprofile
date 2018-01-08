@@ -12,18 +12,29 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.inject.Inject;
 import javax.json.JsonObject;
-
 import java.io.IOException;
+import javax.enterprise.context.RequestScoped;
 
+import org.eclipse.microprofile.config.inject.ConfigProperty;
+import org.eclipse.microprofile.config.Config;
+import javax.inject.Provider;
 
+@RequestScoped
 @Path("/")
 public class Gateway {
+  @Inject
+  private Config config;
+  @Inject @ConfigProperty(name="port", defaultValue="9080")
+  private Provider<Integer> port;
+  public Integer getPort() {
+    return port.get();
+  }
   //Server locations! This will be moved to enviroment variables at a later date!
   String microservice1 = "http://localhost:9090/LibertyMicroServiceOne-1.0";
   String microservice2 = "http://localhost:9091/LibertyMicroServiceTwo-1.0";
 
   @Inject
-  public Proxy proxy;
+  private Proxy proxy;
   //Test method to get some random data back
   @GET
   @Path("/json")
@@ -32,6 +43,7 @@ public class Gateway {
   public JsonObject test() throws IOException{
     String endpoint = "/rest/json";
     return proxy.sendGetRequest(microservice1, endpoint);
+  
   }
 
   @GET
@@ -39,6 +51,7 @@ public class Gateway {
   @Produces(MediaType.APPLICATION_JSON)
   public JsonObject systemProps() throws IOException{
     String endpoint = "/rest/systemprops";
+    System.out.println("GRACE PORT: " + getPort());
     return proxy.sendGetRequest(microservice1, endpoint);
   }
 
@@ -101,4 +114,12 @@ public class Gateway {
     System.out.println("auth: " + auth);
     return proxy.sendStringGetRequest("https://localhost:9491", endpoint, auth);
   }
-} 
+
+  @POST
+  @Path("/auth")
+  @Produces(MediaType.APPLICATION_JSON)
+  public JsonObject checkAuth() throws NullPointerException{
+    String endpoint = "/rest/auth";
+    return proxy.sendPostRequest("/rest/auth", endpoint);
+  }
+}
