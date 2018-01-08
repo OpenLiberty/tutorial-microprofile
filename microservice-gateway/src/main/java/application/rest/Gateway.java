@@ -81,40 +81,6 @@ public class Gateway {
     return proxy.sendPostRequest(microservice2, endpoint);
   }
 
-  @GET
-  @Path("/health1")
-  @Produces(MediaType.APPLICATION_JSON)
-  public JsonObject getMicroserviceOneHealth() throws IOException{
-    String endpoint = "/health";
-    return proxy.sendGetRequest("http://localhost:9090", endpoint);
-  }
-
-  @GET
-  @Path("/health2")
-  @Produces(MediaType.APPLICATION_JSON)
-  public JsonObject getMicroserviceTwoHealth() throws IOException{
-    String endpoint = "/health";
-    return proxy.sendGetRequest("http://localhost:9091", endpoint);
-  }
-
-  @GET
-  @Path("/metrics1")
-  @Produces(MediaType.TEXT_PLAIN)
-  public String getMicroserviceOneMetrics(@HeaderParam("Authorization") String auth) {
-    String endpoint = "/metrics";
-    System.out.println("auth: " + auth);
-    return proxy.sendStringGetRequest("https://localhost:9490", endpoint, auth);
-  }
-    
-  @GET
-  @Path("/metrics2")
-  @Produces(MediaType.TEXT_PLAIN)
-  public String getMicroserviceTwoMetrics(@HeaderParam("Authorization") String auth) {
-    String endpoint = "/metrics";
-    System.out.println("auth: " + auth);
-    return proxy.sendStringGetRequest("https://localhost:9491", endpoint, auth);
-  }
-
   @POST
   @Path("/auth")
   @Produces(MediaType.APPLICATION_JSON)
