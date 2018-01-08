@@ -41,7 +41,7 @@ import javax.json.JsonObject;
 import javax.inject.Inject;
 ```
 
-3. Now we need to add the required REST API calls to the class. We add one for each microservice. We are also using CDI to inject the class Proxy which is responsible for connecting to the back-end:
+3. Next we need to add the required REST API call.
 ```
   @GET
   @Path("/health1")
@@ -65,8 +65,6 @@ When you use the MicroProfile metrics API, you can perform the following functio
 2. Add metadata to describe metrics.
 3. Access useful JVM/server base metrics.
 4. Access the registries that contain all registered metrics and metadata.
-
-Some basic files have been provided for you such as a basic pom file for building our application with maven, a License file, some basic Open Liberty configuration in the form of xml and the directory structure required for this microservice.
 
 
 ### Displaying metrics
@@ -338,18 +336,5 @@ Add another section to display the metrics
 
 .health-up {
   color: green;
-}
-
-.microservice{
-  border-color: white;
-  /* height: 400px; */
-  width: 700px;
-  position: fixed;
-  outline: white groove;
-}
-
-.serviceB{
-  top: 35%;
-  left: 52%;
 }
 ```

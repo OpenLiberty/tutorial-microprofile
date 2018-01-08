@@ -55,11 +55,3 @@ pre{
     margin-top: 50px;
     margin-left: 250px; 
   }
-
-  .health-up {
-    color: green;
-  }
-
-  .health-down {
-    color: red;
-  }

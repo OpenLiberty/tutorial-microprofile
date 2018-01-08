@@ -10,19 +10,11 @@ import javax.ws.rs.core.Context;
 import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
-
+import javax.inject.Inject;
 import javax.json.JsonObject;
 
 import java.io.IOException;
 
-
-import javax.ws.rs.POST;
-import javax.ws.rs.Path;
-import javax.ws.rs.Produces;
-import javax.ws.rs.core.MediaType;
-import javax.json.JsonObject;
-
-import javax.inject.Inject;
 
 @Path("/")
 public class Gateway {
@@ -51,22 +43,9 @@ public class Gateway {
   }
 
   @GET
-
   @Path("/shipList")
   @Produces(MediaType.APPLICATION_JSON)
   public JsonObject listSpaceships() throws IOException{
-
-  @Path("/systeminfo")
-  @Produces(MediaType.APPLICATION_JSON)
-  public JsonObject systemProps() throws Exception{
-    String endpoint = "/rest/systeminfo";
-    return proxy.sendGetRequest(microservice1, endpoint);
-  }
-
-  @GET
-  @Path("/shipList")
-  @Produces(MediaType.APPLICATION_JSON)
-  public JsonObject listSpaceships() throws NullPointerException{
     String endpoint = "/rest/shipList";
     return proxy.sendGetRequest(microservice2, endpoint);
   }
