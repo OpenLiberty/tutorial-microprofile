@@ -174,7 +174,7 @@ import javax.enterprise.context.ApplicationScoped;
         return object;
   }
   ```
-8. We now need to add a Cors Filter that will enable incoming connections from our java script front-end to our back-end. To do this first create a file named: `CorsFilter.java`
+8. We now need to add a CORS Filter. CORS stands for Cross-Origin Resource Sharing which is a mechanism that uses additional HTTP headers to let a user gain permission to access selected resources from a server on a different origin (e.g. a different domain) than the site originally uses. The same-origin policy, although very effective in preventing resources from different origins (domains), also prevents legitimate interactions between a server and clients of a known, trusted origin. CORS acts as a technique to relax this same-origin policy and allow Javascript on a web page to consume a REST API served from a different origin (domain). In this example, the webapp is being hosted on a Node server and the back-end is being hosted on an OpenLiberty server. The CORS Filter set up in this module will enable incoming connections from our front-end to our back-end. To do this first create a file named: `CorsFilter.java`
 9. Now open that file and paste in the following code:
 ```
 package application.rest;
