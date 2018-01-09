@@ -15,7 +15,7 @@ If more help is needed in regards to any of the concepts and methods used in thi
 1. Using MicroProfile Config for static configuration injection [LINK]
 2. Advancing the use of MicroProfile Configuration [LINK]
 
-## Before We Start
+### Before We Start
 
 Please ensure all of the prerequisites have been installed before continuing with these instructions. Clone down this repository
 https://github.com/OpenLiberty/tutorial-microprofile.git
@@ -26,7 +26,7 @@ Change branch to module 4 of tutorial-microprofile:
 
 
 
-### Enabling Static Configuration Properties
+## Enabling Static Configuration Properties
 This section will demonstrate how to set the HTTP and HTTPS port values, that the gateway server runs on, as examples of static configuration properties in a static configuration file. 
 1. Once in the root directory, navigate into the following directory *microservice-gateway/src/main/java/liberty/config* and open the file called *bootstrap.properties*
 This bootstrap.properties file is one of the three preconfigured file spaces in OpenLiberty that can be used for static configuration properties. The other two locations that these static configuration properties can be set are: /META-INF/microprofile-config.properties and the server.env files. Bootstrap.properties file has been used in this example because it allows us to set custom properties that can then 
@@ -43,7 +43,7 @@ In the same file, replace the httpEndpoint method with the following code:
 ```<httpEndpoint host="*"id="defaultHttpEndpoint"httpsPort="${default.https.port}"httpPort="${default.http.port}"/>```
 This will enable the server.xml to peer into the bootstrap.properties file to retrieve the HTTP and HTTPS port values.
 
-### Creating a Custom Configuration Properties Source
+## Creating a Custom Configuration Properties Source
 
 Default config sources (like bootstrap.properties) are static and fixed upon an application starting up, so cannot be modified while the server is running. However, you can externalize configuration data outside the application package so that the configuration changes are updated dynamically. These properties are aptly named "dynamic configuration properties". This section will demonstrate how to set a dynamic configuration property:
 
