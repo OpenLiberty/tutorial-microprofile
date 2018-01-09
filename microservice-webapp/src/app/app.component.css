@@ -1,22 +1,35 @@
   .microservice{
     border-color: white;
     /* height: 400px; */
-    width: 700px;
-    position: fixed;
+    width: 40%;
+    position: relative;
     outline: white groove;
+    display: inline-block;
+    vertical-align: top;
+    margin-top: 5%;
+    margin-left: 5%;
   }
-  .serviceA{
+
+  .login{
+    color: white;
+    /* margin-left: 1%;
+    margin-bottom: 5%; */
+    /* display: inline-block; */
+    vertical-align: top;
+  }
+
+
+  /* .serviceA{
     top: 35%;
     left:5%;
   }
   .serviceB{
     top: 35%;
     left: 52%;
-  }
+  } */
 
   .metrics {
-    height: 350px;
-    overflow-y: auto;
+    height: 30%;
   }
 
   .metrics-text {
@@ -26,17 +39,16 @@
 th{
   float:left;
   color: white;
+
 }
 td{
   color: white;
+  font-size: 100%;
 }
 pre{
   color: white;
 }
 
-.login{
-  color: white;
-}
   
 
   h1 {
@@ -52,6 +64,14 @@ pre{
   }
   
   .testingButton{
-    margin-top: 50px;
-    margin-left: 250px; 
+    margin-top: 5%;
+    margin-left: 43%; 
+  }
+
+  .health-up {
+    color: green;
+  }
+
+  .health-down {
+    color: red;
   }
