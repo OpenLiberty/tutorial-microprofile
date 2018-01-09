@@ -29,10 +29,12 @@ Change branch to module 4 of tutorial-microprofile:
 ## Enabling Static Configuration Properties
 This section will demonstrate how to set the HTTP and HTTPS port values, that the gateway server runs on, as examples of static configuration properties in a static configuration file. 
 1. Once in the root directory, navigate into the following directory *microservice-gateway/src/main/java/liberty/config* and open the file called *bootstrap.properties*
-This bootstrap.properties file is one of the three preconfigured file spaces in OpenLiberty that can be used for static configuration properties. The other two locations that these static configuration properties can be set are: /META-INF/microprofile-config.properties and the server.env files. Bootstrap.properties file has been used in this example because it allows us to set custom properties that can then 
+This bootstrap.properties file is one of the three preconfigured file spaces in OpenLiberty that can be used for static configuration properties. The other two locations that these static configuration properties can be set are: */META-INF/microprofile-config.properties* and the *server.env* files. Bootstrap.properties file has been used in this example because it allows us to set custom properties that can then 
 2. Add the following to this file:
-*default.http.port=9080*
-*default.https.port=9081*
+```
+default.http.port=9080
+default.https.port=9081
+```
 3. Next, navigate to the *server.xml* file in *microservice-gateway/src/main/liberty/config*. In this file add the feature:
 ```
 <feature>mpConfig-1.1</feature>
