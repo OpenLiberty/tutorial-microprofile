@@ -1,29 +1,20 @@
 package application.rest;
 
 import javax.ws.rs.GET;
-
-import javax.ws.rs.HeaderParam;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
-import javax.ws.rs.core.Context;
-import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.Response;
 import javax.inject.Inject;
 import javax.json.JsonObject;
 import java.io.IOException;
 import javax.enterprise.context.RequestScoped;
-
 import org.eclipse.microprofile.config.inject.ConfigProperty;
-import org.eclipse.microprofile.config.Config;
 import javax.inject.Provider;
 
 @RequestScoped
 @Path("/")
 public class Gateway {
-  @Inject
-  private Config config;
   @Inject @ConfigProperty(name="port", defaultValue="9080")
   private Provider<Integer> port;
   public Integer getPort() {
@@ -81,7 +72,15 @@ public class Gateway {
     return proxy.sendPostRequest(microservice2, endpoint);
   }
 
-  @GET
+  @POST
+  @Path("/auth")
+  @Produces(MediaType.APPLICATION_JSON)
+  public JsonObject checkAuth() throws NullPointerException{
+    String endpoint = "/rest/auth";
+    return proxy.sendPostRequest("/rest/auth", endpoint);
+  }
+
+    @GET
   @Path("/health1")
   @Produces(MediaType.APPLICATION_JSON)
   public JsonObject getMicroserviceOneHealth() throws IOException{
@@ -95,31 +94,5 @@ public class Gateway {
   public JsonObject getMicroserviceTwoHealth() throws IOException{
     String endpoint = "/health";
     return proxy.sendGetRequest("http://localhost:9091", endpoint);
-  }
-
-  @GET
-  @Path("/metrics1")
-  @Produces(MediaType.TEXT_PLAIN)
-  public String getMicroserviceOneMetrics(@HeaderParam("Authorization") String auth) {
-    String endpoint = "/metrics";
-    System.out.println("auth: " + auth);
-    return proxy.sendStringGetRequest("https://localhost:9490", endpoint, auth);
-  }
-    
-  @GET
-  @Path("/metrics2")
-  @Produces(MediaType.TEXT_PLAIN)
-  public String getMicroserviceTwoMetrics(@HeaderParam("Authorization") String auth) {
-    String endpoint = "/metrics";
-    System.out.println("auth: " + auth);
-    return proxy.sendStringGetRequest("https://localhost:9491", endpoint, auth);
-  }
-
-  @POST
-  @Path("/auth")
-  @Produces(MediaType.APPLICATION_JSON)
-  public JsonObject checkAuth() throws NullPointerException{
-    String endpoint = "/rest/auth";
-    return proxy.sendPostRequest("/rest/auth", endpoint);
   }
 }
