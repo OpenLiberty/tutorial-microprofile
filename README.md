@@ -24,6 +24,8 @@ Change branch to module 4 of tutorial-microprofile:
 
 *git checkout module4*
 
+
+
 ### Enabling Static Configuration Properties
 This section will demonstrate how to set the HTTP and HTTPS port values, that the gateway server runs on, as examples of static configuration properties in a static configuration file. 
 1. Once in the root directory, navigate into the following directory *microservice-gateway/src/main/java/liberty/config* and open the file called *bootstrap.properties*
