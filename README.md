@@ -202,12 +202,8 @@ public class Configuration {
 ```
 
 2. Next,navigate to the *Gateway.java* file in the same folder and underneath 
-```
-@Inject
-  private Proxy proxy;
-``` 
+```@Inject private Proxy proxy;``` 
 input the following:
-
 ```  
 @Inject
   private Configuration conf;
