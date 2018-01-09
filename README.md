@@ -42,7 +42,9 @@ default.https.port=9081
 
 
 In the same file, replace the httpEndpoint method with the following code:
-```<httpEndpoint host="*"id="defaultHttpEndpoint"httpsPort="${default.https.port}"httpPort="${default.http.port}"/>```
+```
+<httpEndpoint host="*"id="defaultHttpEndpoint"httpsPort="${default.https.port}"httpPort="${default.http.port}"/>
+```
 This will enable the server.xml to peer into the bootstrap.properties file to retrieve the HTTP and HTTPS port values.
 
 ## Creating a Custom Configuration Properties Source
