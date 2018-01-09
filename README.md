@@ -1,4 +1,4 @@
-# MicroProfile Tutorial (Still Under Construction)
+# Module 4 - MP Config (Still Under Construction)
 
 ### About this module
 
