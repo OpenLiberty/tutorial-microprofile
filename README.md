@@ -20,7 +20,8 @@ If more help is needed in regards to any of the concepts and methods used in thi
 Please ensure all of the prerequisites have been installed before continuing with these instructions. Clone down this repository
 https://github.com/OpenLiberty/tutorial-microprofile.git
 and navigate to this repository.
-Change branch to module 4 tutorial-microprofile
+Change branch to module 4 of tutorial-microprofile:
+
 *git checkout module4*
 
 ### Enabling Static Configuration Properties
