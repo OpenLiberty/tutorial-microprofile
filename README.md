@@ -7,7 +7,7 @@ This module is a continuation of module 3 however, the finished module 3 code ha
 This module will demonstrate MicroProfile Config. MP Config is a solution to externalise configuration from microservices, enabling users to separate configuration from code to enable microservices to be successfully run in different environments requiring different configurations. This helps to ensure the high portability of microservices.
 
 1. Firstly, the static configuration properties in a static configuration properties file need to be set (this could be one of three pre-existing config files).
-2. Following this, a custom configuration file needs to be created to enable dynamic configuration properties (Properties that can be updated without having to restart the server).
+2. Following this, a custom configuration file needs to be created to enable dynamic configuration properties (properties that can be updated without having to restart the server).
 3. Finally, the new dynamic and static configuration properties need to be tested.
 
 
