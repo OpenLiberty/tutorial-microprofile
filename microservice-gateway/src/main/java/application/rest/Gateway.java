@@ -50,15 +50,10 @@ public class Gateway {
     return proxy.sendGetRequest(microservice1, endpoint);
   }
 
-  @GET
-
-  @Path("/shipList")
-  @Produces(MediaType.APPLICATION_JSON)
-  public JsonObject listSpaceships() throws IOException{
 
   @Path("/systeminfo")
   @Produces(MediaType.APPLICATION_JSON)
-  public JsonObject systemProps() throws Exception{
+  public JsonObject systemInfo() throws Exception{
     String endpoint = "/rest/systeminfo";
     return proxy.sendGetRequest(microservice1, endpoint);
   }
@@ -66,7 +61,7 @@ public class Gateway {
   @GET
   @Path("/shipList")
   @Produces(MediaType.APPLICATION_JSON)
-  public JsonObject listSpaceships() throws NullPointerException{
+  public JsonObject listSpaceships() throws Exception{
     String endpoint = "/rest/shipList";
     return proxy.sendGetRequest(microservice2, endpoint);
   }

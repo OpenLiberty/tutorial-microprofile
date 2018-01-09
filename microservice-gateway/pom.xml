@@ -18,6 +18,9 @@
         <warContext>${app.name}</warContext>
         <package.file>${project.build.directory}/${project.artifactId}-${project.version}.zip</package.file>
         <packaging.type>usr</packaging.type>
+        <microserviceEndpointOne>http://localhost:9090/LibertyMicroServiceOne-1.0</microserviceEndpointOne>
+        <microserviceEndpointTwo>http://localhost:9091/LibertyMicroServiceTwo-1.0</microserviceEndpointTwo>
+        <microserviceEndpointBackup>http://localhost:9092/LibertyMicroServiceTwoFallback-1.0</microserviceEndpointBackup>
     </properties>
 
     <dependencies>
@@ -119,6 +122,22 @@
                     </execution>
                 </executions>
             </plugin>
+            <plugin>
+            <groupId>org.codehaus.mojo</groupId>
+            <artifactId>properties-maven-plugin</artifactId>
+            <version>1.0-alpha-2</version>
+            <executions>
+                <execution>
+                    <phase>generate-resources</phase>
+                    <goals>
+                        <goal>write-project-properties</goal>
+                    </goals>
+                    <configuration>
+                        <outputFile>${project.build.outputDirectory}/my.properties</outputFile>
+                    </configuration>
+                </execution>
+            </executions>
+        </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-resources-plugin</artifactId>
