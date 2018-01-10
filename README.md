@@ -1,12 +1,10 @@
-# MicroProfile Tutorial (Still Under Construction)
-This tutorial contains 5 sub modules that demonstrate different MicroProfile technologies. Each module can be completed independent of one another by navigating to the required branch with the finished code from the previous module being provided for you. This README will also change depending on the branch you select to give you specific instructions on how to finish each module.
-
-## Module 5
+# Module 5
 
 ### About this module 
 
 This module will show you how to take advantage of the Health and Metrics features added into MicroProfile 1.2 to see if your microservices are responding and provide metric information regarding these services such as CPU load, JVM usage and many other useful information.
  
+ ![Module 5](/images/module5.png)
 
 ### Before we start
 
@@ -28,7 +26,7 @@ Some basic files have been provided for you such as a basic pom file for buildin
 ### Assessing health of microservice
 
 1. Navigate into the following directory `microservice-gateway/src/main/java/application/rest/Gateway.java`
-2. We will use this file for listing all the seperate REST API calls we require from our back-end microservices. Firstly add all the required imports needed for this class specified below:
+2. We will use this file for listing all the separate REST API calls we require from our back-end microservices. Firstly add all the required imports needed for this class specified below:
 ```
 package application.rest;
 
