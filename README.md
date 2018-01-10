@@ -22,8 +22,8 @@ and navigate to the repository you just cloned and change branch to module 1 `tu
 Some basic files have been provided for you such as a basic pom file for building our application with maven, a License file, some basic Open Liberty configuration in the form of xml and the directory structure required for this microservice.
 
 1. Navigate into the following directory
-`microservice-gateway/src/main/java/application/rest` and create a new file called `Gateway.java`
-2. We will use this file for listing all the seperate REST API calls we require from our back-end microservices. Firstly add all the required imports needed for this class specified below:
+`microservice-gateway/src/main/java/application/rest` (to do this you will need to create new java, application and rest folders) and create a new file inside the rest folder called `Gateway.java`
+2. We will use this file for listing all the separate REST API calls we require from our back-end microservices. Firstly add all the required imports needed for this class specified below:
 
 ```
 package application.rest;
@@ -110,7 +110,7 @@ import org.eclipse.microprofile.faulttolerance.*;
 
 import javax.enterprise.context.ApplicationScoped;
 ```
-6. We then need to add the main method to send datat to and from the back-end from our web application
+6. We then need to add the main method to send data to and from the back-end from our web application
 ```
 //Method that takes a GET request from the front end and sends that to the desired back-end microservice
   public JsonObject sendGetRequest(String server, String endpoint) throws NullPointerException {
@@ -242,7 +242,7 @@ public class CorsFilter implements ContainerResponseFilter {
     }
 }
 ```
-3. Next we need create the JaxrsApplication.java file like we did in the Gateway and add the following code to access our endpoint:
+3. Next we need create the `JaxrsApplication.java` file like we did in the Gateway and add the following code to access our endpoint:
 ```
 package application.rest;
 
@@ -316,29 +316,41 @@ public class LibertyRestEndpoint {
 ```
 
 ## Creating Microservice-Two
-1. The instructions for creating microservice-two are the same as microservice-one navigate up one directory then into the `microservice-one/src/main/java/application/rest` directory and repeat steps 2-6 from the Creating Microservice-One.
+1. The instructions for creating microservice-two are the same as microservice-one navigate up one directory then into the `microservice-two/src/main/java/application/rest` directory and repeat steps 2-6 from the Creating Microservice-One.
 2. Now create a file called LiberyRestEndpoint.java and add the following code to create the REST API calls for your second microservice......NEW CODE TO BE ADDED HERE!!!
 
 ## Creating the Web Application
-Now that we've created a gateway and microservices A and B, a webapp is needed to visualise the information in these microservices. To make this easier, the webapp has already been fully developed and can be accessed by cloning Module 2. 
+Now that we've created a gateway and two microservices (A and B), a webapp is needed to visualise the information in these microservices. To make this easier, a webapp has already been fully developed for this example. 
 The webapp used in this example has been created using Angular CLI and is running on a Node server. 
 
-In order to use the webapp provided, it is essential that the pre-requisites previously stated are installed. 
+In order to use the webapp provided, it is essential that the pre-requisites previously stated are installed first. 
 
-Using node and npm, @angular/cli needs to be installed. To do this, first enter into the folder in which the webapp is to be placed using the terminal and enter the following command:
+1. Node and npm should already have been instaled. However @angular/cli also needs to be installed. To do this, first enter into the folder in which the webapp is to be placed (in this example enter the folder named *microservice-webapp*) using the terminal, enter the following command:
 
-  `npm install -g @angular/cli`
+    `npm install -g @angular/cli`
 
-This may take a little while to run.
+    This may take a little while to run.
 
-By cloning module 2's code, you will automatically have all of the predevelped webapp. Once you have this, enter into the microservice-webapp folder on the terminal and enter the command:
+2. Next to avoid errors when switching branches commit all of the changes made so far to the module 1 branch of your fork. To do this enter the following commands in the terminal:
 
-`ng serve`
+    i. `git add .`
 
-This will "serve" up, or run, your new angular app.
+    ii. `git checkout -m "enter comment here to describe what you are adding"`
 
-After serving up your app hit the endpoint 
-*http:localhost:4200* which will show your current webapp. Now that you have served the app up, when you edit anything within the Angular app file structure the webapp will be automatically update itself after saving. It is therefore not necessary to restart your app every time.
+    iii. `git push`
+
+
+3. Now switch branches to module 2 to have access to the pre-created webapp. To switch branches enter the following command into the terminal:
+
+    `git checkout module 2`
+
+3. Navigate into the *microservice-webapp* folder and enter the following command in the terminal to serve up/launch the webapp and be able to access it:
+
+    `ng serve`
+
+To check the app has been served up, open any browser and hit the URL http://localhost:4200 and you should see the webapp appear.
+
+ Now that the app has been served up, when you edit anything within the Angular app file structure the webapp will be automatically update itself after saving. It is therefore not necessary to restart your app every time.
 
 If you would like more information on how to create a webapp from scratch using an OpenLiberty server or a Node server and how to connect that to an OpenLiberty back-end please see the following interactive guides on http://openliberty.io.guides :
 
