@@ -6,6 +6,8 @@ Each Module is held in a separate Git branch in this repository.  The README.md 
 
 ## The Modules
 
+![Modules](/images/MicroProfileimage.png)
+
 ### Module 1
 
 This module demonstrates the use of JAX-RS, CDI and JSON-P to implement three Microservices.  The first is a gateway service that provides a single point for an Angular front-end to call.  The gateway service is responsible for routing requests through to two back-end services that provide the functionality for the Web front-end.
