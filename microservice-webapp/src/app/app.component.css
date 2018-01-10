@@ -1,22 +1,21 @@
   .microservice{
     border-color: white;
-    /* height: 400px; */
-    width: 700px;
-    position: fixed;
+    width: 40%;
+    position: relative;
     outline: white groove;
+    display: inline-block;
+    vertical-align: top;
+    margin-top: 5%;
+    margin-left: 5%;
   }
-  .serviceA{
-    top: 35%;
-    left:5%;
-  }
-  .serviceB{
-    top: 35%;
-    left: 52%;
+
+  .login{
+    color: white;
+    vertical-align: top;
   }
 
   .metrics {
-    height: 350px;
-    overflow-y: auto;
+    height: 30%;
   }
 
   .metrics-text {
@@ -26,32 +25,33 @@
 th{
   float:left;
   color: white;
+
 }
 td{
   color: white;
+  font-size: 100%;
 }
 pre{
   color: white;
 }
 
-.login{
-  color: white;
+h1 {
+color: #FFFFFF;
+font-family: Arial, Helvetica, sans-serif;
+font-size: 250%;
 }
-  
+h2 {
+color: #FFFFFF;
+font-family: Arial, Helvetica, sans-serif;
+font-size: 150%;
+text-align: center;
+}
 
-  h1 {
-  color: #FFFFFF;
-  font-family: Arial, Helvetica, sans-serif;
-  font-size: 250%;
-  }
-  h2 {
-  color: #FFFFFF;
-  font-family: Arial, Helvetica, sans-serif;
-  font-size: 150%;
-  text-align: center;
-  }
-  
-  .testingButton{
-    margin-top: 50px;
-    margin-left: 250px; 
-  }
+.health-metrics{
+  margin-top: 5%;
+  margin-left: 43%; 
+}
+
+.health-up {
+  color: green;
+}

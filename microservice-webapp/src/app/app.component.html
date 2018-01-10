@@ -9,7 +9,7 @@ from anywhere in the system. -->
 <html>
   <div style="text-align:center">
     <h1>
-        Liberty MicroProfile Dashboard
+      Liberty MicroProfile Dashboard
     </h1>
   </div>
   <section class="login">
@@ -39,13 +39,20 @@ from anywhere in the system. -->
         <th> User Home </th>
         <td> {{userHome}} </td>
       </tr>
+      <tr>
+        <th> User ID </th>
+        <td> {{userID}} </td>
+      </tr>
       <br>
       <br>
-      <img src="assets/logo.png" width="180" align="middle">
     </table>
+    <img src="assets/logo.png" width="180" align="middle">
+    <button class="health-metrics" type="button" (click)="healthStatusOne()">Health Status</button>
+    <h2 *ngIf="healthOne !== undefined" class="health-{{healthOne.toLowerCase()}}">{{healthOne}}</h2>
+    <button class="health-metrics" type="button" (click)="metricsStatusOne()">Metrics Status</button>
   </section>
 
-  <section class= "microservice serviceB">
+  <section *ngIf="metricsOne === undefined"  class= "microservice serviceB">
     <h2> The Neighbouring Spaceship's Details: </h2>
     <table>
       <tr>
@@ -57,7 +64,16 @@ from anywhere in the system. -->
         <td> {{shipType}} </td>
       </tr>
     </table>
-    <h2>{{outcome2}}</h2>
+    <button class="health-metrics" type="button" (click)="healthStatusTwo()">Health Status</button>
+    <h2 *ngIf="healthTwo !== undefined" class="health-{{healthTwo.toLowerCase()}}">{{healthTwo}}</h2>
+    <button class="health-metrics" type="button" (click)="metricsStatusOne()">Metrics Status</button>
+  </section>
+
+  <section *ngIf="metricsOne !== undefined"  class= "microservice serviceB">
+    <div class="metrics">
+      <h2> Microservice One Metrics </h2>
+      <pre> {{metricsOne}} </pre>
+    </div>
   </section>
 
 </html>
