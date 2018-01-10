@@ -22,8 +22,8 @@ and navigate to the repository you just cloned and change branch to module 1 `tu
 Some basic files have been provided for you such as a basic pom file for building our application with maven, a License file, some basic Open Liberty configuration in the form of xml and the directory structure required for this microservice.
 
 1. Navigate into the following directory
-`microservice-gateway/src/main/java/application/rest` and create a new file called `Gateway.java`
-2. We will use this file for listing all the seperate REST API calls we require from our back-end microservices. Firstly add all the required imports needed for this class specified below:
+`microservice-gateway/src/main/java/application/rest` (to do this you will need to create new java, application and rest folders) and create a new file inside the rest folder called `Gateway.java`
+2. We will use this file for listing all the separate REST API calls we require from our back-end microservices. Firstly add all the required imports needed for this class specified below:
 
 ```
 package application.rest;
@@ -110,7 +110,7 @@ import org.eclipse.microprofile.faulttolerance.*;
 
 import javax.enterprise.context.ApplicationScoped;
 ```
-6. We then need to add the main method to send datat to and from the back-end from our web application
+6. We then need to add the main method to send data to and from the back-end from our web application
 ```
 //Method that takes a GET request from the front end and sends that to the desired back-end microservice
   public JsonObject sendGetRequest(String server, String endpoint) throws NullPointerException {
@@ -242,7 +242,7 @@ public class CorsFilter implements ContainerResponseFilter {
     }
 }
 ```
-3. Next we need create the JaxrsApplication.java file like we did in the Gateway and add the following code to access our endpoint:
+3. Next we need create the `JaxrsApplication.java` file like we did in the Gateway and add the following code to access our endpoint:
 ```
 package application.rest;
 
@@ -316,255 +316,42 @@ public class LibertyRestEndpoint {
 ```
 
 ## Creating Microservice-Two
-1. The instructions for creating microservice-two are the same as microservice-one navigate up one directory then into the `microservice-one/src/main/java/application/rest` directory and repeat steps 2-6 from the Creating Microservice-One.
+1. The instructions for creating microservice-two are the same as microservice-one navigate up one directory then into the `microservice-two/src/main/java/application/rest` directory and repeat steps 2-6 from the Creating Microservice-One.
 2. Now create a file called LiberyRestEndpoint.java and add the following code to create the REST API calls for your second microservice......NEW CODE TO BE ADDED HERE!!!
 
 ## Creating the Web Application
-Now that we've created a gateway and microservices A and B, it's time to build a webapp to be able access and easily display the information within these microservices. 
+Now that we've created a gateway and two microservices (A and B), a webapp is needed to visualise the information in these microservices. To make this easier, a webapp has already been fully developed for this example. 
+The webapp used in this example has been created using Angular CLI and is running on a Node server. 
 
-1. Firstly we need to create a basic AngularJS webapp
-2. Then we need to use this basic webapp skeleton and customise it to show the information we wish to access from the microservices
-3. Finally we need to call API requests, through our gateway service, to the two microservices to be able to access and then display this information on the fron-end to the client.
+In order to use the webapp provided, it is essential that the pre-requisites previously stated are installed first. 
 
-In order to build our basic AngularJS webapp we'll be using the pre-requisites we've specified previously. Using node and npm we will install the @angular/cli tool which builds all of the files and installs all of the dependencies we will need for this webapp.
+1. Node and npm should already have been instaled. However @angular/cli also needs to be installed. To do this, first enter into the folder in which the webapp is to be placed (in this example enter the folder named *microservice-webapp*) using the terminal, enter the following command:
 
-In our terminal, enter into the folder in which you want the webapp. Then enter the command:
+    `npm install -g @angular/cli`
 
-  `npm install -g @angular/cli`
+    This may take a little while to run.
 
-This may take a little while to run.
+2. Next to avoid errors when switching branches commit all of the changes made so far to the module 1 branch of your fork. To do this enter the following commands in the terminal:
 
-After this, run the command:
+    i. `git add .`
 
-`ng new my-microprofile-app`
+    ii. `git checkout -m "enter comment here to describe what you are adding"`
 
-This will create the new AngularJS app file structure and place all of the downloaded files and dependencies within a folder calle "my-microprofile-app".
-
-Then enter into this folder:
-
-`cd my-microprofile-app`
-
-Then enter:
-
-`ng serve`
-
-This will "serve" up, or run, your new angular app.
-
-After serving up your app hit the endpoint 
-`http:localhost:4200` which will show your current webapp. Now that you have served the app up, when you edit anything within the Angular app file structure the webapp will be automatically update itself after saving. It is therefore not necessary to restart your app every time.
+    iii. `git push`
 
 
-Now we have a basic AngularJS webapp working we can start to edit the HTML, CSS and component files to customise this webapp to our own needs. 
-The first step is to edit our component.html file. 
+3. Now switch branches to module 2 to have access to the pre-created webapp. To switch branches enter the following command into the terminal:
 
-In the "app.component.html" (./src/app/app.component.html) file delete everything that is currently in there and then copy and paste in the following code:
+    `git checkout module 2`
 
-```
-<html>
-    <div style="text-align:center">
-        <h1>
-            Liberty MicroProfile Dashboard
-        </h1>
-    </div>
-    <section class= "microservice serviceA">
-      <h2> Your Spaceship Details: </h2>
-      <table>
-        <tr>
-          <th> Operating System </th>
-          <td> {{os}} </td>
-        </tr>
-        <tr>
-          <th> OS version </th>
-          <td> {{osVersion}} </td>
-        </tr>
-        <tr>
-          <th> OS Language </th>
-          <td> {{osLanguage}} </td>
-        </tr>
-        <tr>
-          <th> UserName </th>
-          <td> {{user}} </td>
-        </tr>
-        <tr>
-          <th> User Home </th>
-          <td> {{userHome}} </td>
-        </tr>
-        <br>
-        <br>
-        <img src="assets/logo.png" width="180" align="middle">
-      </table>
-    </section>
-    <section class= "microservice serviceB">
-      <h2> The Neighbouring Spaceship's Details: </h2>
-      <table>
-        <tr>
-          <th> Ship Name </th>
-          <td> {{shipName}} </td>
-        </tr>
-        <tr>
-          <th> Ship Type </th>
-          <td> {{shipType}} </td>
-        </tr>
-    </table>
-  </section>
-</html>
-```
+3. Navigate into the *microservice-webapp* folder and enter the following command in the terminal to serve up/launch the webapp and be able to access it:
 
-This will add a title and two tables to our webapp. In the first table we will be calling information from MicroserviceA and in the second table we will be calling information from MicroserviceB.
+    `ng serve`
 
-You can check the progress of the webapp content or style changes by returning to the localhost endpoint and refreshing the page.
+To check the app has been served up, open any browser and hit the URL http://localhost:4200 and you should see the webapp appear.
 
-The double curly braces used in this HTML is a specific function in Angular that uses TypeScript. These double braces allow us to pull forward properties/data that we will be requesting from the microservices using our app.component.ts and app.module.ts files and inserts these properties into the browser. Angular updates the display when these properties change.
+ Now that the app has been served up, when you edit anything within the Angular app file structure the webapp will be automatically update itself after saving. It is therefore not necessary to restart your app every time.
 
-Next we need to edit the css to style our webapp in the same style and theme as the OpenLiberty website. 
-To do this open the "app.component.css" file (./src/app/app.component.css) and copy and paste the following code in:
-```
-.microservice{
-  border-color: white;
-  height: 400px;
-   width: 700px;
-   position: fixed;
-   outline: white groove;
-  }
-.serviceA{
-  top: 15%;
-  left:5%;
-  }
-.serviceB{
-  top: 15%;
-  left: 52%;
-}
+If you would like more information on how to create a webapp from scratch using an OpenLiberty server or a Node server and how to connect that to an OpenLiberty back-end please see the following interactive guides on http://openliberty.io.guides :
 
-th{
-  float:left;
-  color: white;
-}
-td{
-  color: white;
-}
- 
-h1 {
-  color: #FFFFFF;
-  font-family: Arial, Helvetica, sans-serif;
-  font-size: 250%;
-}
-
-h2 {
-  color: #FFFFFF;
-  font-family: Arial, Helvetica, sans-serif;
-  font-size: 150%;
-  text-align: center;
-  }
-  
-.testingButton{
-  margin-top: 475px;
-}
-```
-
-Then in the "styles.css" file (./src/styles.css) we will copy and paste the following code in to style to main html background (i.e. any global style variables):
-
-```
-html{
-    background-color:  #010b19;
-    font-family: "Helvetica Neue",Helvetica,Arial,sans-serif;
-  }
-  
-html {
-    height: 100%;
-    -webkit-background-size: cover;
-    -moz-background-size: cover;
-    -o-background-size: cover;
-    background-size: cover;
-}
-```
-
-Now that we have a more visually appealing webapp we can move onto linking it up to our microservices to start populating our tables with data.
-
-To do this we need to enter this code into the "app.component.ts" file (./src/app/app.component.ts):
-
-```
-import {Component, OnInit } from '@angular/core';
-import {HttpClient, HttpHeaders} from '@angular/common/http'
-
-
-
-@Component({
-  selector: 'app-root',
-  templateUrl: './app.component.html',
-  styleUrls: ['./app.component.css']
-
-})
-
-
-export class AppComponent implements OnInit {
-  title = 'app';
-  serverEndpoint = "http://localhost:9080/LibertyGateway-1.0/rest/systemprops";
-  serverEndpoint2 = "http://localhost:9080/LibertyGateway-1.0/rest/shipList";
-  os: string;
-  osVersion: string;
-  osLanguage: string;
-  user: string;
-  userHome: string;
-  shipName: string;
-  shipType: string;
-
-
-
-  constructor(private http: HttpClient) {}
-  ngOnInit() {    
-    this.http.get(this.serverEndpoint, {responseType: 'json'}).subscribe(data => {
-      this.os = data["os"]
-      this.osVersion = data["osVersion"]
-      this.osLanguage = data["osLanguage"]
-      this.user = data["user"]
-      this.userHome = data["userHome"]
-
-    });
-    this.http.get(this.serverEndpoint2, {responseType: 'json'}).subscribe(data => {
-      this.shipName = data["shipName"]
-      this.shipType = data["shipType"]
-
-    });
-  }
-}
-```
-As you can see from the serverEndpoints we have inputted into the file above, we are actually hitting the gateway and not the microservice directly. Using the code we inputted into the Gateway previously we redirect this HTTP GET request to the correct microservice. This way when a microservice goes down we are able to utilise the gateway service to redirect the front-end's request to a fallback mechanism - this is all in Module 2.
-
-The type of data we are trying to access from each microservices must be specified in this file.
-Then using HTTP Get requests we can request this information and store it in order to be able to display it in the front-end tables.
-
-We are using ngOnInit for all the initialization/declaration. The constructor is only used to initialize the class members.
-
-The next step is to import the necessary modules and declarations into the "app.module.ts" file (./src/app/app.module.ts):
-
-```
-import { BrowserModule } from '@angular/platform-browser';
-import { NgModule } from '@angular/core';
-import { HttpClientModule } from '@angular/common/http';
-import { HttpModule } from '@angular/http';
-import { AppComponent } from './app.component';
-import { FormsModule } from '@angular/forms';
-
-
-@NgModule({
-  declarations: [
-    AppComponent
-  ],
-  imports: [
-    BrowserModule,
-    HttpClientModule,
-    FormsModule,
-    HttpModule,
-  ],
-  providers: [
-  ],
-  bootstrap: [AppComponent]
-})
-export class AppModule { }
-```
-To see how all of these changes have affected your webapp go to `http:localhost:4200`.
-
-Now that we have edited the AngularJS files, with each of the microservice servers up and running you should be able to see the information we assigned to each microservice in the two tables on our webapp.
-
-
-   
+1. https://openliberty.io/guides/rest-client-angularjs.html
