@@ -15,6 +15,8 @@ If more help is needed in regards to any of the concepts and methods used in thi
 1. Using MicroProfile Config for static configuration injection [LINK]
 2. Advancing the use of MicroProfile Configuration [LINK]
 
+![Module 4](/images/module4.png)
+
 ### Before We Start
 
 Please ensure all of the prerequisites have been installed before continuing with these instructions. Clone down this repository
