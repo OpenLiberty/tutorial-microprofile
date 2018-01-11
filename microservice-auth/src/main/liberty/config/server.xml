@@ -5,6 +5,8 @@
         <feature>webProfile-7.0</feature>
         <feature>localConnector-1.0</feature>
         <feature>jwt-1.0</feature>
+        <feature>appSecurity-2.0</feature>
+        <feature>servlet-3.0</feature>
     </featureManager>
     
      <keyStore id="defaultKeyStore" password="keyspass"/>
@@ -30,7 +32,9 @@
                   
     <!-- Automatically expand WAR files and EAR files -->
     <applicationManager autoExpand="true"/>
-
+ <login-config>
+    <auth-method>BASIC</auth-method>
+ </login-config>
 
     <applicationMonitor updateTrigger="mbean"/>
 </server>
