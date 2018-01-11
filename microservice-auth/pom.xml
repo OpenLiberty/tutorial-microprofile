@@ -79,7 +79,6 @@
             <artifactId>com.ibm.websphere.appserver.api.basics</artifactId>
             <version>1.2.16</version>
             <scope>provided</scope>
-            <type>pom</type>
         </dependency>
         <dependency>
             <groupId>com.ibm.websphere.appserver.api</groupId>

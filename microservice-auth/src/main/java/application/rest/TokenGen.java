@@ -25,26 +25,27 @@ import com.ibm.websphere.security.jwt.InvalidBuilderException;
 import com.ibm.websphere.security.jwt.JwtBuilder;
 import com.ibm.websphere.security.jwt.JwtToken;
 
-// http://localhost:9080/getJwtToken
+// http://localhost:9080/JwtToken
+// todo: add logout call in each method.
 
 @ApplicationPath("/")
 @Path("/")
 public class TokenGen extends Application {
 	private final static String GROUP_PREFIX="group:";
-	   private final static String USER_PREFIX="user:";
+	private final static String USER_PREFIX="user:";
 	
 	@Context
 	SecurityContext secCon;
 	
 	@Context                                               
-	HttpServletRequest request;
-	
+	HttpServletRequest request;	
 	
 	@GET
 	@Path("/")
 	@Produces(MediaType.TEXT_PLAIN)
 	public String getJWTString2(){
 		return getTokenBean().getToken();
+		
 	}
 	
 	@GET
@@ -57,77 +58,63 @@ public class TokenGen extends Application {
 	@GET
 	@Path("/json")
 	@Produces(MediaType.APPLICATION_JSON)
-	public Token getJWT() {
+	public TokenBean getJWT() {
 		return getTokenBean();
     }
 	
-	Token getTokenBean(){
-		Subject subject = null;
-		try {
-			subject = WSSubject.getRunAsSubject();
-		} catch (WSSecurityException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-			throw new RuntimeException(e);
-		}
-		WSCredential wsCred = getWSCredential( subject);
-		
-		ArrayList<String> groupIds = null;
-		try {
-			groupIds = wsCred.getGroupIds();
-		} catch (CredentialExpiredException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-			throw new RuntimeException(e);
-		} catch (CredentialDestroyedException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-			throw new RuntimeException(e);
-		}
-        ArrayList <String> groups = new ArrayList <String>();
-        Iterator <String> it = groupIds.listIterator();
-        while (it.hasNext()){
-            String origGroup = it.next();
-            if (origGroup != null && origGroup.startsWith(GROUP_PREFIX)) {
-                int groupIndex = origGroup.indexOf("/");
-                if (groupIndex > 0) {
-                    origGroup = origGroup.substring(groupIndex + 1);
-                }
-            }
-            groups.add(origGroup);
-        }
-        
-      
-		
-		Principal p =  secCon.getUserPrincipal();
-		String user =   p != null ?  p.getName() : "null";
-		JwtBuilder builder = null;
-		String jwtToken = null;
+	TokenBean getTokenBean() {		
+		String jwtTokenString = null;
 		long exptime = 0;
 		try {
-			builder = com.ibm.websphere.security.jwt.JwtBuilder.create();
+			// get info about the user out of WebSphere
+			Principal p = secCon.getUserPrincipal();
+			String user = p != null ? p.getName() : "null";			
+			ArrayList<String> groups = getGroups();
 			
-			
+			// Put the user info into a JWT Token
+			JwtBuilder builder = com.ibm.websphere.security.jwt.JwtBuilder.create();
 			builder.subject(user);
 			builder.claim("upn", user);
 			builder.claim("groups", groups);
 			builder.claim("iss", request.getRequestURL().toString());
-					
-			JwtToken theToken = builder.buildJwt();	
-            exptime = theToken.getClaims().getExpiration();
-			jwtToken = theToken.compact();
+			
+			JwtToken theToken = builder.buildJwt();
+			exptime = theToken.getClaims().getExpiration();
+			jwtTokenString = theToken.compact();
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 			throw new RuntimeException(e);
 		}
+
+		// populate the bean for easy conversion to json
+		TokenBean tb = new TokenBean();
+		tb.setToken(jwtTokenString);
+		tb.setExpires(Long.toString(exptime));
+		return tb;
+	}
+	
+	public ArrayList<String> getGroups() throws WSSecurityException, CredentialExpiredException, CredentialDestroyedException{
+		Subject subject = null;
+		subject = WSSubject.getRunAsSubject();		
+		WSCredential wsCred = getWSCredential(subject);
+		ArrayList<String> groupIds = null;
+		wsCred.getSecurityName();
+		groupIds = wsCred.getGroupIds();
+		ArrayList<String> groups = new ArrayList<String>();
+		Iterator<String> it = groupIds.listIterator();
+		while (it.hasNext()) {
+			String origGroup = it.next();
+			if (origGroup != null && origGroup.startsWith(GROUP_PREFIX)) {
+				int groupIndex = origGroup.indexOf("/");
+				if (groupIndex > 0) {
+					origGroup = origGroup.substring(groupIndex + 1);
+				}
+			}
+			groups.add(origGroup);
+		}
 		
-		Token t = new Token();
-		t.setToken( jwtToken);
-		t.setExpires(Long.toString(exptime));
-		return t;
-		
-		
+		return groups;
 	}
 	
 	public WSCredential getWSCredential(Subject subject) {
