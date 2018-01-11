@@ -320,31 +320,14 @@ public class LibertyRestEndpoint {
 2. Now create a file called LiberyRestEndpoint.java and add the following code to create the REST API calls for your second microservice......NEW CODE TO BE ADDED HERE!!!
 
 ## Creating the Web Application
-Now that we've created a gateway and two microservices (A and B), a webapp is needed to visualise the information in these microservices. To make this easier, a webapp has already been fully developed for this example. 
+Now that we've created a gateway and two microservices (1 and 2), a webapp is needed to visualise the information in these microservices. To make this easier, a webapp has already been fully developed for this example. 
 The webapp used in this example has been created using Angular CLI and is running on a Node server. 
 
 In order to use the webapp provided, it is essential that the pre-requisites previously stated are installed first. 
 
-1. Node and npm should already have been instaled. However @angular/cli also needs to be installed. To do this, first enter into the folder in which the webapp is to be placed (in this example enter the folder named *microservice-webapp*) using the terminal, enter the following command:
+1. Navigate to *microservice-webapp* in the terminal. This folder contains the pre-developed webapp.
 
-    `npm install -g @angular/cli`
-
-    This may take a little while to run.
-
-2. Next to avoid errors when switching branches commit all of the changes made so far to the module 1 branch of your fork. To do this enter the following commands in the terminal:
-
-    i. `git add .`
-
-    ii. `git checkout -m "enter comment here to describe what you are adding"`
-
-    iii. `git push`
-
-
-3. Now switch branches to module 2 to have access to the pre-created webapp. To switch branches enter the following command into the terminal:
-
-    `git checkout module 2`
-
-3. Navigate into the *microservice-webapp* folder and enter the following command in the terminal to serve up/launch the webapp and be able to access it:
+2. Once in this folder enter the following command to serve up/launch the webapp and be able to access it:
 
     `ng serve`
 
