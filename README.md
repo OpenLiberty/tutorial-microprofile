@@ -1,157 +1,67 @@
 # MicroProfile Tutorial (Under Construction)
 
-This tutorial demonstrates the use of MicroProfile technologies for implementing a set of Microservices.  The tutorial is made up of a number of sub modules each of which demonstrates different MicroProfile technologies. Each module builds on the earlier modules, but can be taken independently as the starting point of a module is the end result of the previous module. This means you can choose to go through all the modules in sequence, or if you just want to learn about a specific technology, you can choose to just do the module covering that capability.
+This tutorial demonstrates the use of MicroProfile technologies for implementing a set of Microservices.  The tutorial is made up of a number of Open Liberty Guides each of which demonstrates different MicroProfile technologies. Each Guide is designed to be taken independently so if you just want to learn about a specific technology you can just take that guide.  If, however, you're goal is to learn about all the MicroProfile capabilities, then working through then in the order shown, below is recommended.
 
-Each Module is held in a separate Git branch in this repository.  The README.md in each branch contains the instructions for the module and so changes each time you switch branches.
+### Creating a RESTful web service
 
-## The Modules
+Learn how to create a REST service with JAX-RS, JSON-P, and Open Liberty that will expose the JVM’s system properties. 
 
-![Modules](/images/MicroProfileimage.png)
+The Guide: https://openliberty.io/guides/rest-intro.html
 
-### Module 1
+If you have feedback or find problems, please raise an issue here: https://github.com/OpenLiberty/guide-rest-intro
 
-This module demonstrates the use of JAX-RS, CDI and JSON-P to implement three Microservices.  The first is a gateway service that provides a single point for an Angular front-end to call.  The gateway service is responsible for routing requests through to two back-end services that provide the functionality for the Web front-end.
+### Handling dependencies with RESTful web services
 
-### Module 2
+Learn how to use Contexts and Dependency Injection to manage and inject dependencies into RESTful web services.
 
-This module demonstrates the use of MicroProfile Fault Tolerance.  Fault Tolerance enables the applications to function even when on of the services is unavailable. 
+The Guide: https://qa-guides.mybluemix.net/guides/cdi-intro.html
 
-## !!!The following modules are still work in progress!!!
+If you have feedback or find problems, please raise an issue here: https://github.com/OpenLiberty/draft-guide-rest-cdi
 
-### Module 3
+### Configuring Microservices
 
-This module demonstrates how to secure a microservice using MicroProfile JWT.  The JWT support enables service access to be controlled based on the role of an authenticated user.
+Learn how to inject external static and dynamic configuration to microservices using MicroProfile Config.
 
-### Module 4
+The Guide: https://qa-guides.mybluemix.net/guides/microprofile-config.html
 
-This module demonstrates how to externalize microservice configuration, such as http ports, using MicroProfile Config.  Externalizing configuration means a microservice can be deployed to different environments without the need for a re-build and full re-testing.
+If you have feedback or find problems, please raise an issue here: https://github.com/OpenLiberty/draft-guide-microprofile-config
 
-### Module 5
+If you have spare time, take a look a this interactive guide: https://openliberty.io/guides/microprofile-config-intro.html
 
-This module demonstrates the use of MicroProfile Health and Metrics.  MicroProfile Health provides a simple status as to whether a microservice is "UP" or "DOWN".  MicroProfile Metrics provides more detailed metrics about a service, such as CPU load, JVM usage.
+### Handling failures with Fault Tolerance
 
-## Tutorial Theme
+Learn how to use the MicroProfile Fault Tolerance specification to enable applications to function even when one of the microservices is unavailable.
 
-We have decided to go with a space theme for this tutorial to keep in line with the Open Liberty theme.
+The Guide: https://qa-guides.mybluemix.net/guides/microprofile-fault_tolerance.html
 
-Think of the front-end web application as the on board computer on the space ship you are currently flying.
+If you have feedback or find problems, please raise an issue here: https://github.com/OpenLiberty/draft-guide-microprofile-faulttolerance-intro
 
-The Gateway is one of the galaxies communication carriers that enable your ships computer to talk to other devices in the galaxy.
+If you have spare time, take a look a this interactive guide: https://qa-guides.mybluemix.net/guides/circuit-breaker.html
 
-Microservice A will act as a space ship and provide current information via rest api calls such as the operating system the ship is running on and it's architecture etc.
+### Securing microservices with JSON Web Tokens (JWT)
 
-Microservice B will act as a space stations on board computer that will provide current information about the station such as currently docked ships, personal, location and information about the technology used on the station.
+Learn how to control user and role access to microservices using MicroProfile JWT.
 
-The fallback microservice B will provide older information about the space station incase the stations on board computer fails so that a connection can still be made to the station rather than space ships not being able to communicate with the station at all.
+The Guide: https://qa-guides.mybluemix.net/guides/microprofile-jwt.html
 
-### Prerequisites
+If you have feedback or find problems, please raise an issue here: https://github.com/OpenLiberty/draft-guide-microprofile-jwt
 
-1. Maven (https://maven.apache.org/install.html) - for building, testing and running our microservices
-1. npm (https://www.npmjs.com/get-npm) - for installing Angular and the Angular CLI
-1. Angular (https://www.npmjs.com/package/angular) - for building and running our web application
-1. Angular CLI (https://cli.angular.io/)
-1. Git CLI (https://git-scm.com/downloads) - for downloading the source files for this tutorial
-1. A Java IDE (Eclipse, Visual Studio Code, NetBeans etc) - for coding our tutorial
-1. Connection to the Internet - to pull down the required dependencies
+### Providing metrics from a microservice
 
-### Use of Github
+Learn how to provide system and application metrics from a microservice using MicroProfile Metrics.
 
-The Github approach of using a single repository with many branches is not a microservices best practice, it is done to aid structuring the tutorial.  With microservice deployments, a typical approach is to use one or more repositories per microservice.  This helps maintain independence between the microservices in terms of personnel, code and life-cycle.  
+The Guide: https://qa-guides.mybluemix.net/guides/mp-metrics.html
 
-## Information About The Files We Have Provided
+If you have feedback or find problems, please raise an issue here: https://github.com/OpenLiberty/draft-guide-microprofile-metrics
 
-We have provided some file for you to make this tutorial easier to consume that I will talk about here.
-Firstly we have provided you with the basic directory structure for all the microservices.
-Then we have provided you with a pom.xml file that is used by maven to build your microservices and download all the required dependencies. In this file you can set what the application is named `<app.name>LibertyMicroServiceOne-1.0</app.name>`, the ports assigned to Liberty 
+### Adding health reporting to a microservice
 
-```XML
-<testServerHttpPort>9090</testServerHttpPort> <testServerHttpsPort>9444</testServerHttpsPort>
-```
+Learn how to provide and check the health of a microservice using MicroProfile Health.
 
-the dependancies you require like microProfile 1.2
+The Guide: https://qa-guides.mybluemix.net/guides/mp-health.html
 
-```XML
-<dependency>
-    <groupId>org.eclipse.microprofile</groupId>
-    <artifactId>microprofile</artifactId>
-    <version>1.2</version>
-    <scope>provided</scope>
-    <type>pom</type>
-</dependency>
-```
+If you have feedback or find problems, please raise an issue here: https://github.com/OpenLiberty/draft-guide-microprofile-health
 
-and the application server you are using so in our case open Liberty
+### Bonus exercise
 
-```XML
-<plugin>
-    <groupId>net.wasdev.wlp.maven.plugins</groupId>
-    <artifactId>liberty-maven-plugin</artifactId>
-    <version>2.1</version>
-        <extensions>true</extensions>
-            <configuration>
-                <assemblyArtifact>
-                    <groupId>io.openliberty</groupId>
-                    <artifactId>openliberty-runtime</artifactId>
-                    <version>17.0.0.3</version>
-                    <type>zip</type>
-                </assemblyArtifact>
-                    <configFile>${basedir}/src/main/liberty/config/server.xml</configFile>
-                    <serverEnv>${basedir}/src/main/liberty/config/server.env</serverEnv>
-                    <jvmOptionsFile>${basedir}/src/main/liberty/config/jvm.options</jvmOptionsFile>
-                    <packageFile>${package.file}</packageFile>
-                    <include>${packaging.type}</include>
-                    <bootstrapProperties>
-                        <default.http.port>${testServerHttpPort}</default.http.port>
-                        <default.https.port>${testServerHttpsPort}</default.https.port>
-                    </bootstrapProperties>
-            </configuration>
-                <executions>
-                    <execution>
-                        <id>install-liberty</id>
-                        <phase>prepare-package</phase>
-                        <goals>
-                            <goal>install-server</goal>
-                        </goals>
-                    </execution>
-                <execution>
-                    <id>package-app</id>
-                    <phase>package</phase>
-                    <goals>
-                        <goal>package-server</goal>
-                    </goals>
-                </execution>
-                <execution>
-                    <id>test-start-server</id>
-                    <phase>pre-integration-test</phase>
-                    <goals>
-                        <goal>test-start-server</goal>
-                    </goals>
-                </execution>
-                <execution>
-                    <id>test-stop-server</id>
-                    <phase>post-integration-test</phase>
-                        <goals>
-                            <goal>test-stop-server</goal>
-                        </goals>
-                </execution>
-            </executions>
-        </plugin>
-```
-
-We have also provided you with a file named server.xml  that you will use to configure our liberty server. The server.xml files are located in all the microservice directories in this repo `<microservice-***>/src/main/liberty/config/`
-
-```XML
-<server description="Sample Liberty server">
-
-  <featureManager>
-      <feature>microprofile-1.2</feature>
-  </featureManager>
-
-  <httpEndpoint httpPort="9091" httpsPort="${default.https.port}"
-      id="defaultHttpEndpoint" host="*" />
-</server>
-```
-
-Above is the contents of the server.xml file. The section:
-`<featureManager>` allows you to define what Liberty features your require in your server.
-The `<httpEndpoint>` section
+If you reach the end of this tutorial, why not try combining all the code for the Guides into a single microservice application.
