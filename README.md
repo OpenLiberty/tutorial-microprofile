@@ -14,15 +14,14 @@ If you have feedback or find problems, please raise an issue here: https://githu
 
 Learn how to use Contexts and Dependency Injection to manage and inject dependencies into RESTful web services.
 
-The Guide: https://qa-guides.mybluemix.net/guides/cdi-intro.html
-
+The Guide: 
 If you have feedback or find problems, please raise an issue here: https://github.com/OpenLiberty/draft-guide-rest-cdi
 
 ### Configuring Microservices
 
 Learn how to inject external static and dynamic configuration to microservices using MicroProfile Config.
 
-The Guide: https://qa-guides.mybluemix.net/guides/microprofile-config.html
+The Guide: 
 
 If you have feedback or find problems, please raise an issue here: https://github.com/OpenLiberty/draft-guide-microprofile-config
 
@@ -32,7 +31,7 @@ If you have spare time, take a look a this interactive guide: https://openlibert
 
 Learn how to use the MicroProfile Fault Tolerance specification to enable applications to function even when one of the microservices is unavailable.
 
-The Guide: https://qa-guides.mybluemix.net/guides/microprofile-fault_tolerance.html
+The Guide: 
 
 If you have feedback or find problems, please raise an issue here: https://github.com/OpenLiberty/draft-guide-microprofile-faulttolerance-intro
 
@@ -42,7 +41,7 @@ If you have spare time, take a look a this interactive guide: https://qa-guides.
 
 Learn how to control user and role access to microservices using MicroProfile JWT.
 
-The Guide: https://qa-guides.mybluemix.net/guides/microprofile-jwt.html
+The Guide: 
 
 If you have feedback or find problems, please raise an issue here: https://github.com/OpenLiberty/draft-guide-microprofile-jwt
 
@@ -50,7 +49,7 @@ If you have feedback or find problems, please raise an issue here: https://githu
 
 Learn how to provide system and application metrics from a microservice using MicroProfile Metrics.
 
-The Guide: https://qa-guides.mybluemix.net/guides/mp-metrics.html
+The Guide: 
 
 If you have feedback or find problems, please raise an issue here: https://github.com/OpenLiberty/draft-guide-microprofile-metrics
 
@@ -58,7 +57,7 @@ If you have feedback or find problems, please raise an issue here: https://githu
 
 Learn how to provide and check the health of a microservice using MicroProfile Health.
 
-The Guide: https://qa-guides.mybluemix.net/guides/mp-health.html
+The Guide: 
 
 If you have feedback or find problems, please raise an issue here: https://github.com/OpenLiberty/draft-guide-microprofile-health
 
