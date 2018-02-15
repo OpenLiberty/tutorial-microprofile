@@ -1,0 +1,788 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+<meta http-equiv="content-type" content="text/html; charset=UTF-8">
+
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <title>Handling dependencies with RESTful web services - Open Liberty</title>
+  <meta name="description" content="Open Liberty is the most flexible server runtime available to Earth’s Java developers.">
+
+  <link rel="stylesheet" href="Handling%20dependencies%20with%20RESTful%20web%20services%20-%20Open%20Liberty_files/bootstrap.css">
+  <link type="text/css" rel="stylesheet" href="Handling%20dependencies%20with%20RESTful%20web%20services%20-%20Open%20Liberty_files/openliberty.css">
+  <link type="text/css" rel="stylesheet" href="Handling%20dependencies%20with%20RESTful%20web%20services%20-%20Open%20Liberty_files/coderay-custom.css">
+
+  
+  
+  
+    <link type="text/css" rel="stylesheet" href="Handling%20dependencies%20with%20RESTful%20web%20services%20-%20Open%20Liberty_files/guide-card.css">
+  
+    <link type="text/css" rel="stylesheet" href="Handling%20dependencies%20with%20RESTful%20web%20services%20-%20Open%20Liberty_files/guide.css">
+  
+
+  
+
+  
+
+  <link rel="canonical" href="https://openliberty.io/guides/cdi-intro">
+  <link href="Handling%20dependencies%20with%20RESTful%20web%20services%20-%20Open%20Liberty_files/css.css" rel="stylesheet">
+    
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:site" content="@OpenLibertyIO">
+  <meta name="twitter:title" content="Open Liberty">
+  <meta name="twitter:description" content="Open Liberty is the most flexible server runtime available to Earth’s Java developers.">
+  <meta name="twitter:image" content="https://openliberty.io/img/twitter_card.jpg">
+  
+  <meta name="google-site-verification" content="h2P030H9b66CyL1nEmWfrZB8Fr14h9LmVMG7Ur0caBs">
+
+</head>
+
+
+  <body>
+    
+    
+
+    <header>
+<nav class="navbar navbar-default">
+    <div class="container">
+        <div class="navbar-header">
+            <button id="navbar_responsive_button" class="navbar-toggle collapsed" type="button" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            
+            
+        </div>
+
+                <li class="hidden-xs"><a id="navbar_github_link" href="https://github.com/OpenLiberty" target="new" aria-label="Open Liberty GitHub Repository"></a></li>
+            </ul>
+        </div>
+    </div>
+  </nav>
+  <div class="hidden">
+    <img src="Handling%20dependencies%20with%20RESTful%20web%20services%20-%20Open%20Liberty_files/small_logo_white.svg">
+    <img src="Handling%20dependencies%20with%20RESTful%20web%20services%20-%20Open%20Liberty_files/github_navbar_hover.svg">
+  </div>
+</header>
+
+
+    <main aria-label="Content">
+
+      <div id="background_container" class="black_blue_gradient_background">
+    <div class="container">
+        <div id="title_row" class="row">
+            <div class="col-xs-12">
+                <img id="intro_logo" src="Handling%20dependencies%20with%20RESTful%20web%20services%20-%20Open%20Liberty_files/guides_page_title_small.svg" alt="Guides">
+            </div>
+        </div>
+        <div class="row">
+            <!-- Guide's table of contents section -->
+            <div id="toc_column" class="col-sm-3">
+                <div id="toc_inner">
+                    
+                    
+                    <h3 id="toc_title">Contents</h3>
+                    <div id="toc_container">
+                        <ul class="sectlevel1">
+<li><a href="#what-you-ll-learn">What you’ll learn</a>
+<ul class="sectlevel2">
+<li><a href="#what-is-cdi">What is CDI?</a></li>
+</ul>
+</li>
+<li><a href="#getting-started">Getting started</a>
+<ul class="sectlevel2">
+<li><a href="#try-what-you-ll-build">Try what you’ll build</a></li>
+</ul>
+</li>
+<li><a href="#handling-dependencies-in-the-application">Handling dependencies in the application</a>
+<ul class="sectlevel2">
+<li><a href="#managing-scopes-and-contexts">Managing scopes and contexts</a></li>
+<li><a href="#injecting-a-dependency">Injecting a dependency</a></li>
+</ul>
+</li>
+<li><a href="#building-and-running-the-application">Building and running the application</a></li>
+<li><a href="#testing-the-inventory-application">Testing the inventory application</a>
+<ul class="sectlevel2">
+<li><a href="#running-the-tests">Running the tests</a></li>
+</ul>
+</li>
+<li><a href="#great-work-you-re-done">Great work! You’re done!</a></li>
+<li><a href="#contribute-to-this-guide">Contribute to this guide</a></li>
+<li><a href="#related-guides">Related guides</a></li></ul>
+                    </div>
+                    
+                    
+                    
+                </div>
+            </div>
+            <!-- Entire guide section -->
+            <div id="guide_column" class="col-sm-9 position_relative">
+                <div id="guide_content">
+                    <!-- Guide header section -->
+                    <div id="guide_meta" class="sect1">
+                        <h1 id="guide_title">Handling dependencies with RESTful web services</h1>
+                        <div id="preamble">
+<div class="sectionbody">
+<div class="paragraph">
+<p>Learn how to use Contexts and Dependency Injection to manage and inject dependencies into RESTful web services.</p>
+</div>
+</div>
+</div><div id="duration_container">
+                            <img src="Handling%20dependencies%20with%20RESTful%20web%20services%20-%20Open%20Liberty_files/guide_duration_clock_icon_large.svg" alt="duration">
+                            <span id="guide_duration">15 minutes</span>
+                        </div>
+                    </div>
+
+                    <!-- Guide content section -->
+                    
+<div class="sect1">
+<h2 id="what-you-ll-learn">What you’ll learn</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>You will learn how to use CDI in a simple inventory management application to manage scopes and inject dependencies.</p>
+</div>
+<div class="paragraph">
+<p>The application that you will be working with is an <code>inventory</code> service,
+which stores the information about various JVMs that run on different systems.
+Whenever a request is made to the <code>inventory</code> service to retrieve the JVM
+system properties of a particular host, the <code>inventory</code> service communicates with the <code>system</code>
+service on that host to get these system properties. The system properties are then stored and returned.</p>
+</div>
+<div class="paragraph">
+<p>You will use scopes to bound objects in this application to their well-defined contexts.
+CDI provides a variety of scopes for you to work with and while you will not use all of them in this guide,
+there is one for almost every scenario that you may encounter. Scopes are defined by using CDI annotations.
+You will also use dependency injection to inject one bean into another to make use of its functionalities.
+This enables you to inject the bean in its specified context without having to instantiate it yourself.</p>
+</div>
+<div class="paragraph">
+<p>The implementation of the application and its services are provided for you in the <code>start/src</code> directory.
+The <code>system</code> service can be found in <code>start/src/main/java/io/openliberty/guides/system</code>, and the <code>inventory</code> service can be found
+in <code>start/src/main/java/io/openliberty/guides/inventory</code>. If you want to learn more about RESTful web services and how to build them, see
+<a href="https://openliberty.io/guides/rest-intro.html">Creating a RESTful web service</a> for details about how to build the <code>system</code> service.
+The <code>inventory</code> service is built in a similar way.</p>
+</div>
+<div class="sect2">
+<h3 id="what-is-cdi">What is CDI?</h3>
+<div class="paragraph">
+<p>Contexts and Dependency Injection (CDI) defines a rich set of 
+complementary services that improve the application structure.
+The most fundamental services that are provided by CDI are Contexts that
+ bind the lifecycle of stateful components to well-defined contexts,
+and Dependency Injection that is the ability to inject components into 
+an application in a typesafe way.
+With CDI, the container does all the daunting work of instantiating 
+dependencies, and
+controlling exactly when and how these components are instantiated and 
+destroyed.</p>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="getting-started">Getting started</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>The fastest way to work through this guide is to clone the Git repository and use the starting project
+that is provided in the <code>start</code> directory. To do this, run the following commands:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>git clone https://github.com/OpenLiberty/draft-guide-rest-cdi.git
+cd draft-guide-rest-cdi/start</pre>
+</div>
+</div>
+<div class="sect2">
+<h3 id="try-what-you-ll-build">Try what you’ll build</h3>
+<div class="paragraph">
+<p>The <code>finish</code> directory in the root of this guide contains the finished inventory application. Give it a try before you proceed.</p>
+</div>
+<div class="paragraph">
+<p>To try out the application, first navigate to the <code>finish</code> directory and then run the following
+Maven goals to build the application and run it inside Open Liberty:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code>mvn install liberty:start-server</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Point your browser to the <a href="http://localhost:9080/inventory/systems" class="bare">http://localhost:9080/inventory/systems</a> URL. This is the starting point of the <code>inventory</code>
+service and it displays the current contents of the inventory. As you might expect, these are empty since
+nothing is stored in the inventory yet. Next, point your browser to the <a href="http://localhost:9080/inventory/systems/localhost" class="bare">http://localhost:9080/inventory/systems/localhost</a> URL.
+You see a result in JSON format with the system properties of your local JVM. When you visit this URL, these system
+properties are automatically stored in the inventory. Go back to <a href="http://localhost:9080/inventory/systems" class="bare">http://localhost:9080/inventory/systems</a> and
+you see a new entry for <code>localhost</code>. For simplicity, only the OS name and username are shown here for
+each host. You can repeat this process for your own hostname or any other machine that is running
+the <code>system</code> service.</p>
+</div>
+<div class="paragraph">
+<p>After you are done checking out the application, stop the Open Liberty server:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code>mvn liberty:stop-server</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Now, navigate back to the <code>start</code> directory to begin.</p>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="handling-dependencies-in-the-application">Handling dependencies in the application</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>You will use CDI to inject dependencies into the inventory manager application and
+you will learn how to manage the life cycles of your objects.</p>
+</div>
+<div class="sect2">
+<h3 id="managing-scopes-and-contexts">Managing scopes and contexts</h3>
+<div class="paragraph">
+<p>Create the inventory manager class in the <code>src/main/java/io/openliberty/guides/inventory/InventoryManager.java</code> file:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="Java"><span class="keyword">package</span> <span class="namespace">io.openliberty.guides.inventory</span>;
+
+<span class="keyword">import</span> <span class="include">java.util.Properties</span>;
+<span class="keyword">import</span> <span class="include">io.openliberty.guides.inventory.client.SystemClient</span>;
+<span class="keyword">import</span> <span class="include">io.openliberty.guides.inventory.model.InventoryList</span>;
+<span class="keyword">import</span> <span class="include">javax.enterprise.context.ApplicationScoped</span>;
+
+<span class="annotation">@ApplicationScoped</span>
+<span class="directive">public</span> <span class="type">class</span> <span class="class">InventoryManager</span> {
+
+  <span class="directive">private</span> InventoryList invList = <span class="keyword">new</span> InventoryList();
+  <span class="directive">private</span> SystemClient systemClient = <span class="keyword">new</span> SystemClient();
+
+  <span class="directive">public</span> <span class="predefined-type">Properties</span> get(<span class="predefined-type">String</span> hostname) {
+    systemClient.init(hostname);
+
+    <span class="predefined-type">Properties</span> properties = systemClient.getProperties();
+    <span class="keyword">if</span> (properties != <span class="predefined-constant">null</span>) {
+        invList.addToInventoryList(hostname, properties);
+      }
+    <span class="keyword">return</span> properties;
+
+  }
+
+  <span class="directive">public</span> InventoryList list() {
+    <span class="keyword">return</span> invList;
+  }
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>This bean contains two simple functions. One function is for retrieving (get) entries from calling the <code>system</code> service,
+and then add it to the inventory list.
+The second function is for listing (list) all the entries currently stored in the inventory.</p>
+</div>
+<div class="paragraph">
+<p>This bean must be persistent between all the clients, which means multiple clients need to share the same instance.
+To achieve this by using CDI, you can simply add the <code>@ApplicationScoped</code> annotation on the class.
+This annotation indicates that this particular
+bean is to be initialized once per application.
+By making it application-scoped, the container ensures that the same instance of the bean is used whenever
+it is injected into the application.</p>
+</div>
+<div class="paragraph">
+<p>Next, create the <code>inventory</code> resource class in the <code>src/main/java/io/openliberty/guides/inventory/InventoryResource.java</code> file:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="Java"><span class="keyword">package</span> <span class="namespace">io.openliberty.guides.inventory</span>;
+
+<span class="keyword">import</span> <span class="include">java.util.Properties</span>;
+<span class="keyword">import</span> <span class="include">javax.enterprise.context.RequestScoped</span>;
+<span class="keyword">import</span> <span class="include">javax.inject.Inject</span>;
+<span class="keyword">import</span> <span class="include">javax.ws.rs.GET</span>;
+<span class="keyword">import</span> <span class="include">javax.ws.rs.Path</span>;
+<span class="keyword">import</span> <span class="include">javax.ws.rs.PathParam</span>;
+<span class="keyword">import</span> <span class="include">javax.ws.rs.Produces</span>;
+<span class="keyword">import</span> <span class="include">javax.ws.rs.core.MediaType</span>;
+<span class="keyword">import</span> <span class="include">javax.ws.rs.core.Response</span>;
+<span class="keyword">import</span> <span class="include">io.openliberty.guides.inventory.model.InventoryList</span>;
+
+<span class="annotation">@RequestScoped</span>
+<span class="annotation">@Path</span>(<span class="string"><span class="delimiter">"</span><span class="content">systems</span><span class="delimiter">"</span></span>)
+<span class="directive">public</span> <span class="type">class</span> <span class="class">InventoryResource</span> {
+
+  <span class="annotation">@Inject</span>
+  InventoryManager manager;
+
+  <span class="annotation">@GET</span>
+  <span class="annotation">@Path</span>(<span class="string"><span class="delimiter">"</span><span class="content">{hostname}</span><span class="delimiter">"</span></span>)
+  <span class="annotation">@Produces</span>(MediaType.APPLICATION_JSON)
+  <span class="directive">public</span> Response getPropertiesForHost(<span class="annotation">@PathParam</span>(<span class="string"><span class="delimiter">"</span><span class="content">hostname</span><span class="delimiter">"</span></span>) <span class="predefined-type">String</span> hostname) {
+    <span class="predefined-type">Properties</span> props = manager.get(hostname);
+    <span class="keyword">if</span> (props == <span class="predefined-constant">null</span>) {
+      <span class="keyword">return</span> Response.status(Response.Status.NOT_FOUND)
+                     .entity(<span class="string"><span class="delimiter">"</span><span class="content">ERROR: Unknown hostname or the system service may not be running on </span><span class="delimiter">"</span></span>
+                         + hostname)
+                     .build();
+    }
+    <span class="keyword">return</span> Response.ok(props).build();
+  }
+
+  <span class="annotation">@GET</span>
+  <span class="annotation">@Produces</span>(MediaType.APPLICATION_JSON)
+  <span class="directive">public</span> InventoryList listContents() {
+    <span class="keyword">return</span> manager.list();
+  }
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The inventory resource is a RESTful service that is served at the <code>inventory/systems</code> endpoint. It enables the client to
+communicate with the inventory manager through HTTP methods.</p>
+</div>
+<div class="paragraph">
+<p>Add the <code>@RequestScoped</code> annotation on the class to indicate that this bean is
+to be initialized once for every request. In other words, the bean is instantiated when the request
+is received and destroyed when a response is sent back to the client. Note that while this bean can
+also be application-scoped, request scope is short-lived and is therefore ideal for HTTP requests.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="injecting-a-dependency">Injecting a dependency</h3>
+<div class="paragraph">
+<p>Refer to the <code>inventory</code> resource class you created above:
+<code>src/main/java/io/openliberty/guides/inventory/InventoryResource.java</code>.</p>
+</div>
+<div class="paragraph">
+<p>The @Inject annotation indicates a dependency injection.
+You are injecting your <code>InventoryManager</code> bean into the <code>InventoryResource</code> class.
+This injects the bean in its specified context (application-scoped) and makes all of its functionalities
+available without the need of instantiating it yourself.
+The injected bean can then be invoked directly through the <code>manager.get(hostname)</code>
+and <code>manager.list()</code> function calls.</p>
+</div>
+<div class="paragraph">
+<p>Finally, you have a client component <code>SystemClient</code> that can be found in <code>src/main/java/io/openliberty/guides/inventory/client</code>.
+This class is responsible for communicating with the <code>system</code> service to
+retrieve the JVM system properties for a particular host that exposes them.</p>
+</div>
+<div class="paragraph">
+<p>This class also contains detailed Javadocs that you can read for reference.</p>
+</div>
+<div class="paragraph">
+<p>Your inventory application is now completed.</p>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="building-and-running-the-application">Building and running the application</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>To build the application, run the Maven <code>install</code> goal from the command line:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code>mvn install</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>This goal builds the application and creates a <code>.war</code> file in the target directory. The goal also
+configures and installs Open Liberty into the <code>target/liberty/wlp</code> directory.</p>
+</div>
+<div class="paragraph">
+<p>Next, run the Maven <code>liberty:start-server</code> goal:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code>mvn liberty:start-server</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>This goal starts an Open Liberty server instance. Your Maven <code>pom.xml</code> is already configured to start
+the application in this server instance.</p>
+</div>
+<div class="paragraph">
+<p>You can find the <code>inventory</code> and <code>system</code> services at the following URLs:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="http://localhost:9080/inventory/systems" class="bare">http://localhost:9080/inventory/systems</a></p>
+</li>
+<li>
+<p><a href="http://localhost:9080/system/properties" class="bare">http://localhost:9080/system/properties</a></p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>If you make changes to the code, use the Maven <code>package</code> goal to rebuild the application and have the
+running Open Liberty server pick them up automatically:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code>mvn package</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>To stop the Open Liberty server, run the Maven <code>liberty:stop-server</code> goal:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code>mvn liberty:stop-server</code></pre>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="testing-the-inventory-application">Testing the inventory application</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>While you can test your application manually, you should rely on automated tests since they will trigger
+a failure whenever a code change introduces a defect.
+Since the application is a RESTful web service application, you can use
+JUnit and the RESTful web service Client API to write tests.
+In testing the functionality of the application, the scopes and dependencies are being tested.</p>
+</div>
+<div class="paragraph">
+<p>Create the test class in the <code>src/test/java/it/io/openliberty/guides/inventory/EndpointTest.java</code> file:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="Java"><span class="keyword">package</span> <span class="namespace">it.io.openliberty.guides.inventory</span>;
+
+<span class="keyword">import</span> <span class="include">static</span> <span class="include">org.junit.Assert.assertEquals</span>;
+<span class="keyword">import</span> <span class="include">static</span> <span class="include">org.junit.Assert.assertTrue</span>;
+
+<span class="keyword">import</span> <span class="include">javax.json.JsonObject</span>;
+<span class="keyword">import</span> <span class="include">javax.ws.rs.client.Client</span>;
+<span class="keyword">import</span> <span class="include">javax.ws.rs.client.ClientBuilder</span>;
+<span class="keyword">import</span> <span class="include">javax.ws.rs.core.MediaType</span>;
+<span class="keyword">import</span> <span class="include">javax.ws.rs.core.Response</span>;
+
+<span class="keyword">import</span> <span class="include">org.apache.cxf.jaxrs.provider.jsrjsonp.JsrJsonpProvider</span>;
+<span class="keyword">import</span> <span class="include">org.junit.After</span>;
+<span class="keyword">import</span> <span class="include">org.junit.Before</span>;
+<span class="keyword">import</span> <span class="include">org.junit.BeforeClass</span>;
+<span class="keyword">import</span> <span class="include">org.junit.Test</span>;
+
+<span class="directive">public</span> <span class="type">class</span> <span class="class">EndpointTest</span> {
+
+  <span class="directive">private</span> <span class="directive">static</span> <span class="predefined-type">String</span> port;
+  <span class="directive">private</span> <span class="directive">static</span> <span class="predefined-type">String</span> baseUrl;
+
+  <span class="directive">private</span> Client client;
+
+  <span class="directive">private</span> <span class="directive">final</span> <span class="predefined-type">String</span> SYSTEM_PROPERTIES = <span class="string"><span class="delimiter">"</span><span class="content">system/properties</span><span class="delimiter">"</span></span>;
+  <span class="directive">private</span> <span class="directive">final</span> <span class="predefined-type">String</span> INVENTORY_HOSTS = <span class="string"><span class="delimiter">"</span><span class="content">inventory/systems</span><span class="delimiter">"</span></span>;
+
+  <span class="annotation">@BeforeClass</span>
+  <span class="directive">public</span> <span class="directive">static</span> <span class="type">void</span> oneTimeSetup() {
+    port = <span class="predefined-type">System</span>.getProperty(<span class="string"><span class="delimiter">"</span><span class="content">liberty.test.port</span><span class="delimiter">"</span></span>);
+    baseUrl = <span class="string"><span class="delimiter">"</span><span class="content">http://localhost:</span><span class="delimiter">"</span></span> + port + <span class="string"><span class="delimiter">"</span><span class="content">/</span><span class="delimiter">"</span></span>;
+  }
+
+  <span class="annotation">@Before</span>
+  <span class="directive">public</span> <span class="type">void</span> setup() {
+    client = ClientBuilder.newClient();
+    client.register(JsrJsonpProvider.class);
+  }
+
+  <span class="annotation">@After</span>
+  <span class="directive">public</span> <span class="type">void</span> teardown() {
+    client.close();
+  }
+
+  <span class="annotation">@Test</span>
+  <span class="directive">public</span> <span class="type">void</span> testSuite() {
+    <span class="local-variable">this</span>.testEmptyInventory();
+    <span class="local-variable">this</span>.testHostRegistration();
+    <span class="local-variable">this</span>.testSystemPropertiesMatch();
+    <span class="local-variable">this</span>.testUnknownHost();
+  }
+
+  <span class="directive">public</span> <span class="type">void</span> testEmptyInventory() {
+    Response response = <span class="local-variable">this</span>.getResponse(baseUrl + INVENTORY_HOSTS);
+    <span class="local-variable">this</span>.assertResponse(baseUrl, response);
+
+    JsonObject obj = response.readEntity(JsonObject.class);
+
+    <span class="type">int</span> expected = <span class="integer">0</span>;
+    <span class="type">int</span> actual = obj.getInt(<span class="string"><span class="delimiter">"</span><span class="content">total</span><span class="delimiter">"</span></span>);
+    assertEquals(<span class="string"><span class="delimiter">"</span><span class="content">The inventory should be empty on application start but it wasn't</span><span class="delimiter">"</span></span>,
+                 expected, actual);
+
+    response.close();
+  }
+
+  <span class="directive">public</span> <span class="type">void</span> testHostRegistration() {
+    <span class="local-variable">this</span>.visitLocalhost();
+
+    Response response = <span class="local-variable">this</span>.getResponse(baseUrl + INVENTORY_HOSTS);
+    <span class="local-variable">this</span>.assertResponse(baseUrl, response);
+
+    JsonObject obj = response.readEntity(JsonObject.class);
+
+    <span class="type">int</span> expected = <span class="integer">1</span>;
+    <span class="type">int</span> actual = obj.getInt(<span class="string"><span class="delimiter">"</span><span class="content">total</span><span class="delimiter">"</span></span>);
+    assertEquals(<span class="string"><span class="delimiter">"</span><span class="content">The inventory should have one entry for localhost</span><span class="delimiter">"</span></span>, expected,
+                 actual);
+
+    <span class="predefined-type">System</span>.out.println(obj.getJsonArray(<span class="string"><span class="delimiter">"</span><span class="content">systems</span><span class="delimiter">"</span></span>).getJsonObject(<span class="integer">0</span>)
+                          .get(<span class="string"><span class="delimiter">"</span><span class="content">hostname</span><span class="delimiter">"</span></span>).toString());
+    <span class="type">boolean</span> localhostExists = obj.getJsonArray(<span class="string"><span class="delimiter">"</span><span class="content">systems</span><span class="delimiter">"</span></span>).getJsonObject(<span class="integer">0</span>)
+                                 .get(<span class="string"><span class="delimiter">"</span><span class="content">hostname</span><span class="delimiter">"</span></span>).toString()
+                                 .contains(<span class="string"><span class="delimiter">"</span><span class="content">localhost</span><span class="delimiter">"</span></span>);
+    assertTrue(<span class="string"><span class="delimiter">"</span><span class="content">A host was registered, but it was not localhost</span><span class="delimiter">"</span></span>,
+               localhostExists);
+
+    response.close();
+  }
+
+  <span class="directive">public</span> <span class="type">void</span> testSystemPropertiesMatch() {
+    Response invResponse = <span class="local-variable">this</span>.getResponse(baseUrl + INVENTORY_HOSTS);
+    Response sysResponse = <span class="local-variable">this</span>.getResponse(baseUrl + SYSTEM_PROPERTIES);
+
+    <span class="local-variable">this</span>.assertResponse(baseUrl, invResponse);
+    <span class="local-variable">this</span>.assertResponse(baseUrl, sysResponse);
+
+    JsonObject jsonFromInventory = (JsonObject) invResponse.readEntity(JsonObject.class)
+                                                           .getJsonArray(<span class="string"><span class="delimiter">"</span><span class="content">systems</span><span class="delimiter">"</span></span>)
+                                                           .getJsonObject(<span class="integer">0</span>)
+                                                           .get(<span class="string"><span class="delimiter">"</span><span class="content">properties</span><span class="delimiter">"</span></span>);
+
+    JsonObject jsonFromSystem = sysResponse.readEntity(JsonObject.class);
+
+    <span class="predefined-type">String</span> osNameFromInventory = jsonFromInventory.getString(<span class="string"><span class="delimiter">"</span><span class="content">os.name</span><span class="delimiter">"</span></span>);
+    <span class="predefined-type">String</span> osNameFromSystem = jsonFromSystem.getString(<span class="string"><span class="delimiter">"</span><span class="content">os.name</span><span class="delimiter">"</span></span>);
+    <span class="local-variable">this</span>.assertProperty(<span class="string"><span class="delimiter">"</span><span class="content">os.name</span><span class="delimiter">"</span></span>, <span class="string"><span class="delimiter">"</span><span class="content">localhost</span><span class="delimiter">"</span></span>, osNameFromSystem,
+                        osNameFromInventory);
+
+    <span class="predefined-type">String</span> userNameFromInventory = jsonFromInventory.getString(<span class="string"><span class="delimiter">"</span><span class="content">user.name</span><span class="delimiter">"</span></span>);
+    <span class="predefined-type">String</span> userNameFromSystem = jsonFromSystem.getString(<span class="string"><span class="delimiter">"</span><span class="content">user.name</span><span class="delimiter">"</span></span>);
+    <span class="local-variable">this</span>.assertProperty(<span class="string"><span class="delimiter">"</span><span class="content">user.name</span><span class="delimiter">"</span></span>, <span class="string"><span class="delimiter">"</span><span class="content">localhost</span><span class="delimiter">"</span></span>, userNameFromSystem,
+                        userNameFromInventory);
+
+    invResponse.close();
+    sysResponse.close();
+  }
+
+  <span class="directive">public</span> <span class="type">void</span> testUnknownHost() {
+    Response response = <span class="local-variable">this</span>.getResponse(baseUrl + INVENTORY_HOSTS);
+    <span class="local-variable">this</span>.assertResponse(baseUrl, response);
+
+    Response badResponse = client.target(baseUrl + INVENTORY_HOSTS + <span class="string"><span class="delimiter">"</span><span class="content">/</span><span class="delimiter">"</span></span>
+        + <span class="string"><span class="delimiter">"</span><span class="content">badhostname</span><span class="delimiter">"</span></span>).request(MediaType.APPLICATION_JSON).get();
+
+    <span class="predefined-type">String</span> obj = badResponse.readEntity(<span class="predefined-type">String</span>.class);
+
+    <span class="type">boolean</span> isError = obj.contains(<span class="string"><span class="delimiter">"</span><span class="content">ERROR</span><span class="delimiter">"</span></span>);
+    assertTrue(<span class="string"><span class="delimiter">"</span><span class="content">badhostname is not a valid host but it didn't raise an error</span><span class="delimiter">"</span></span>,
+               isError);
+
+    response.close();
+    badResponse.close();
+  }
+
+  <span class="directive">private</span> Response getResponse(<span class="predefined-type">String</span> url) {
+    <span class="keyword">return</span> client.target(url).request().get();
+  }
+
+  <span class="directive">private</span> <span class="type">void</span> assertResponse(<span class="predefined-type">String</span> url, Response response) {
+    assertEquals(<span class="string"><span class="delimiter">"</span><span class="content">Incorrect response code from </span><span class="delimiter">"</span></span> + url, <span class="integer">200</span>,
+                 response.getStatus());
+  }
+
+  <span class="directive">private</span> <span class="type">void</span> assertProperty(<span class="predefined-type">String</span> propertyName, <span class="predefined-type">String</span> hostname,
+      <span class="predefined-type">String</span> expected, <span class="predefined-type">String</span> actual) {
+    assertEquals(<span class="string"><span class="delimiter">"</span><span class="content">JVM system property [</span><span class="delimiter">"</span></span> + propertyName + <span class="string"><span class="delimiter">"</span><span class="content">] </span><span class="delimiter">"</span></span>
+        + <span class="string"><span class="delimiter">"</span><span class="content">in the system service does not match the one stored in </span><span class="delimiter">"</span></span>
+        + <span class="string"><span class="delimiter">"</span><span class="content">the inventory service for </span><span class="delimiter">"</span></span> + hostname, expected, actual);
+  }
+
+  <span class="directive">private</span> <span class="type">void</span> visitLocalhost() {
+    Response response = <span class="local-variable">this</span>.getResponse(baseUrl + SYSTEM_PROPERTIES);
+    <span class="local-variable">this</span>.assertResponse(baseUrl, response);
+    response.close();
+
+    Response targetResponse = client.target(baseUrl + INVENTORY_HOSTS
+        + <span class="string"><span class="delimiter">"</span><span class="content">/localhost</span><span class="delimiter">"</span></span>).request().get();
+    targetResponse.close();
+  }
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The <code>@BeforeClass</code> annotation is placed on a method that runs before any of the test cases.
+In this case, the <code>oneTimeSetup</code> method retrieves the port number for the Open Liberty server and builds
+a base URL string that is used throughout the tests.</p>
+</div>
+<div class="paragraph">
+<p>The <code>@Before</code> and <code>@After</code> annotations are placed on methods that run before and after every test case.
+These methods are generally used to perform any setup and teardown tasks. In this case, the <code>setup</code> method
+creates a JAX-RS client, which makes HTTP requests to the <code>inventory</code> service. This client must
+also be registered with a JSON-P provider (<code>JsrJsonpProvider</code>) to process JSON resources. The <code>teardown</code>
+method simply destroys this client instance.</p>
+</div>
+<div class="paragraph">
+<p>See the following descriptions of the test cases:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><code>testEmptyInventory()</code> verifies that the inventory is initially empty when the server first starts up.</p>
+</li>
+<li>
+<p><code>testHostRegistration()</code> verifies that a host is correctly added to the inventory.</p>
+</li>
+<li>
+<p><code>testSystemPropertiesMatch()</code> verifies that the JVM system properties returned by the <code>system</code> service match
+the ones stored in the <code>inventory</code> service.</p>
+</li>
+<li>
+<p><code>testUnknownHost()</code> verifies that an unknown host or a host that does not expose their JVM system
+properties is correctly handled as an error.</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>To force these test cases to run in a particular order, put them in a <code>testSuite()</code> method and label
+it with a <code>@Test</code> annotation so that it automatically runs when your test class run.</p>
+</div>
+<div class="paragraph">
+<p>Finally, notice that you’re using a few helper methods throughout the tests.
+You can find complete Javadocs for these in the following <code>finish</code> directory for reference:
+<code>finish/src/test/java/it/io/openliberty/guides/inventory/EndpointTest.java</code>.</p>
+</div>
+<div class="sect2">
+<h3 id="running-the-tests">Running the tests</h3>
+<div class="paragraph">
+<p>If the server is still running from the previous steps, stop it first using the Maven <code>liberty:stop-server</code> goal:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code>mvn liberty:stop-server</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Then, verify that the tests pass using the Maven <code>verify</code> goal:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code>mvn verify</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>It may take some time before build is complete. If the tests pass, you will see an output similar to the following:</p>
+</div>
+<div class="listingblock no_copy">
+<div class="content">
+<pre class="CodeRay highlight"><code>-------------------------------------------------------
+ T E S T S
+-------------------------------------------------------
+Running it.io.openliberty.guides.inventory.EndpointTest
+Tests run: 1, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 1.128 sec - in it.io.openliberty.guides.inventory.EndpointTest
+
+Results :
+
+Tests run: 1, Failures: 0, Errors: 0, Skipped: 0</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>To see whether the tests detect a failure, change the endpoint for the <code>inventory</code> service in
+the <code>src/main/java/io/openliberty/guides/inventory/InventoryResource.java</code> directory to something else, then
+run the Maven build again. You will see a test failure occur.</p>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="great-work-you-re-done">Great work! You’re done!</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>You have just completed building a simple inventory application on top of Open Liberty using CDI services.</p>
+</div>
+<div class="paragraph">
+<p>You can continue to try one of the related guides, which demonstrate new technologies that you can learn and
+expand on top what you built in this guide.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="contribute-to-this-guide">Contribute to this guide</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Is something missing or broken? Raise an <a href="https://github.com/OpenLiberty/guide-cdi-intro/issues">issue</a>,
+or send us a <a href="https://github.com/OpenLiberty/guide-cdi-intro/pulls">pull request</a>.</p>
+</div>
+<div class="paragraph">
+<p><a href="https://github.com/OpenLiberty/guide-cdi-intro">View this guide on github</a>.</p>
+</div>
+</div>
+</div>
+
+                    <!-- Related guides section -->
+                    
+                    <div id="related-guides" class="sect1">
+                        <h2>Related guides</h2>
+                        <div id="related-guides-cards" class="row">
+                        
+                            
+                            
+                            
+								<!-- Only create a card if we find the permalink -->
+                                
+                            
+                        
+                        </div>
+                    </div>
+                    
+                </div>
+                <div id="copied_to_clipboard_confirmation" style="display: none;">Copied to clipboard</div>
+                <a id="copy_to_clipboard" href="" style="display: none;"></a>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+    </main>
+
+    <footer>
+  <div id="footer_container" class="container">
+      <div class="row">
+          <div class="col-xs-12 text-right">
+              <div id="footer_links_container">
+                  <a href="https://github.com/OpenLiberty/open-liberty/blob/master/LICENSE" target="new" class="footer_link">License</a>
+                  <a href="https://www.ibm.com/privacy/us/en/" target="new" class="footer_link">Privacy policy</a>
+                  <a id="footer_twitter_link" href="https://twitter.com/OpenLibertyIO" target="new" aria-label="Twitter"></a>
+                  <a id="footer_github_link" href="https://github.com/OpenLiberty" target="new" aria-label="GitHub"></a>
+              </div>
+              <p id="footer_text">an IBM open source project</p>
+              <p id="footer_copyright">© Copyright IBM Corp. 2017</p>
+          </div>
+      </div>
+  </div>
+  <div class="hidden">
+    <img src="Handling%20dependencies%20with%20RESTful%20web%20services%20-%20Open%20Liberty_files/footer_twitter_darker.png">
+    <img src="Handling%20dependencies%20with%20RESTful%20web%20services%20-%20Open%20Liberty_files/footer_github_darker.png">
+  </div>
+</footer>
+
+
+    <script src="Handling%20dependencies%20with%20RESTful%20web%20services%20-%20Open%20Liberty_files/jquery.js"></script>
+    <script src="Handling%20dependencies%20with%20RESTful%20web%20services%20-%20Open%20Liberty_files/bootstrap.js"></script>
+
+
+    
+
+    
+      <script type="text/javascript" src="Handling%20dependencies%20with%20RESTful%20web%20services%20-%20Open%20Liberty_files/guide.js"></script>
+    
+
+  
+
+
+</body></html>
