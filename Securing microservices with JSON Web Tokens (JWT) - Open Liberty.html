@@ -1,0 +1,1194 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+<meta http-equiv="content-type" content="text/html; charset=UTF-8">
+
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <title>Securing microservices with JSON Web Tokens (JWT) - Open Liberty</title>
+  <meta name="description" content="Open Liberty is the most flexible server runtime available to Earth’s Java developers.">
+
+  <link rel="stylesheet" href="Securing%20microservices%20with%20JSON%20Web%20Tokens%20%28JWT%29%20-%20Open%20Liberty_files/bootstrap.css">
+  <link type="text/css" rel="stylesheet" href="Securing%20microservices%20with%20JSON%20Web%20Tokens%20%28JWT%29%20-%20Open%20Liberty_files/openliberty.css">
+  <link type="text/css" rel="stylesheet" href="Securing%20microservices%20with%20JSON%20Web%20Tokens%20%28JWT%29%20-%20Open%20Liberty_files/coderay-custom.css">
+
+  
+  
+  
+    <link type="text/css" rel="stylesheet" href="Securing%20microservices%20with%20JSON%20Web%20Tokens%20%28JWT%29%20-%20Open%20Liberty_files/guide-card.css">
+  
+    <link type="text/css" rel="stylesheet" href="Securing%20microservices%20with%20JSON%20Web%20Tokens%20%28JWT%29%20-%20Open%20Liberty_files/guide.css">
+  
+
+  
+
+  
+
+  <link rel="canonical" href="https://openliberty.io/guides/microprofile-jwt">
+  <link href="Securing%20microservices%20with%20JSON%20Web%20Tokens%20%28JWT%29%20-%20Open%20Liberty_files/css.css" rel="stylesheet">
+    
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:site" content="@OpenLibertyIO">
+  <meta name="twitter:title" content="Open Liberty">
+  <meta name="twitter:description" content="Open Liberty is the most flexible server runtime available to Earth’s Java developers.">
+  <meta name="twitter:image" content="https://openliberty.io/img/twitter_card.jpg">
+  
+  <meta name="google-site-verification" content="h2P030H9b66CyL1nEmWfrZB8Fr14h9LmVMG7Ur0caBs">
+
+</head>
+
+
+  <body>
+    
+    
+
+    <header>
+<nav class="navbar navbar-default">
+    <div class="container">
+        <div class="navbar-header">
+            <button id="navbar_responsive_button" class="navbar-toggle collapsed" type="button" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+                        
+        </div>
+        <div id="navbar" class="navbar-collapse collapse">
+            <ul class="nav navbar-nav navbar-right text-right">
+                <li class="hidden-xs"><a id="navbar_github_link" href="https://github.com/OpenLiberty" target="new" aria-label="Open Liberty GitHub Repository"></a></li>
+            </ul>
+        </div>
+    </div>
+  </nav>
+  <div class="hidden">
+    <img src="Securing%20microservices%20with%20JSON%20Web%20Tokens%20%28JWT%29%20-%20Open%20Liberty_files/small_logo_white.svg">
+    <img src="Securing%20microservices%20with%20JSON%20Web%20Tokens%20%28JWT%29%20-%20Open%20Liberty_files/github_navbar_hover.svg">
+  </div>
+</header>
+
+
+    <main aria-label="Content">
+
+      <div id="background_container" class="black_blue_gradient_background">
+    <div class="container">
+        <div id="title_row" class="row">
+            <div class="col-xs-12">
+                <img id="intro_logo" src="Securing%20microservices%20with%20JSON%20Web%20Tokens%20%28JWT%29%20-%20Open%20Liberty_files/guides_page_title_small.svg" alt="Guides">
+            </div>
+        </div>
+        <div class="row">
+            <!-- Guide's table of contents section -->
+            <div id="toc_column" class="col-sm-3">
+                <div id="toc_inner">                    
+                    
+                    <h3 id="toc_title">Contents</h3>
+                    <div id="toc_container">
+                        <ul class="sectlevel1">
+<li><a href="#what-you-ll-learn">What you’ll learn</a>
+<ul class="sectlevel2">
+<li><a href="#try-what-you-ll-build">Try what you’ll build</a></li>
+</ul>
+</li>
+<li><a href="#adding-microprofile-jwt-to-back-end-services">Adding Microprofile-JWT to back-end services</a>
+<ul class="sectlevel2">
+<li><a href="#adding-the-jwt-resource-class">Adding the JWT Resource class</a></li>
+<li><a href="#add-the-inventoryresource-class">Add the InventoryResource class</a></li>
+<li><a href="#add-the-securedsystemclient-class">Add the SecuredSystemClient class</a></li>
+<li><a href="#add-the-systemresource-class">Add the SystemResource class</a></li>
+</ul>
+</li>
+<li><a href="#adding-jwt-builder-and-form-based-login-to-the-front-end">Adding JWT builder and form-based login to the front end</a>
+<ul class="sectlevel2">
+<li><a href="#the-user-object">The User Object</a></li>
+<li><a href="#creating-the-login-bean">Creating the login bean</a></li>
+<li><a href="#creating-the-system-bean">Creating the system bean</a></li>
+<li><a href="#creating-the-server-configuration-file">Creating the Server Configuration File</a></li>
+</ul>
+</li>
+<li><a href="#building-and-running-the-application">Building and running the application</a></li>
+<li><a href="#testing-mp-jwt-authorization">Testing MP-JWT authorization</a>
+<ul class="sectlevel2">
+<li><a href="#running-the-tests">Running the tests</a></li>
+</ul>
+</li>
+<li><a href="#great-work-you-re-done">Great work! You’re done!</a></li>
+                    </div>
+                    
+                </div>
+            </div>
+            <!-- Entire guide section -->
+            <div id="guide_column" class="col-sm-9 position_relative">
+                <div id="guide_content">
+                    <!-- Guide header section -->
+                    <div id="guide_meta" class="sect1">
+                        <h1 id="guide_title">Securing microservices with JSON Web Tokens (JWT)</h1>
+                        <div id="preamble">
+<div class="sectionbody">
+<div class="paragraph">
+<p>Learn how to control user and role access to microservices with MicroProfile JWT.</p>
+</div>
+</div>
+</div><div id="duration_container">
+                            <img src="Securing%20microservices%20with%20JSON%20Web%20Tokens%20%28JWT%29%20-%20Open%20Liberty_files/guide_duration_clock_icon_large.svg" alt="duration">
+                            <span id="guide_duration">25 minutes</span>
+                        </div>
+                    </div>
+
+                    <!-- Guide content section -->
+                    
+<div class="sect1">
+<h2 id="what-you-ll-learn">What you’ll learn</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>You will learn how to control user and role access to microservices 
+with MicroProfile JWT. JWT security provides certain groups of users 
+with access to specific functions.</p>
+</div>
+<div class="paragraph">
+<p>Security tokens are a common way to propagate the security state from
+ clients to services or from services to services. The main security 
+protocols are based on security tokens, such as OAuth2, OpenID Connect, 
+SAML, WS-Trust, WS-Federation, and others. While some of these standards
+ are about identity federation, they share a common concept regarding 
+security tokens and token-based authentication.
+For RESTful-based microservices, security tokens offer a lightweight and
+ interoperable way to propagate identities across different services.</p>
+</div>
+<div class="paragraph">
+<p>You will add JWT authentication and authorization to the <code>SystemResource</code> and <code>InventoryResource</code> microservices, and a simple front end handles the authentication.</p>
+</div>
+<div class="paragraph">
+<p>To begin, run the following commands, which clone the Git repository and access the starting project
+that is provided in the <code>start</code> directory:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>git clone https://github.com/OpenLiberty/draft-guide-microprofile-jwt.git
+cd draft-guide-microprofile-jwt/start</pre>
+</div>
+</div>
+<div class="sect2">
+<h3 id="try-what-you-ll-build">Try what you’ll build</h3>
+<div class="paragraph">
+<p>The <code>finish</code> directory contains the finished
+JWT security implementation for the services in the application. Feel 
+free to try the finished application before you proceed with building 
+your own.</p>
+</div>
+<div class="paragraph">
+<p>To try out the application, first navigate to the <code>finish</code> directory. Next, execute the following
+Maven goals to build the application and run it inside of Open Liberty:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code>mvn clean install liberty:start-server</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Point your browser to the front-end web application endpoint: <code><a href="http://localhost:9090/system.jsf" class="bare">http://localhost:9090/system.jsf</a></code>. From here, you can log in to the system with the form-based login provided.
+Log in with one of the following user information examples:</p>
+</div>
+<table class="tableblock frame-all grid-all spread">
+<colgroup>
+<col style="width: 33.3333%;">
+<col style="width: 33.3333%;">
+<col style="width: 33.3334%;">
+</colgroup>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>Username</strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>Password</strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>Role</strong></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>bob</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>pwd</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>admin, user</code></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>alice</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>alicepwd</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>user</code></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>carl</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>carlpwd</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>user</code></p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p>You are redirected to a another page that displays the user who is 
+logged in, the current OS of your localhost, and the web token that the 
+front end uses to access the data.
+In addition, if you log in as an <code>admin</code> user, the inventory size is <code>0</code>. If you log in as a normal <code>user</code>, you see <code>-1</code> instead, which means you cannot access the inventory size data in the back end.</p>
+</div>
+<div class="paragraph">
+<p>When you are done with the application, stop the server:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code>mvn liberty:stop-server</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Now, navigate back to the <code>start</code> directory to begin.
+Complete the following sections to add MicroProfile JWT to the back end and add basic app security to the front end.</p>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="adding-microprofile-jwt-to-back-end-services">Adding Microprofile-JWT to back-end services</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>The MicroProfile JWT feature is added as a dependency in your <code>pom.xml</code> file. This feature allows you to
+use the MicroProfile JWT API to inject user authorization information into the RESTful services.</p>
+</div>
+<div class="sect2">
+<h3 id="adding-the-jwt-resource-class">Adding the JWT Resource class</h3>
+<div class="paragraph">
+<p>Create a <code>start/backendServices/src/main/java/io/openliberty/guides/inventory/JwtResource.java</code> file to enable a service that retrieves information about the Json Web Token.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="java"><span class="keyword">package</span> <span class="namespace">io.openliberty.guides.inventory</span>;
+
+<span class="keyword">import</span> <span class="include">java.util.Set</span>;
+<span class="keyword">import</span> <span class="include">javax.enterprise.context.RequestScoped</span>;
+<span class="keyword">import</span> <span class="include">javax.inject.Inject</span>;
+<span class="keyword">import</span> <span class="include">javax.ws.rs.GET</span>;
+<span class="keyword">import</span> <span class="include">javax.ws.rs.Path</span>;
+<span class="keyword">import</span> <span class="include">javax.ws.rs.core.Response</span>;
+<span class="keyword">import</span> <span class="include">javax.ws.rs.core.Context</span>;
+
+<span class="comment">//JWT Imports</span>
+<span class="keyword">import</span> <span class="include">org.eclipse.microprofile.jwt.JsonWebToken</span>;
+<span class="keyword">import</span> <span class="include">javax.annotation.security.RolesAllowed</span>;
+<span class="keyword">import</span> <span class="include">javax.ws.rs.core.SecurityContext</span>;
+<span class="keyword">import</span> <span class="include">java.security.Principal</span>;
+
+<span class="annotation">@RequestScoped</span>
+<span class="annotation">@Path</span>(<span class="string"><span class="delimiter">"</span><span class="content">jwt</span><span class="delimiter">"</span></span>)
+<span class="directive">public</span> <span class="type">class</span> <span class="class">JwtResource</span> {
+    <span class="annotation">@Inject</span>
+    <span class="directive">private</span> JsonWebToken jwtPrincipal;
+
+    <span class="annotation">@GET</span>
+    <span class="annotation">@RolesAllowed</span>({ <span class="string"><span class="delimiter">"</span><span class="content">admin</span><span class="delimiter">"</span></span>, <span class="string"><span class="delimiter">"</span><span class="content">user</span><span class="delimiter">"</span></span> })
+    <span class="annotation">@Path</span>(<span class="string"><span class="delimiter">"</span><span class="content">/username</span><span class="delimiter">"</span></span>)
+    <span class="directive">public</span> Response getJwtUserName() {
+        <span class="keyword">return</span> Response.ok(<span class="local-variable">this</span>.jwtPrincipal.getName()).build();
+    }
+
+    <span class="annotation">@GET</span>
+    <span class="annotation">@RolesAllowed</span>({ <span class="string"><span class="delimiter">"</span><span class="content">admin</span><span class="delimiter">"</span></span>, <span class="string"><span class="delimiter">"</span><span class="content">user</span><span class="delimiter">"</span></span> })
+    <span class="annotation">@Path</span>(<span class="string"><span class="delimiter">"</span><span class="content">/groups</span><span class="delimiter">"</span></span>)
+    <span class="directive">public</span> Response getGroups(<span class="annotation">@Context</span> SecurityContext securityContext) {
+        <span class="predefined-type">Set</span>&lt;<span class="predefined-type">String</span>&gt; groups = <span class="predefined-constant">null</span>;
+        <span class="predefined-type">Principal</span> user = securityContext.getUserPrincipal();
+        <span class="keyword">if</span> (user <span class="keyword">instanceof</span> JsonWebToken) {
+            JsonWebToken jwt = (JsonWebToken) user;
+            groups = jwt.getGroups();
+        }
+        <span class="keyword">return</span> Response.ok(groups).build();
+    }
+
+    <span class="annotation">@GET</span>
+    <span class="annotation">@RolesAllowed</span>({ <span class="string"><span class="delimiter">"</span><span class="content">admin</span><span class="delimiter">"</span></span>, <span class="string"><span class="delimiter">"</span><span class="content">user</span><span class="delimiter">"</span></span> })
+    <span class="annotation">@Path</span>(<span class="string"><span class="delimiter">"</span><span class="content">/customClaim</span><span class="delimiter">"</span></span>)
+    <span class="directive">public</span> Response getCustomClaim(<span class="annotation">@Context</span> SecurityContext securityContext) {
+        <span class="keyword">if</span> (securityContext.isUserInRole(<span class="string"><span class="delimiter">"</span><span class="content">admin</span><span class="delimiter">"</span></span>)) {
+            <span class="predefined-type">String</span> customClaim = jwtPrincipal.getClaim(<span class="string"><span class="delimiter">"</span><span class="content">customClaim</span><span class="delimiter">"</span></span>);
+            <span class="keyword">return</span> Response.ok(customClaim).build();
+        }
+        <span class="keyword">return</span> Response.status(Response.Status.FORBIDDEN).build();
+    }
+}</code></pre>
+</div>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><code>@Path("jwt")</code> identifies the REST request path to access this resource, which is <code>jwt</code>.</p>
+</li>
+<li>
+<p><code>@GET</code> indicates that the method serves all GET HTTP requests at its endpoint.</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>Role names used in <code>@RolesAllowed</code> are mapped to group 
+names in the MP-JWT "groups" claim, which results in an authorization 
+decision wherever the security constraint is applied.</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><code>getJwtUserName()</code> retrieves the user name from the injected <code>JsonWebToken jwtPrincipal</code> type.</p>
+</li>
+<li>
+<p><code>getGroups()</code> retrieves the user groups information from the Json Web Token from the SecurityContext.
+<code>SecurityContext.getUserPrincipal()</code> returns an object in the <code>java.security.Principal</code> type. This object is also an instance of <code>org.eclipse.microprofile.jwt.JsonWebToken</code>.</p>
+</li>
+<li>
+<p><code>getCustomClaim()</code> retrieves the custom claim from the Json Web Token if the authenticated user has the <code>admin</code> role. Otherwise, it returns a <code>Status.FORBIDDEN</code> message.</p>
+</li>
+<li>
+<p><code>SecurityContext.isUserInRole(String)</code> returns <code>true</code>
+ for any name that is included in the MP-JWT "groups" claim and for any 
+role name that is mapped to a group name in the MP-JWT "groups" claim.</p>
+</li>
+</ul>
+</div>
+</div>
+<div class="sect2">
+<h3 id="add-the-inventoryresource-class">Add the InventoryResource class</h3>
+<div class="paragraph">
+<p>Create the class <code>InventoryResource.java</code> in the <code>start/backendServices/src/main/java/io/openliberty/guides/inventory/</code> directory to add code to return the JWT token with all HTTP requests.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="java"><span class="keyword">package</span> <span class="namespace">io.openliberty.guides.inventory</span>;
+
+<span class="keyword">import</span> <span class="include">java.util.Properties</span>;
+
+<span class="keyword">import</span> <span class="include">javax.enterprise.context.RequestScoped</span>;
+<span class="keyword">import</span> <span class="include">javax.inject.Inject</span>;
+<span class="keyword">import</span> <span class="include">javax.ws.rs.GET</span>;
+<span class="keyword">import</span> <span class="include">javax.ws.rs.Path</span>;
+<span class="keyword">import</span> <span class="include">javax.ws.rs.PathParam</span>;
+<span class="keyword">import</span> <span class="include">javax.ws.rs.Produces</span>;
+<span class="keyword">import</span> <span class="include">javax.ws.rs.core.MediaType</span>;
+<span class="keyword">import</span> <span class="include">javax.ws.rs.core.Response</span>;
+
+<span class="keyword">import</span> <span class="include">io.openliberty.guides.inventory.model.InventoryList</span>;
+<span class="keyword">import</span> <span class="include">javax.annotation.security.RolesAllowed</span>;
+<span class="keyword">import</span> <span class="include">javax.annotation.security.DeclareRoles</span>;
+<span class="keyword">import</span> <span class="include">javax.ws.rs.core.HttpHeaders</span>;
+<span class="keyword">import</span> <span class="include">javax.ws.rs.core.Context</span>;
+
+<span class="annotation">@RequestScoped</span>
+<span class="annotation">@DeclareRoles</span>({<span class="string"><span class="delimiter">"</span><span class="content">admin</span><span class="delimiter">"</span></span>, <span class="string"><span class="delimiter">"</span><span class="content">user</span><span class="delimiter">"</span></span>})  <span class="comment">// important to have here, otherwise test will fail</span>
+<span class="annotation">@Path</span>(<span class="string"><span class="delimiter">"</span><span class="content">systems</span><span class="delimiter">"</span></span>)
+<span class="directive">public</span> <span class="type">class</span> <span class="class">InventoryResource</span> {
+
+        <span class="annotation">@Inject</span> InventoryManager manager;
+
+        <span class="annotation">@GET</span>
+        <span class="annotation">@RolesAllowed</span>({<span class="string"><span class="delimiter">"</span><span class="content">admin</span><span class="delimiter">"</span></span>, <span class="string"><span class="delimiter">"</span><span class="content">user</span><span class="delimiter">"</span></span>})
+        <span class="annotation">@Path</span>(<span class="string"><span class="delimiter">"</span><span class="content">{hostname}</span><span class="delimiter">"</span></span>)
+        <span class="annotation">@Produces</span>(MediaType.APPLICATION_JSON)
+        <span class="directive">public</span> Response getPropertiesForHost(<span class="annotation">@PathParam</span>(<span class="string"><span class="delimiter">"</span><span class="content">hostname</span><span class="delimiter">"</span></span>) <span class="predefined-type">String</span> hostname, <span class="annotation">@Context</span> HttpHeaders httpHeaders) {
+            <span class="predefined-type">String</span> authHeader = httpHeaders.getRequestHeaders().getFirst(HttpHeaders.AUTHORIZATION);
+            <span class="predefined-type">Properties</span> props = manager.get(hostname, authHeader);
+            <span class="keyword">if</span> (props == <span class="predefined-constant">null</span>) {
+                <span class="keyword">return</span> Response.status(Response.Status.NOT_FOUND)
+                               .entity(<span class="string"><span class="delimiter">"</span><span class="content">ERROR: Unknown hostname or the resource may not be running on the host machine</span><span class="delimiter">"</span></span>)
+                               .build();
+            }
+            <span class="keyword">return</span> Response.ok(props).build();
+        }
+
+        <span class="annotation">@GET</span>
+        <span class="annotation">@RolesAllowed</span>({<span class="string"><span class="delimiter">"</span><span class="content">admin</span><span class="delimiter">"</span></span>})
+        <span class="annotation">@Produces</span>(MediaType.APPLICATION_JSON)
+        <span class="directive">public</span> InventoryList listContents() {
+            <span class="keyword">return</span> manager.list();
+        }
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The <code>@RolesAllowed({"admin", "user"})</code> annotation sets which roles are allowed to access the service. In this case, the roles are <code>admin</code> or <code>user</code>.</p>
+</div>
+<div class="paragraph">
+<p>The <code>authHeader</code> retrieves the authorization header from the GET request.</p>
+</div>
+<div class="paragraph">
+<p>The final addition of code <code>return Response.ok(manager.get(props)).build();</code> adds the authentication header to the client that sends the HTTP GET request to the other service.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="add-the-securedsystemclient-class">Add the SecuredSystemClient class</h3>
+<div class="paragraph">
+<p>Add the <code>SecuredSystemClient</code> class in the <code>start/backendServices/src/main/java/io/openliberty/guides/inventory/client/SecuredSystemClient.java</code> file.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="java"><span class="keyword">package</span> <span class="namespace">io.openliberty.guides.inventory.client</span>;
+
+<span class="keyword">import</span> <span class="include">javax.ws.rs.client.Invocation.Builder</span>;
+<span class="keyword">import</span> <span class="include">javax.ws.rs.core.HttpHeaders</span>;
+<span class="keyword">import</span> <span class="include">java.util.Properties</span>;
+<span class="keyword">import</span> <span class="include">io.openliberty.guides.inventory.client.SystemClient</span>;
+
+<span class="directive">public</span> <span class="type">class</span> <span class="class">SecuredSystemClient</span> <span class="directive">extends</span> SystemClient {
+
+    <span class="comment">// Constants for building URI to the system service.</span>
+    <span class="directive">private</span> <span class="directive">final</span> <span class="type">int</span> DEFAULT_SEC_PORT = <span class="predefined-type">Integer</span>.valueOf(<span class="predefined-type">System</span>.getProperty(<span class="string"><span class="delimiter">"</span><span class="content">https.port</span><span class="delimiter">"</span></span>));
+    <span class="directive">private</span> <span class="directive">final</span> <span class="predefined-type">String</span> SYSTEM_PROPERTIES = <span class="string"><span class="delimiter">"</span><span class="content">/system/properties</span><span class="delimiter">"</span></span>;
+    <span class="directive">private</span> <span class="directive">final</span> <span class="predefined-type">String</span> SECURED_PROTOCOL = <span class="string"><span class="delimiter">"</span><span class="content">https</span><span class="delimiter">"</span></span>;
+
+    <span class="directive">private</span> <span class="predefined-type">String</span> url;
+    <span class="directive">private</span> Builder clientBuilder;
+
+    <span class="comment">// Overiding the parent method to set the attributes.</span>
+    <span class="directive">public</span> <span class="type">void</span> init(<span class="predefined-type">String</span> hostname, <span class="predefined-type">String</span> authHeader) {
+        <span class="local-variable">this</span>.url = <span class="local-variable">this</span>.buildUrl(SECURED_PROTOCOL, hostname, DEFAULT_SEC_PORT,
+                SYSTEM_PROPERTIES);
+        <span class="local-variable">this</span>.clientBuilder = <span class="local-variable">this</span>.buildClientBuilder(authHeader);
+    }
+
+    <span class="directive">public</span> <span class="predefined-type">String</span> buildUrl(<span class="predefined-type">String</span> protocol, <span class="predefined-type">String</span> host, <span class="type">int</span> port, <span class="predefined-type">String</span> path) {
+        <span class="keyword">return</span> <span class="local-variable">super</span>.buildUrl(protocol, host, port, path);
+    }
+
+    <span class="directive">public</span> Builder buildClientBuilder(<span class="predefined-type">String</span> authHeader) {
+        Builder builder = <span class="local-variable">super</span>.buildClientBuilder(<span class="local-variable">this</span>.url);
+        <span class="keyword">return</span> builder.header(HttpHeaders.AUTHORIZATION, authHeader);
+    }
+
+    <span class="directive">public</span> <span class="predefined-type">Properties</span> getProperties() {
+        <span class="keyword">return</span> <span class="local-variable">super</span>.getPropertiesHelper(<span class="local-variable">this</span>.clientBuilder);
+    }
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The <code>SecuredSystemClient</code> class inherits methods, which handle the HTTP GET request to the system service to retrieve system properties, from the <code>SystemClient</code> class.
+However, the class overrides the <code>buildClientBuilder()</code> method by adding the authorization header to the returned builder, <code>return builder.header(HttpHeaders.AUTHORIZATION, authHeader)</code>.
+By adding the authorization header to the client request, the <code>SecuredSystemClient</code> class can access services that are secured.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="add-the-systemresource-class">Add the SystemResource class</h3>
+<div class="paragraph">
+<p>Add the <code>SystemResource.java</code> class in the <code>start/backendServices/src/main/java/io/openliberty/guides/system/SystemResource.java</code> directory.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="java"><span class="keyword">package</span> <span class="namespace">io.openliberty.guides.system</span>;
+
+<span class="keyword">import</span> <span class="include">java.util.Properties</span>;
+
+<span class="keyword">import</span> <span class="include">javax.enterprise.context.RequestScoped</span>;
+<span class="keyword">import</span> <span class="include">javax.ws.rs.GET</span>;
+
+<span class="keyword">import</span> <span class="include">javax.ws.rs.Path</span>;
+<span class="keyword">import</span> <span class="include">javax.ws.rs.Produces</span>;
+<span class="keyword">import</span> <span class="include">javax.ws.rs.core.MediaType</span>;
+
+<span class="keyword">import</span> <span class="include">javax.annotation.security.RolesAllowed</span>;
+
+<span class="annotation">@RequestScoped</span>
+<span class="annotation">@Path</span>(<span class="string"><span class="delimiter">"</span><span class="content">properties</span><span class="delimiter">"</span></span>)
+<span class="directive">public</span> <span class="type">class</span> <span class="class">SystemResource</span> {
+
+    <span class="annotation">@GET</span>
+    <span class="annotation">@RolesAllowed</span>({<span class="string"><span class="delimiter">"</span><span class="content">admin</span><span class="delimiter">"</span></span>, <span class="string"><span class="delimiter">"</span><span class="content">user</span><span class="delimiter">"</span></span>})
+    <span class="annotation">@Produces</span>(MediaType.APPLICATION_JSON)
+    <span class="directive">public</span> <span class="predefined-type">Properties</span> getProperties() {
+        <span class="keyword">return</span> <span class="predefined-type">System</span>.getProperties();
+    }
+
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The <code>@RolesAllowed({"admin", "user"})</code> annotation allows only authenticated users with "admin" and "user" roles to access the <code>system</code> service.
+Therefore, this service is properly secured.</p>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="adding-jwt-builder-and-form-based-login-to-the-front-end">Adding JWT builder and form-based login to the front end</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>A very simple front-end web application is provided to allow you to 
+log in to the application with predefined users that have different 
+roles, such as <code>admin</code> and <code>user</code>.</p>
+</div>
+<div class="sect2">
+<h3 id="the-user-object">The User Object</h3>
+<div class="paragraph">
+<p>A <code>User</code> class is provided for you in the <code>start/frontendUI/src/main/java/io/openliberty/guides/ui/User.java</code> file.</p>
+</div>
+<div class="paragraph">
+<p>This user model contains information about a user. The model includes <code>get</code> and <code>set</code> methods for the username, password, and role.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="creating-the-login-bean">Creating the login bean</h3>
+<div class="paragraph">
+<p>Create a <code>LoginBean.java</code> class in the <code>start/frontendUI/src/main/java/io/openliberty/guides/ui/</code> directory to handle login requests to the back end and to create the JWT token required for authentication.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="java"><span class="keyword">package</span> <span class="namespace">io.openliberty.guides.ui</span>;
+
+<span class="keyword">import</span> <span class="include">javax.servlet</span>.*;
+<span class="keyword">import</span> <span class="include">javax.servlet.http</span>.*;
+<span class="keyword">import</span> <span class="include">javax.faces.bean.ManagedBean</span>;
+<span class="keyword">import</span> <span class="include">javax.faces.bean.ViewScoped</span>;
+
+<span class="keyword">import</span> <span class="include">com.ibm.websphere.security.jwt</span>.*;
+<span class="keyword">import</span> <span class="include">io.openliberty.guides.ui.util.SessionUtils</span>;
+<span class="keyword">import</span> <span class="include">io.openliberty.guides.ui.User</span>;
+
+<span class="annotation">@ManagedBean</span>
+<span class="annotation">@ViewScoped</span>
+<span class="directive">public</span> <span class="type">class</span> <span class="class">LoginBean</span> {
+
+    <span class="directive">private</span> <span class="predefined-type">String</span> username;
+    <span class="directive">private</span> <span class="predefined-type">String</span> password;
+
+    <span class="directive">public</span> <span class="type">void</span> setUsername(<span class="predefined-type">String</span> username) {
+        <span class="local-variable">this</span>.username = username;
+    }
+
+    <span class="directive">public</span> <span class="type">void</span> setPassword(<span class="predefined-type">String</span> password) {
+        <span class="local-variable">this</span>.password = password;
+    }
+
+    <span class="directive">public</span> <span class="predefined-type">String</span> getUsername() {
+        <span class="keyword">return</span> username;
+    }
+
+    <span class="directive">public</span> <span class="predefined-type">String</span> getPassword() {
+        <span class="keyword">return</span> password;
+    }
+
+    <span class="directive">public</span> <span class="predefined-type">String</span> doLogIn() <span class="directive">throws</span> <span class="exception">Exception</span> {
+        HttpServletRequest request = SessionUtils.getRequest();
+
+        <span class="comment">// do login</span>
+        <span class="keyword">try</span> {
+            request.login(<span class="local-variable">this</span>.username, <span class="local-variable">this</span>.password);
+        } <span class="keyword">catch</span> (ServletException e) {
+            <span class="predefined-type">System</span>.out.println(<span class="string"><span class="delimiter">"</span><span class="content">Login failed.</span><span class="delimiter">"</span></span>);
+            <span class="keyword">return</span> <span class="string"><span class="delimiter">"</span><span class="content">error.jsf</span><span class="delimiter">"</span></span>;
+        }
+
+        <span class="comment">// to get remote user using getRemoteUser()</span>
+        <span class="predefined-type">String</span> remoteUser = request.getRemoteUser();
+        <span class="predefined-type">String</span> role = getRole(request);
+        <span class="predefined-type">System</span>.out.println(<span class="string"><span class="delimiter">"</span><span class="content">AFTER LOGIN, REMOTE USER: </span><span class="delimiter">"</span></span> + remoteUser + <span class="string"><span class="delimiter">"</span><span class="content"> </span><span class="delimiter">"</span></span> + role);
+
+        <span class="comment">// update session</span>
+        <span class="keyword">if</span> (remoteUser != <span class="predefined-constant">null</span> &amp;&amp; remoteUser.equals(username)){
+            User user = <span class="keyword">new</span> User(username, password, role);
+            <span class="predefined-type">String</span> jwt = buildJWT(username, role);
+            <span class="comment">// get the current session</span>
+            HttpSession ses = request.getSession(<span class="predefined-constant">false</span>);
+            <span class="keyword">if</span> (ses == <span class="predefined-constant">null</span>) {
+                <span class="predefined-type">System</span>.out.println(<span class="string"><span class="delimiter">"</span><span class="content">Session is timeout.</span><span class="delimiter">"</span></span>);
+            } <span class="keyword">else</span> {
+                ses.setAttribute(<span class="string"><span class="delimiter">"</span><span class="content">jwt</span><span class="delimiter">"</span></span>, jwt); <span class="comment">// important to set it here!</span>
+                ses.setAttribute(<span class="string"><span class="delimiter">"</span><span class="content">user</span><span class="delimiter">"</span></span>, user);
+            }
+        } <span class="keyword">else</span> {
+            <span class="predefined-type">System</span>.out.println(<span class="string"><span class="delimiter">"</span><span class="content">Update Sessional JWT Failed.</span><span class="delimiter">"</span></span>);
+        }
+        <span class="keyword">return</span> <span class="string"><span class="delimiter">"</span><span class="content">system.jsf</span><span class="delimiter">"</span></span>;
+    }
+
+    <span class="directive">private</span> <span class="predefined-type">String</span> buildJWT(<span class="predefined-type">String</span> userName, <span class="predefined-type">String</span> role) <span class="directive">throws</span> <span class="exception">Exception</span> {
+        <span class="keyword">return</span> JwtBuilder.create(<span class="string"><span class="delimiter">"</span><span class="content">jwtFrontEndBuilder</span><span class="delimiter">"</span></span>)
+                         .claim(Claims.SUBJECT, userName)
+                         .claim(<span class="string"><span class="delimiter">"</span><span class="content">upn</span><span class="delimiter">"</span></span>, userName) <span class="comment">/* MP-JWT defined subject claim */</span>
+                         .claim(<span class="string"><span class="delimiter">"</span><span class="content">groups</span><span class="delimiter">"</span></span>, role) <span class="comment">/* MP-JWT builds an array from this */</span>
+                         .claim(<span class="string"><span class="delimiter">"</span><span class="content">customClaim</span><span class="delimiter">"</span></span>, <span class="string"><span class="delimiter">"</span><span class="content">customValue</span><span class="delimiter">"</span></span>)
+                         .buildJwt()
+                         .compact();
+    }
+
+    <span class="directive">private</span> <span class="predefined-type">String</span> getRole(HttpServletRequest request) {
+        <span class="comment">// to check if remote user is granted admin role</span>
+        <span class="type">boolean</span> isAdmin = request.isUserInRole(<span class="string"><span class="delimiter">"</span><span class="content">admin</span><span class="delimiter">"</span></span>);
+        <span class="keyword">if</span> (isAdmin) {
+            <span class="keyword">return</span> <span class="string"><span class="delimiter">"</span><span class="content">admin</span><span class="delimiter">"</span></span>;
+        }
+        <span class="keyword">return</span> <span class="string"><span class="delimiter">"</span><span class="content">user</span><span class="delimiter">"</span></span>;
+    }
+}</code></pre>
+</div>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><code>doLogIn()</code> authenticates users who are predefined in the front-end <code>server.xml</code> file and creates a user object and a JWT token. It then creates an HTTP session used for continued access to the application.</p>
+</li>
+<li>
+<p><code>buildJWT()</code> creates a JWT token with provided user information.</p>
+</li>
+<li>
+<p><code>getRole()</code> returns either the <code>admin</code> or <code>user</code> role for a user.</p>
+</li>
+</ul>
+</div>
+</div>
+<div class="sect2">
+<h3 id="creating-the-system-bean">Creating the system bean</h3>
+<div class="paragraph">
+<p>Create a <code>SystemBean.java</code> class in the <code>start/frontendUI/src/main/java/io/openliberty/guides/ui</code> directory to get information about the user who is currently logged in.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="java"><span class="keyword">package</span> <span class="namespace">io.openliberty.guides.ui</span>;
+
+<span class="keyword">import</span> <span class="include">javax.faces.bean.ManagedBean</span>;
+<span class="keyword">import</span> <span class="include">javax.faces.bean.ViewScoped</span>;
+
+<span class="keyword">import</span> <span class="include">io.openliberty.guides.ui.util.ServiceUtils</span>;
+<span class="keyword">import</span> <span class="include">io.openliberty.guides.ui.util.SessionUtils</span>;
+
+<span class="keyword">import</span> <span class="include">javax.json.JsonObject</span>;
+
+<span class="annotation">@ManagedBean</span>
+<span class="annotation">@ViewScoped</span>
+<span class="directive">public</span> <span class="type">class</span> <span class="class">SystemBean</span> {
+
+    <span class="directive">public</span> <span class="predefined-type">String</span> getOs() {
+        <span class="predefined-type">String</span> jwtTokenString = SessionUtils.getJwtToken();
+        <span class="predefined-type">String</span> authHeader = <span class="string"><span class="delimiter">"</span><span class="content">Bearer </span><span class="delimiter">"</span></span> + jwtTokenString;
+        <span class="keyword">if</span> (ServiceUtils.responseOkHelper(authHeader)) {
+            JsonObject properties = ServiceUtils.getPropertiesHelper(authHeader);
+            <span class="keyword">return</span> properties.getString(<span class="string"><span class="delimiter">"</span><span class="content">os.name</span><span class="delimiter">"</span></span>);
+        }
+        <span class="keyword">return</span> <span class="string"><span class="delimiter">"</span><span class="content">wrong os</span><span class="delimiter">"</span></span>;
+    }
+
+    <span class="directive">public</span> <span class="type">int</span> getInvSize() {
+        <span class="predefined-type">String</span> jwtTokenString = SessionUtils.getJwtToken();
+        <span class="predefined-type">String</span> authHeader = <span class="string"><span class="delimiter">"</span><span class="content">Bearer </span><span class="delimiter">"</span></span> + jwtTokenString;
+        <span class="keyword">if</span> (ServiceUtils.invOkHelper(authHeader)) {
+            JsonObject properties = ServiceUtils.getInventoryHelper(authHeader);
+            <span class="keyword">return</span> properties.getInt(<span class="string"><span class="delimiter">"</span><span class="content">total</span><span class="delimiter">"</span></span>);
+        }
+        <span class="keyword">return</span> -<span class="integer">1</span>;
+    }
+
+    <span class="directive">public</span> <span class="predefined-type">String</span> getJwt() {
+        <span class="predefined-type">String</span> jwtTokenString = SessionUtils.getJwtToken();
+        <span class="predefined-type">String</span> authHeader = <span class="string"><span class="delimiter">"</span><span class="content">Bearer </span><span class="delimiter">"</span></span> + jwtTokenString;
+        <span class="keyword">return</span> authHeader;
+    }
+
+    <span class="directive">public</span> <span class="predefined-type">String</span> getUserName() {
+        <span class="keyword">return</span> SessionUtils.getUserObj().getName();
+    }
+
+    <span class="directive">public</span> <span class="predefined-type">String</span> getUserRole() {
+        <span class="keyword">return</span> SessionUtils.getUserObj().getRole();
+    }
+}</code></pre>
+</div>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><code>getOs()</code> returns a string of the operating system for a 
+session from the back end by performing a GET request with the auth 
+header that contains the JSON Web Token.</p>
+</li>
+<li>
+<p><code>getInvSize()</code> returns the size of the inventory list for a given user from the session.</p>
+</li>
+<li>
+<p><code>getJwt()</code> returns the JSON Web Token for the current session.</p>
+</li>
+<li>
+<p><code>getUserName()</code> returns the user name of the user that is currently logged in from the session.</p>
+</li>
+<li>
+<p><code>getUserRole()</code> returns the role of the currently logged in user.</p>
+</li>
+</ul>
+</div>
+</div>
+<div class="sect2">
+<h3 id="creating-the-server-configuration-file">Creating the Server Configuration File</h3>
+<div class="paragraph">
+<p>Create a config file named <code>server.xml</code> in the <code>start/frontendUI/src/main/liberty/config</code> directory to predefine users with their names, passwords, and roles.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="java">&lt;server description=<span class="string"><span class="delimiter">"</span><span class="content">Sample Liberty server</span><span class="delimiter">"</span></span>&gt;
+
+    &lt;featureManager&gt;
+        &lt;feature&gt;jaxrs-<span class="float">2.0</span>&lt;/feature&gt;
+        &lt;feature&gt;jsonp-<span class="float">1.0</span>&lt;/feature&gt;
+        &lt;feature&gt;cdi-<span class="float">1.2</span>&lt;/feature&gt;
+        &lt;feature&gt;jsf-<span class="float">2.2</span>&lt;/feature&gt;
+        &lt;!-- FOR SECURITY --&gt;
+        &lt;feature&gt;appSecurity-<span class="float">2.0</span>&lt;/feature&gt;
+        &lt;feature&gt;servlet-<span class="float">3.1</span>&lt;/feature&gt;
+        &lt;feature&gt;jwt-<span class="float">1.0</span>&lt;/feature&gt;
+    &lt;/featureManager&gt;
+
+    &lt;httpEndpoint httpPort=<span class="string"><span class="delimiter">"</span><span class="content">${server.http.port}</span><span class="delimiter">"</span></span> httpsPort=<span class="string"><span class="delimiter">"</span><span class="content">${server.https.port}</span><span class="delimiter">"</span></span> id=<span class="string"><span class="delimiter">"</span><span class="content">defaultHttpEndpoint</span><span class="delimiter">"</span></span> /&gt;
+
+    &lt;!-- The keystore <span class="keyword">for</span> SSL is built using the maven keytool plugin --&gt;
+    &lt;keyStore id=<span class="string"><span class="delimiter">"</span><span class="content">defaultKeyStore</span><span class="delimiter">"</span></span> location=<span class="string"><span class="delimiter">"</span><span class="content">keystore.jceks</span><span class="delimiter">"</span></span> type=<span class="string"><span class="delimiter">"</span><span class="content">JCEKS</span><span class="delimiter">"</span></span> password=<span class="string"><span class="delimiter">"</span><span class="content">secret</span><span class="delimiter">"</span></span> /&gt;
+
+    &lt;basicRegistry id=<span class="string"><span class="delimiter">"</span><span class="content">basic</span><span class="delimiter">"</span></span> realm=<span class="string"><span class="delimiter">"</span><span class="content">WebRealm</span><span class="delimiter">"</span></span>&gt;
+        &lt;user name=<span class="string"><span class="delimiter">"</span><span class="content">bob</span><span class="delimiter">"</span></span> password=<span class="string"><span class="delimiter">"</span><span class="content">{xor}Lyg7</span><span class="delimiter">"</span></span> /&gt;  &lt;!-- pwd --&gt;
+        &lt;user name=<span class="string"><span class="delimiter">"</span><span class="content">alice</span><span class="delimiter">"</span></span> password=<span class="string"><span class="delimiter">"</span><span class="content">{xor}PjM2PDovKDs=</span><span class="delimiter">"</span></span> /&gt;  &lt;!-- alicepwd --&gt;
+        &lt;user name=<span class="string"><span class="delimiter">"</span><span class="content">carl</span><span class="delimiter">"</span></span> password=<span class="string"><span class="delimiter">"</span><span class="content">{xor}PD4tMy8oOw==</span><span class="delimiter">"</span></span> /&gt;   &lt;!-- carlpwd --&gt;
+
+        &lt;group name=<span class="string"><span class="delimiter">"</span><span class="content">myAdmins</span><span class="delimiter">"</span></span>&gt;
+            &lt;member name=<span class="string"><span class="delimiter">"</span><span class="content">bob</span><span class="delimiter">"</span></span> /&gt;
+        &lt;/group&gt;
+
+        &lt;group name=<span class="string"><span class="delimiter">"</span><span class="content">myUsers</span><span class="delimiter">"</span></span>&gt;
+            &lt;member name=<span class="string"><span class="delimiter">"</span><span class="content">bob</span><span class="delimiter">"</span></span> /&gt;
+            &lt;member name=<span class="string"><span class="delimiter">"</span><span class="content">alice</span><span class="delimiter">"</span></span> /&gt;
+            &lt;member name=<span class="string"><span class="delimiter">"</span><span class="content">carl</span><span class="delimiter">"</span></span> /&gt;
+        &lt;/group&gt;
+    &lt;/basicRegistry&gt;
+
+    &lt;application location=<span class="string"><span class="delimiter">"</span><span class="content">${application.name}</span><span class="delimiter">"</span></span> type=<span class="string"><span class="delimiter">"</span><span class="content">war</span><span class="delimiter">"</span></span> id=<span class="string"><span class="delimiter">"</span><span class="content">${application.name}</span><span class="delimiter">"</span></span>
+                 name=<span class="string"><span class="delimiter">"</span><span class="content">${application.name}</span><span class="delimiter">"</span></span> context-root=<span class="string"><span class="delimiter">"</span><span class="content">/</span><span class="delimiter">"</span></span>&gt;
+        &lt;application-bnd&gt;
+            &lt;security-role name=<span class="string"><span class="delimiter">"</span><span class="content">admin</span><span class="delimiter">"</span></span>&gt;
+                &lt;group name=<span class="string"><span class="delimiter">"</span><span class="content">myAdmins</span><span class="delimiter">"</span></span> /&gt;
+            &lt;/security-role&gt;
+            &lt;security-role name=<span class="string"><span class="delimiter">"</span><span class="content">user</span><span class="delimiter">"</span></span>&gt;
+                &lt;group name=<span class="string"><span class="delimiter">"</span><span class="content">myUsers</span><span class="delimiter">"</span></span> /&gt;
+            &lt;/security-role&gt;
+        &lt;/application-bnd&gt;
+    &lt;/application&gt;
+
+    &lt;!-- This JWT builder is used to build a JWT <span class="keyword">for</span> an authenticated user.
+             JWTs generated by <span class="local-variable">this</span> builder are in the <span class="string"><span class="delimiter">'</span><span class="content">users</span><span class="delimiter">'</span></span> group, and contain
+             the user name of the authenticated user. --&gt;
+    &lt;jwtBuilder id=<span class="string"><span class="delimiter">"</span><span class="content">jwtFrontEndBuilder</span><span class="delimiter">"</span></span> issuer=<span class="string"><span class="delimiter">"</span><span class="content">${jwt.issuer}</span><span class="delimiter">"</span></span> expiry=<span class="string"><span class="delimiter">"</span><span class="content">24h</span><span class="delimiter">"</span></span>
+                keyAlias=<span class="string"><span class="delimiter">"</span><span class="content">default</span><span class="delimiter">"</span></span> audiences=<span class="string"><span class="delimiter">"</span><span class="content">simpleapp</span><span class="delimiter">"</span></span> jti=<span class="string"><span class="delimiter">"</span><span class="content">true</span><span class="delimiter">"</span></span>/&gt;
+
+&lt;/server&gt;</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The <code>&lt;feature&gt;jwt-1.0&lt;/feature&gt;</code> feature adds the libraries that are required for JWT builder implementation.</p>
+</div>
+<div class="paragraph">
+<p>The <code>&lt;basicRegistry id="basic" realm="WebRealm"&gt;</code> section adds users and roles to a basic registry so that they can be stored on the server rather than a database.
+User names and passwords are defined here, as well as user groups, which are used for front-end authentication.</p>
+</div>
+<div class="paragraph">
+<p>The <code>&lt;application&gt;</code> section sets the application location and its type. In this case, it’s a <code>.war</code> file. It maps user groups with user security roles, which defines user accessibility for certain endpoints in this application.</p>
+</div>
+<div class="paragraph">
+<p>The <code>&lt;jwtBuilder&gt;</code> section is required to build a JWT for an authenticated user and sets the tokens expiration time to 24 hours.</p>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="building-and-running-the-application">Building and running the application</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>To build the application, run the <code>install</code> Maven goal from the command line:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code>mvn install</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>This goal builds the application and creates a <code>.war</code> file in the target directory. The goal also
+configures and installs Open Liberty into the <code>target/liberty/wlp</code> directory.</p>
+</div>
+<div class="paragraph">
+<p>Next, run the <code>liberty:start-server</code> Maven goal:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code>mvn liberty:start-server</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>This goal starts an Open Liberty server instance. Your Maven <code>pom.xml</code> is already configured to start
+the application in this server instance.</p>
+</div>
+<div class="paragraph">
+<p>When the Open Liberty application server has started, you can log in 
+to the system with the simple front end that is provided. Use one of the
+ following credentials to log in:</p>
+</div>
+<table class="tableblock frame-all grid-all spread">
+<colgroup>
+<col style="width: 33.3333%;">
+<col style="width: 33.3333%;">
+<col style="width: 33.3334%;">
+</colgroup>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>Username</strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>Password</strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>Role</strong></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>bob</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>pwd</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>admin, user</code></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>alice</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>alicepwd</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>user</code></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>carl</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>carlpwd</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>user</code></p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p>The following endpoint is used to log in to the system:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><code><a href="http://localhost:9090/system.jsf" class="bare">http://localhost:9090/system.jsf</a></code></p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>Once you log in, you can see some basic information about your 
+current session, including the user name of the user who is currently 
+logged in, your role, which is admin, the current operating system, the 
+size of your inventory, and the JSON Web Token (JWT) that is  used for 
+authorization in the back end.
+Remember that if you log in as a user without the role of admin, you 
+will be unable to see the inventory size because you do not have the 
+correct permissions.</p>
+</div>
+<div class="paragraph">
+<p>If you make changes to the code, use the Maven <code>package</code> goal to rebuild the application and have the
+running Open Liberty server pick them up automatically:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code>mvn package</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>To stop the Open Liberty server, run the Maven <code>liberty:stop-server</code> goal:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code>mvn liberty:stop-server</code></pre>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="testing-mp-jwt-authorization">Testing MP-JWT authorization</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>You will write <code>EndpointWithJwtTest</code> and <code>JwtTest</code> test classes to
+validate the state of each service.</p>
+</div>
+<div class="paragraph">
+<p>To begin, create a <code>start/backendServices/src/test/java/it/io/openliberty/guides/jwt/EndpointWithJwtTest.java</code> file:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="java"><span class="keyword">package</span> <span class="namespace">it.io.openliberty.guides.jwt</span>;
+
+<span class="keyword">import</span> <span class="include">static</span> <span class="include">org.junit.Assert.assertEquals</span>;
+
+<span class="keyword">import</span> <span class="include">javax.json.JsonObject</span>;
+<span class="keyword">import</span> <span class="include">javax.ws.rs.core.Response</span>;
+<span class="keyword">import</span> <span class="include">javax.ws.rs.core.Response.Status</span>;
+<span class="keyword">import</span> <span class="include">org.junit.Before</span>;
+<span class="keyword">import</span> <span class="include">org.junit.Test</span>;
+<span class="keyword">import</span> <span class="include">it.io.openliberty.guides.jwt.util.TestUtils</span>;
+<span class="keyword">import</span> <span class="include">test.JWTVerifier</span>;
+
+<span class="directive">public</span> <span class="type">class</span> <span class="class">EndpointWithJwtTest</span> {
+
+    <span class="directive">private</span> <span class="directive">final</span> <span class="predefined-type">String</span> INVENTORY_HOSTS = <span class="string"><span class="delimiter">"</span><span class="content">/inventory/systems</span><span class="delimiter">"</span></span>;
+    <span class="directive">private</span> <span class="directive">final</span> <span class="predefined-type">String</span> SYSTEM_PROPERTIES = <span class="string"><span class="delimiter">"</span><span class="content">/system/properties</span><span class="delimiter">"</span></span>;
+    <span class="directive">private</span> <span class="directive">final</span> <span class="predefined-type">String</span> TESTNAME = <span class="string"><span class="delimiter">"</span><span class="content">TESTUSER</span><span class="delimiter">"</span></span>;
+
+    <span class="predefined-type">String</span> baseUrl = <span class="string"><span class="delimiter">"</span><span class="content">https://</span><span class="delimiter">"</span></span> + <span class="predefined-type">System</span>.getProperty(<span class="string"><span class="delimiter">"</span><span class="content">liberty.test.hostname</span><span class="delimiter">"</span></span>) + <span class="string"><span class="delimiter">"</span><span class="content">:</span><span class="delimiter">"</span></span>
+            + <span class="predefined-type">System</span>.getProperty(<span class="string"><span class="delimiter">"</span><span class="content">liberty.test.ssl.port</span><span class="delimiter">"</span></span>);
+
+    <span class="predefined-type">String</span> authHeader;
+
+    <span class="annotation">@Before</span>
+    <span class="directive">public</span> <span class="type">void</span> setup() <span class="directive">throws</span> <span class="exception">Exception</span> {
+        authHeader = <span class="string"><span class="delimiter">"</span><span class="content">Bearer </span><span class="delimiter">"</span></span> + <span class="keyword">new</span> JWTVerifier().createAdminJWT(TESTNAME);
+    }
+
+    <span class="annotation">@Test</span>
+    <span class="directive">public</span> <span class="type">void</span> testSuite() {
+        <span class="local-variable">this</span>.testGetPropertiesWithJWT();
+        <span class="local-variable">this</span>.testEmptyInventoryWithJWT();
+        <span class="local-variable">this</span>.testHostRegistrationWithJWT();
+    }
+
+    <span class="directive">public</span> <span class="type">void</span> testGetPropertiesWithJWT() {
+        <span class="comment">// Get system properties by using JWT token</span>
+        <span class="predefined-type">String</span> propUrl = baseUrl + SYSTEM_PROPERTIES;
+        Response propResponse = TestUtils.processRequest(propUrl, <span class="string"><span class="delimiter">"</span><span class="content">GET</span><span class="delimiter">"</span></span>, <span class="predefined-constant">null</span>,
+                authHeader);
+
+        assertEquals(<span class="string"><span class="delimiter">"</span><span class="content">HTTP response code should have been </span><span class="delimiter">"</span></span> + Status.OK.getStatusCode() + <span class="string"><span class="delimiter">"</span><span class="content">.</span><span class="delimiter">"</span></span>,
+                     Status.OK.getStatusCode(),
+                     propResponse.getStatus());
+
+        JsonObject responseJson = TestUtils.toJsonObj(propResponse.readEntity(<span class="predefined-type">String</span>.class));
+
+        assertEquals(<span class="string"><span class="delimiter">"</span><span class="content">The system property for the local and remote JVM should match</span><span class="delimiter">"</span></span>,
+                     <span class="predefined-type">System</span>.getProperty(<span class="string"><span class="delimiter">"</span><span class="content">os.name</span><span class="delimiter">"</span></span>),
+                     responseJson.getString(<span class="string"><span class="delimiter">"</span><span class="content">os.name</span><span class="delimiter">"</span></span>));
+
+        <span class="predefined-type">System</span>.out.println(responseJson.getString(<span class="string"><span class="delimiter">"</span><span class="content">os.name</span><span class="delimiter">"</span></span>));
+        <span class="predefined-type">System</span>.out.println(propUrl);
+    }
+
+    <span class="directive">public</span> <span class="type">void</span> testEmptyInventoryWithJWT() {
+        <span class="predefined-type">String</span> invUrl = baseUrl + INVENTORY_HOSTS;
+        Response invResponse = TestUtils.processRequest(invUrl, <span class="string"><span class="delimiter">"</span><span class="content">GET</span><span class="delimiter">"</span></span>, <span class="predefined-constant">null</span>, authHeader);
+
+        assertEquals(<span class="string"><span class="delimiter">"</span><span class="content">HTTP response code should have been </span><span class="delimiter">"</span></span> + Status.OK.getStatusCode() + <span class="string"><span class="delimiter">"</span><span class="content">.</span><span class="delimiter">"</span></span>,
+                     Status.OK.getStatusCode(),
+                     invResponse.getStatus());
+
+        JsonObject responseJson = TestUtils.toJsonObj(invResponse.readEntity(<span class="predefined-type">String</span>.class));
+
+        assertEquals(<span class="string"><span class="delimiter">"</span><span class="content">The inventory should be empty on application start</span><span class="delimiter">"</span></span>,
+                     <span class="integer">0</span>,
+                     responseJson.getInt(<span class="string"><span class="delimiter">"</span><span class="content">total</span><span class="delimiter">"</span></span>));
+
+        <span class="predefined-type">System</span>.out.println(responseJson.getInt(<span class="string"><span class="delimiter">"</span><span class="content">total</span><span class="delimiter">"</span></span>));
+        <span class="predefined-type">System</span>.out.println(invUrl);
+    }
+
+    <span class="directive">public</span> <span class="type">void</span> testHostRegistrationWithJWT() {
+        <span class="predefined-type">String</span> invUrl = baseUrl + INVENTORY_HOSTS + <span class="string"><span class="delimiter">"</span><span class="content">/localhost</span><span class="delimiter">"</span></span>;
+        Response invResponse = TestUtils.processRequest(invUrl, <span class="string"><span class="delimiter">"</span><span class="content">GET</span><span class="delimiter">"</span></span>, <span class="predefined-constant">null</span>, authHeader);
+
+        assertEquals(<span class="string"><span class="delimiter">"</span><span class="content">HTTP response code should have been </span><span class="delimiter">"</span></span> + Status.OK.getStatusCode() + <span class="string"><span class="delimiter">"</span><span class="content">.</span><span class="delimiter">"</span></span>,
+                     Status.OK.getStatusCode(),
+                     invResponse.getStatus());
+
+        JsonObject responseJson = TestUtils.toJsonObj(invResponse.readEntity(<span class="predefined-type">String</span>.class));
+
+        assertEquals(<span class="string"><span class="delimiter">"</span><span class="content">The inventory should get the os.name of localhost</span><span class="delimiter">"</span></span>,
+                     <span class="predefined-type">System</span>.getProperty(<span class="string"><span class="delimiter">"</span><span class="content">os.name</span><span class="delimiter">"</span></span>),
+                     responseJson.getString(<span class="string"><span class="delimiter">"</span><span class="content">os.name</span><span class="delimiter">"</span></span>));
+
+        <span class="predefined-type">System</span>.out.println(responseJson.getString(<span class="string"><span class="delimiter">"</span><span class="content">os.name</span><span class="delimiter">"</span></span>));
+        <span class="predefined-type">System</span>.out.println(invUrl);
+    }
+
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>In the <code>setup()</code> before test cases, an authorization header is created with the credential of a test user who has the name <code>TESTUSER</code> and <code>admin</code> role.
+Then, this authorization header is added when the test client tries to send a <code>get</code> request to a secured service to retrieve any information.</p>
+</div>
+<div class="paragraph">
+<p>Each test case tries to first assert that with a valid authorization header, it can can get a <code>Status.OK</code> code from the response.
+If the response returns a <code>Status.FORBIDDEN</code> code, which means the authorization header is invalid, the test fails.</p>
+</div>
+<div class="paragraph">
+<p>After assuring the response code is correct, each test tries to get 
+the content from the designated endpoint and compares the result with 
+its expected value.</p>
+</div>
+<div class="paragraph">
+<p>Next, create a <code>start/backendServices/src/test/java/it/io/openliberty/guides/jwt/JwtTest.java</code> file:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="java"><span class="keyword">package</span> <span class="namespace">it.io.openliberty.guides.jwt</span>;
+
+<span class="keyword">import</span> <span class="include">static</span> <span class="include">org.junit.Assert.assertEquals</span>;
+
+<span class="keyword">import</span> <span class="include">javax.ws.rs.core.Response</span>;
+<span class="keyword">import</span> <span class="include">javax.ws.rs.core.Response.Status</span>;
+<span class="keyword">import</span> <span class="include">org.junit.Test</span>;
+<span class="keyword">import</span> <span class="include">org.junit.Before</span>;
+<span class="keyword">import</span> <span class="include">it.io.openliberty.guides.jwt.util.TestUtils</span>;
+<span class="keyword">import</span> <span class="include">test.JWTVerifier</span>;
+
+<span class="directive">public</span> <span class="type">class</span> <span class="class">JwtTest</span> {
+
+    <span class="directive">private</span> <span class="directive">final</span> <span class="predefined-type">String</span> TESTNAME = <span class="string"><span class="delimiter">"</span><span class="content">TESTUSER</span><span class="delimiter">"</span></span>;
+    <span class="directive">private</span> <span class="directive">final</span> <span class="predefined-type">String</span> INV_JWT = <span class="string"><span class="delimiter">"</span><span class="content">/inventory/jwt</span><span class="delimiter">"</span></span>;
+
+    <span class="predefined-type">String</span> baseUrl = <span class="string"><span class="delimiter">"</span><span class="content">https://</span><span class="delimiter">"</span></span> + <span class="predefined-type">System</span>.getProperty(<span class="string"><span class="delimiter">"</span><span class="content">liberty.test.hostname</span><span class="delimiter">"</span></span>) + <span class="string"><span class="delimiter">"</span><span class="content">:</span><span class="delimiter">"</span></span>
+            + <span class="predefined-type">System</span>.getProperty(<span class="string"><span class="delimiter">"</span><span class="content">liberty.test.ssl.port</span><span class="delimiter">"</span></span>);
+
+    <span class="predefined-type">String</span> authHeader;
+
+    <span class="annotation">@Before</span>
+    <span class="directive">public</span> <span class="type">void</span> setup() <span class="directive">throws</span> <span class="exception">Exception</span> {
+        authHeader = <span class="string"><span class="delimiter">"</span><span class="content">Bearer </span><span class="delimiter">"</span></span> + <span class="keyword">new</span> JWTVerifier().createUserJWT(TESTNAME);
+    }
+
+    <span class="annotation">@Test</span>
+    <span class="directive">public</span> <span class="type">void</span> testSuite() {
+        <span class="local-variable">this</span>.testJWTGetName();
+        <span class="local-variable">this</span>.testJWTGetCustomClaim();
+    }
+
+    <span class="directive">public</span> <span class="type">void</span> testJWTGetName() {
+        <span class="predefined-type">String</span> jwtUrl = baseUrl + INV_JWT + <span class="string"><span class="delimiter">"</span><span class="content">/username</span><span class="delimiter">"</span></span>;
+        Response jwtResponse = TestUtils.processRequest(jwtUrl, <span class="string"><span class="delimiter">"</span><span class="content">GET</span><span class="delimiter">"</span></span>, <span class="predefined-constant">null</span>, authHeader);
+
+        assertEquals(<span class="string"><span class="delimiter">"</span><span class="content">HTTP response code should have been </span><span class="delimiter">"</span></span> + Status.OK.getStatusCode() + <span class="string"><span class="delimiter">"</span><span class="content">.</span><span class="delimiter">"</span></span>,
+                     Status.OK.getStatusCode(),
+                     jwtResponse.getStatus());
+
+        <span class="predefined-type">String</span> responseName = jwtResponse.readEntity(<span class="predefined-type">String</span>.class);
+
+        assertEquals(<span class="string"><span class="delimiter">"</span><span class="content">The test name and jwt token name should match</span><span class="delimiter">"</span></span>,
+                     TESTNAME,
+                     responseName);
+    }
+
+    <span class="directive">public</span> <span class="type">void</span> testJWTGetCustomClaim() {
+        <span class="predefined-type">String</span> jwtUrl = baseUrl + INV_JWT + <span class="string"><span class="delimiter">"</span><span class="content">/customClaim</span><span class="delimiter">"</span></span>;
+        Response jwtResponse = TestUtils.processRequest(jwtUrl, <span class="string"><span class="delimiter">"</span><span class="content">GET</span><span class="delimiter">"</span></span>, <span class="predefined-constant">null</span>, authHeader);
+
+        assertEquals(<span class="string"><span class="delimiter">"</span><span class="content">HTTP response code should have been </span><span class="delimiter">"</span></span> + Status.FORBIDDEN.getStatusCode() + <span class="string"><span class="delimiter">"</span><span class="content">.</span><span class="delimiter">"</span></span>,
+                     Status.FORBIDDEN.getStatusCode(),
+                     jwtResponse.getStatus());
+    }
+
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Similarly, in the <code>setup()</code> step of the <code>JwtTest</code>, an authorization header is created with the credential of a test user who has the name as <code>TESTUSER</code> and the <code>user</code> role.
+The authorization header is added when the test client tries to send a <code>get</code> request to a secured JWT service.</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><code>testJWTGetName()</code> tries to access the <code><a href="https://localhost:5051/inventory/jwt/username" class="bare">https://localhost:5051/inventory/jwt/username</a></code> endpoint to get the username from the JWT token, and verify
+if the username is same as <code>TESTUSER</code>.</p>
+</li>
+<li>
+<p><code>testJWTGetCustomClaim()</code> tries to access the <code><a href="https://localhost:5051/inventory/jwt/customClaim" class="bare">https://localhost:5051/inventory/jwt/customClaim</a></code> endpoint. Since this service is secured and only accessible for users who have the <code>admin</code> role,
+the test is asserting that the current test user who has a normal <code>user</code> role is forbidden from accessing it.</p>
+</li>
+</ul>
+</div>
+<div class="sect2">
+<h3 id="running-the-tests">Running the tests</h3>
+<div class="paragraph">
+<p>If the server is still running from the previous steps, stop it first using the Maven <code>liberty:stop-server</code> goal:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code>mvn liberty:stop-server</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Then, verify that the tests pass using the Maven <code>verify</code> goal:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code>mvn verify</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>It may take some time before build is complete. If the tests pass, you will see a similar output to the following:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code>-------------------------------------------------------
+ T E S T S
+-------------------------------------------------------
+Running it.io.openliberty.guides.jwt.EndpointWithJwtTest
+
+Tests run: 1, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 2.444 sec - in it.io.openliberty.guides.jwt.EndpointWithJwtTest
+Running it.io.openliberty.guides.jwt.JwtTest
+Tests run: 1, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.086 sec - in it.io.openliberty.guides.jwt.JwtTest
+
+Results :
+
+Tests run: 2, Failures: 0, Errors: 0, Skipped: 0</code></pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="great-work-you-re-done">Great work! You’re done!</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>You have learned how to add MP-JWT authentication to secure your microservices, and you wrote tests to validate them.</p>
+</div>
+<div class="paragraph">
+<p>Next, you can try one of the related MicroProfile guides. They 
+demonstrate new technologies that you can learn and expand on what you 
+built here.</p>
+</div>
+</div>
+</div>
+
+                    
+
+                    
+                </div>
+                <div id="copied_to_clipboard_confirmation" style="display: none;">Copied to clipboard</div>
+                <a id="copy_to_clipboard" href="" style="display: none;"></a>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+    </main>
+
+    <footer>
+  <div id="footer_container" class="container">
+      <div class="row">
+          <div class="col-xs-12 text-right">
+              <div id="footer_links_container">
+                  <a href="https://github.com/OpenLiberty/open-liberty/blob/master/LICENSE" target="new" class="footer_link">License</a>
+                  <a href="https://www.ibm.com/privacy/us/en/" target="new" class="footer_link">Privacy policy</a>
+                  <a id="footer_twitter_link" href="https://twitter.com/OpenLibertyIO" target="new" aria-label="Twitter"></a>
+                  <a id="footer_github_link" href="https://github.com/OpenLiberty" target="new" aria-label="GitHub"></a>
+              </div>
+              <p id="footer_text">an IBM open source project</p>
+              <p id="footer_copyright">© Copyright IBM Corp. 2017</p>
+          </div>
+      </div>
+  </div>
+  <div class="hidden">
+    <img src="Securing%20microservices%20with%20JSON%20Web%20Tokens%20%28JWT%29%20-%20Open%20Liberty_files/footer_twitter_darker.png">
+    <img src="Securing%20microservices%20with%20JSON%20Web%20Tokens%20%28JWT%29%20-%20Open%20Liberty_files/footer_github_darker.png">
+  </div>
+</footer>
+
+
+    <script src="Securing%20microservices%20with%20JSON%20Web%20Tokens%20%28JWT%29%20-%20Open%20Liberty_files/jquery.js"></script>
+    <script src="Securing%20microservices%20with%20JSON%20Web%20Tokens%20%28JWT%29%20-%20Open%20Liberty_files/bootstrap.js"></script>
+
+
+    
+
+    
+      <script type="text/javascript" src="Securing%20microservices%20with%20JSON%20Web%20Tokens%20%28JWT%29%20-%20Open%20Liberty_files/guide.js"></script>
+    
+
+  
+
+
+</body></html>
