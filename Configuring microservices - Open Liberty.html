@@ -1,0 +1,1070 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+<meta http-equiv="content-type" content="text/html; charset=UTF-8">
+
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <title>Configuring microservices - Open Liberty</title>
+  <meta name="description" content="Open Liberty is the most flexible server runtime available to Earth’s Java developers.">
+
+  <link rel="stylesheet" href="Configuring%20microservices%20-%20Open%20Liberty_files/bootstrap.css">
+  <link type="text/css" rel="stylesheet" href="Configuring%20microservices%20-%20Open%20Liberty_files/openliberty.css">
+  <link type="text/css" rel="stylesheet" href="Configuring%20microservices%20-%20Open%20Liberty_files/coderay-custom.css">
+
+  
+  
+  
+    <link type="text/css" rel="stylesheet" href="Configuring%20microservices%20-%20Open%20Liberty_files/guide-card.css">
+  
+    <link type="text/css" rel="stylesheet" href="Configuring%20microservices%20-%20Open%20Liberty_files/guide.css">
+  
+
+  
+
+  
+
+  <link rel="canonical" href="https://openliberty.io/guides/microprofile-config">
+  <link href="Configuring%20microservices%20-%20Open%20Liberty_files/css.css" rel="stylesheet">
+    
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:site" content="@OpenLibertyIO">
+  <meta name="twitter:title" content="Open Liberty">
+  <meta name="twitter:description" content="Open Liberty is the most flexible server runtime available to Earth’s Java developers.">
+  <meta name="twitter:image" content="https://openliberty.io/img/twitter_card.jpg">
+  
+  <meta name="google-site-verification" content="h2P030H9b66CyL1nEmWfrZB8Fr14h9LmVMG7Ur0caBs">
+
+</head>
+
+
+  <body>
+    
+    
+
+    <header>
+<nav class="navbar navbar-default">
+    <div class="container">
+        <div class="navbar-header">
+            <button id="navbar_responsive_button" class="navbar-toggle collapsed" type="button" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+                        
+        </div>
+        <div id="navbar" class="navbar-collapse collapse">
+            <ul class="nav navbar-nav navbar-right text-right">
+                <li class="hidden-xs"><a id="navbar_github_link" href="https://github.com/OpenLiberty" target="new" aria-label="Open Liberty GitHub Repository"></a></li>
+            </ul>
+        </div>
+    </div>
+  </nav>
+  <div class="hidden">
+    <img src="Configuring%20microservices%20-%20Open%20Liberty_files/small_logo_white.svg">
+    <img src="Configuring%20microservices%20-%20Open%20Liberty_files/github_navbar_hover.svg">
+  </div>
+</header>
+
+
+    <main aria-label="Content">
+
+      <div id="background_container" class="black_blue_gradient_background">
+    <div class="container">
+        <div id="title_row" class="row">
+            <div class="col-xs-12">
+                <img id="intro_logo" src="Configuring%20microservices%20-%20Open%20Liberty_files/guides_page_title_small.svg" alt="Guides">
+            </div>
+        </div>
+        <div class="row">
+            <!-- Guide's table of contents section -->
+            <div id="toc_column" class="col-sm-3">
+                <div id="toc_inner" style="">
+                    
+                    
+                    <h3 id="toc_title">Contents</h3>
+                    <div id="toc_container">
+                        <ul class="sectlevel1">
+<li><a href="#what-you-ll-learn">What you’ll learn</a>
+<ul class="sectlevel2">
+<li><a href="#try-what-you-ll-build">Try what you’ll build</a></li>
+</ul>
+</li>
+<li><a href="#ordering-multiple-configuration-sources">Ordering multiple configuration sources</a></li>
+<li><a href="#injecting-static-configuration">Injecting static configuration</a></li>
+<li><a href="#creating-custom-configuration-sources">Creating custom configuration sources</a></li>
+<li><a href="#enabling-dynamic-configuration-injection">Enabling dynamic configuration injection</a></li>
+<li><a href="#creating-custom-converters">Creating custom converters</a></li>
+<li><a href="#adding-configuration-to-the-microservice">Adding configuration to the microservice</a></li>
+<li><a href="#building-and-running-the-application">Building and running the application</a></li>
+<li><a href="#testing-the-application">Testing the application</a>
+<ul class="sectlevel2">
+<li><a href="#running-the-tests">Running the tests</a></li>
+</ul>
+</li>
+<li><a href="#great-work-you-re-done">Great work! You’re done!</a></li>
+                    </div>
+                    
+                    
+                </div>
+            </div>
+            <!-- Entire guide section -->
+            <div id="guide_column" class="col-sm-9 position_relative">
+                <div id="guide_content">
+                    <!-- Guide header section -->
+                    <div id="guide_meta" class="sect1">
+                        <h1 id="guide_title">Configuring microservices</h1>
+                        <div id="preamble">
+<div class="sectionbody">
+<div class="paragraph">
+<p>Learn how to provide external configuration to microservices using MicroProfile Config.</p>
+</div>
+</div>
+</div><div id="duration_container">
+                            <img src="Configuring%20microservices%20-%20Open%20Liberty_files/guide_duration_clock_icon_large.svg" alt="duration">
+                            <span id="guide_duration">20 minutes</span>
+                        </div>
+                    </div>
+
+                    <!-- Guide content section -->
+                    
+<div class="sect1">
+<h2 id="what-you-ll-learn">What you’ll learn</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>You will learn how to externalize and inject both static and dynamic 
+configuration properties for microservices using MicroProfile Config.</p>
+</div>
+<div class="paragraph">
+<p>You will learn to aggregate multiple configuration sources, assign 
+prioritization values to these sources, merge configuration values, and 
+create custom configuration sources.</p>
+</div>
+<div class="paragraph">
+<p>The application that you will be working with is an <code>inventory</code> service which stores the information about various JVMs running on different hosts.
+Whenever a request is made to the <code>inventory</code> service to retrieve the JVM
+system properties of a particular host, the <code>inventory</code> service will communicate with the <code>system</code>
+service on that host to get these system properties. You will learn how 
+to add externalized configurations to set services to the <code>in maintenance</code> mode.</p>
+</div>
+<div class="paragraph">
+<p>The fastest way to work through this guide is to clone the Git repository and use the starting project
+that is provided in the <code>start</code> directory. To do this, run the following commands:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>git clone https://github.com/OpenLiberty/draft-guide-microprofile-config.git
+cd draft-guide-microprofile-config/start</pre>
+</div>
+</div>
+<div class="sect2">
+<h3 id="try-what-you-ll-build">Try what you’ll build</h3>
+<div class="paragraph">
+<p>The <code>finish</code> directory in the root of this guide contains the finished inventory application. Feel
+free to give it a try before you proceed.</p>
+</div>
+<div class="paragraph">
+<p>To try out the application, first navigate to the <code>finish</code> directory and then run the following
+Maven goals to build the application and run it inside Open Liberty:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code>mvn install liberty:start-server</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>After starting the application, you can access the following two microservices to test their availability:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><code><a href="http://localhost:9080/system/properties" class="bare">http://localhost:9080/system/properties</a></code> retrieves the information for a specific host</p>
+</li>
+<li>
+<p><code><a href="http://localhost:9080/inventory/systems" class="bare">http://localhost:9080/inventory/systems</a></code> retrieves the information for a list of all previously registered hosts</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>In addition, you can access a third microservice, which retrieves and
+ aggregates all of the configuration properties and sources that have 
+been added throughout this guide. This is available at:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><code><a href="http://localhost:9080/config" class="bare">http://localhost:9080/config</a></code></p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>Once you are done checking out the application, stop the Open Liberty server:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code>mvn liberty:stop-server</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Now, navigate back to the <code>start</code> directory to begin.</p>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="ordering-multiple-configuration-sources">Ordering multiple configuration sources</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>MicroProfile Config combines configuration properties from multiple sources, each known as a <em>ConfigSource</em>. Each ConfigSource has a specified priority, defined by its <em>config_ordinal</em> value.</p>
+</div>
+<div class="paragraph">
+<p>A higher ordinal value means that the values taken from this 
+ConfigSource will override values from ConfigSources with a lower 
+ordinal value.</p>
+</div>
+<div class="paragraph">
+<p>There are three default configuration sources as following:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>System properties has a default ordinal of 400. (e.g. <code>bootstrap.properties</code> file)</p>
+</li>
+<li>
+<p>Environment variables has a default ordinal of 300. (e.g. <code>server.env</code> file)</p>
+</li>
+<li>
+<p>The <code>META-INF/microprofile-config.properties</code> configuration property file on the classpath has a default ordinal of 100.</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>Access the local <code>microprofile-config.properties</code> configuration file in the <code>start/src/main/resources/META-INF</code> directory. This configuration file is the default configuration source for an application that uses MicroProfile Config.</p>
+</div>
+<div class="listingblock no_copy">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="java">config_ordinal=<span class="integer">100</span>
+io_openliberty_guides_port_number=<span class="integer">9080</span>
+io_openliberty_guides_inventory_inMaintenance=<span class="predefined-constant">false</span>
+io_openliberty_guides_system_inMaintenance=<span class="predefined-constant">false</span>
+io_openliberty_guides_testConfigOverwrite=DefaultSource</code></pre>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="injecting-static-configuration">Injecting static configuration</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Begin by navigating to the <code>pom.xml</code> file to check the required dependency. The <code>microprofile-config-api</code> dependency has been added for you in the <code>start/pom.xml</code> file.
+The <code>mpConfig-1.1</code> feature has also been enabled in the <code>start/src/main/liberty/config/server.xml</code> file.</p>
+</div>
+<div class="paragraph">
+<p>Now navigate to the local  <code>microprofile-config.properties</code> configuration file in the <code>start/src/main/resources/META-INF</code> directory to check some static configuration.
+This configuration file is the default configuration source for an application that uses MicroProfile Config.</p>
+</div>
+<div class="paragraph">
+<p>The <code>io_openliberty_guides_port_number</code> property that has already been defined in this file, determines the port number of the REST service.</p>
+</div>
+<div class="paragraph">
+<p>To use this configuration property, create a <code>start/src/main/java/io/openliberty/guides/inventory/InventoryConfig.java</code> file:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="java"><span class="keyword">package</span> <span class="namespace">io.openliberty.guides.inventory</span>;
+
+<span class="keyword">import</span> <span class="include">javax.enterprise.context.RequestScoped</span>;
+<span class="keyword">import</span> <span class="include">javax.inject.Inject</span>;
+<span class="keyword">import</span> <span class="include">javax.inject.Provider</span>;
+<span class="keyword">import</span> <span class="include">org.eclipse.microprofile.config.inject.ConfigProperty</span>;
+<span class="keyword">import</span> <span class="include">io.openliberty.guides.config.Email</span>;
+
+<span class="annotation">@RequestScoped</span>
+<span class="directive">public</span> <span class="type">class</span> <span class="class">InventoryConfig</span> {
+
+  <span class="annotation">@Inject</span>
+  <span class="annotation">@ConfigProperty</span>(name = <span class="string"><span class="delimiter">"</span><span class="content">io_openliberty_guides_port_number</span><span class="delimiter">"</span></span>)
+  <span class="directive">private</span> <span class="type">int</span> portNumber;
+
+  <span class="annotation">@Inject</span>
+  <span class="annotation">@ConfigProperty</span>(name = <span class="string"><span class="delimiter">"</span><span class="content">io_openliberty_guides_inventory_inMaintenance</span><span class="delimiter">"</span></span>)
+  <span class="directive">private</span> <span class="predefined-type">Provider</span>&lt;<span class="predefined-type">Boolean</span>&gt; inMaintenance;
+
+  <span class="annotation">@Inject</span>
+  <span class="annotation">@ConfigProperty</span>(name = <span class="string"><span class="delimiter">"</span><span class="content">io_openliberty_guides_email</span><span class="delimiter">"</span></span>)
+  <span class="directive">private</span> <span class="predefined-type">Provider</span>&lt;Email&gt; email;
+
+
+  <span class="directive">public</span> <span class="type">boolean</span> isInMaintenance() {
+    <span class="keyword">return</span> inMaintenance.get();
+  }
+
+  <span class="directive">public</span> Email getEmail() {
+    <span class="keyword">return</span> email.get();
+  }
+
+  <span class="directive">public</span> <span class="type">int</span> getPortNumber() {
+    <span class="keyword">return</span> portNumber;
+  }
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Inject the <code>io_openliberty_guides_port_number</code> property, and add the <code>getPortNumber()</code> class method to the <code>InventoryConfig.java</code> file.</p>
+</div>
+<div class="paragraph">
+<p>The <code>@Inject</code> annotation injects the port number directly, the injection value is static and fixed on application starting.</p>
+</div>
+<div class="paragraph">
+<p>The <code>getPortNumber()</code> method directly returns the value of <code>portNumber</code> because it has been injected.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="creating-custom-configuration-sources">Creating custom configuration sources</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Note that three default config sources mentioned above are static and
+ fixed on application starting, so the properties within them cannot be 
+modified while the server is running.
+However, you can externalize configuration data out of the application 
+package, through the creation of custom configuration sources, so that 
+the service updates configuration changes dynamically.</p>
+</div>
+<div class="paragraph">
+<p>Custom configuration sources can be created by implementing the <code>org.eclipse.microprofile.config.spi.ConfigSource</code> interface and using the <code>java.util.ServiceLoader</code> mechanism.</p>
+</div>
+<div class="paragraph">
+<p>A <code>CustomConfigSource.json</code> JSON file has already been created outside of the application (<code>guide-microprofile-config/resources/</code>).
+This file contains 4 custom config properties and has an ordinal of <code>50</code>.
+To use these properties in the application, the data object needs to be 
+transformed from this JSON file to the configuration for your 
+application.</p>
+</div>
+<div class="paragraph">
+<p>To link this JSON file to your application, create a <code>start/src/main/java/io/openliberty/guides/config/CustomConfigSource.java</code> file and add the following content to override the <code>ConfigSource</code> interface:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="java"><span class="keyword">package</span> <span class="namespace">io.openliberty.guides.config</span>;
+
+<span class="keyword">import</span> <span class="include">javax.json.stream.JsonParser</span>;
+<span class="keyword">import</span> <span class="include">javax.json.stream.JsonParser.Event</span>;
+<span class="keyword">import</span> <span class="include">javax.json.Json</span>;
+<span class="keyword">import</span> <span class="include">java.math.BigDecimal</span>;
+<span class="keyword">import</span> <span class="include">java.util</span>.*;
+<span class="keyword">import</span> <span class="include">java.io.StringReader</span>;
+
+<span class="keyword">import</span> <span class="include">java.io.BufferedReader</span>;
+<span class="keyword">import</span> <span class="include">java.io.FileReader</span>;
+<span class="keyword">import</span> <span class="include">org.eclipse.microprofile.config.spi.ConfigSource</span>;
+
+<span class="directive">public</span> <span class="type">class</span> <span class="class">CustomConfigSource</span> <span class="directive">implements</span> ConfigSource {
+
+  <span class="predefined-type">String</span> fileLocation = <span class="predefined-type">System</span>.getProperty(<span class="string"><span class="delimiter">"</span><span class="content">user.dir</span><span class="delimiter">"</span></span>).split(<span class="string"><span class="delimiter">"</span><span class="content">target</span><span class="delimiter">"</span></span>)[<span class="integer">0</span>]
+      + <span class="string"><span class="delimiter">"</span><span class="content">../resources/CustomConfigSource.json</span><span class="delimiter">"</span></span>;
+  <span class="predefined-type">Map</span>&lt;<span class="predefined-type">String</span>, <span class="predefined-type">String</span>&gt; map = setProperties();
+
+  <span class="annotation">@Override</span>
+  <span class="directive">public</span> <span class="type">int</span> getOrdinal() {
+    <span class="keyword">return</span> <span class="predefined-type">Integer</span>.parseInt(<span class="local-variable">this</span>.map.get(<span class="string"><span class="delimiter">"</span><span class="content">config_ordinal</span><span class="delimiter">"</span></span>));
+  }
+
+  <span class="annotation">@Override</span>
+  <span class="directive">public</span> <span class="predefined-type">Set</span>&lt;<span class="predefined-type">String</span>&gt; getPropertyNames() {
+    <span class="keyword">return</span> <span class="local-variable">this</span>.map.keySet();
+  }
+
+  <span class="annotation">@Override</span>
+  <span class="directive">public</span> <span class="predefined-type">Map</span>&lt;<span class="predefined-type">String</span>, <span class="predefined-type">String</span>&gt; getProperties() {
+    <span class="keyword">return</span> <span class="local-variable">this</span>.map;
+  }
+
+  <span class="annotation">@Override</span>
+  <span class="directive">public</span> <span class="predefined-type">String</span> getValue(<span class="predefined-type">String</span> key) {
+    <span class="keyword">return</span> <span class="local-variable">this</span>.map.get(key);
+  }
+
+  <span class="annotation">@Override</span>
+  <span class="directive">public</span> <span class="predefined-type">String</span> getName() {
+    <span class="keyword">return</span> <span class="string"><span class="delimiter">"</span><span class="content">Custom Config Source: file:</span><span class="delimiter">"</span></span> + <span class="local-variable">this</span>.fileLocation;
+  }
+
+  <span class="directive">private</span> <span class="predefined-type">Map</span>&lt;<span class="predefined-type">String</span>, <span class="predefined-type">String</span>&gt; setProperties() {
+    <span class="predefined-type">Map</span>&lt;<span class="predefined-type">String</span>, <span class="predefined-type">String</span>&gt; m = <span class="keyword">new</span> <span class="predefined-type">HashMap</span>&lt;<span class="predefined-type">String</span>, <span class="predefined-type">String</span>&gt;();
+    <span class="predefined-type">String</span> jsonData = <span class="local-variable">this</span>.readFile(<span class="local-variable">this</span>.fileLocation);
+    JsonParser parser = Json.createParser(<span class="keyword">new</span> <span class="predefined-type">StringReader</span>(jsonData));
+    <span class="predefined-type">String</span> key = <span class="predefined-constant">null</span>;
+    <span class="keyword">while</span> (parser.hasNext()) {
+      <span class="directive">final</span> <span class="predefined-type">Event</span> event = parser.next();
+      <span class="keyword">switch</span> (event) {
+      <span class="keyword">case</span> KEY_NAME:
+        key = parser.getString();
+        <span class="keyword">break</span>;
+      <span class="keyword">case</span> VALUE_STRING:
+        <span class="predefined-type">String</span> string = parser.getString();
+        m.put(key, string);
+        <span class="keyword">break</span>;
+      <span class="keyword">case</span> VALUE_NUMBER:
+        <span class="predefined-type">BigDecimal</span> number = parser.getBigDecimal();
+        m.put(key, number.toString());
+        <span class="keyword">break</span>;
+      <span class="keyword">case</span> VALUE_TRUE:
+        m.put(key, <span class="string"><span class="delimiter">"</span><span class="content">true</span><span class="delimiter">"</span></span>);
+        <span class="keyword">break</span>;
+      <span class="keyword">case</span> VALUE_FALSE:
+        m.put(key, <span class="string"><span class="delimiter">"</span><span class="content">false</span><span class="delimiter">"</span></span>);
+        <span class="keyword">break</span>;
+      <span class="keyword">default</span>:
+        <span class="keyword">break</span>;
+      }
+    }
+    parser.close();
+    <span class="keyword">return</span> m;
+  }
+
+  <span class="directive">public</span> <span class="predefined-type">String</span> readFile(<span class="predefined-type">String</span> fileName) {
+    <span class="predefined-type">String</span> result = <span class="string"><span class="delimiter">"</span><span class="delimiter">"</span></span>;
+    <span class="keyword">try</span> {
+      <span class="predefined-type">BufferedReader</span> br = <span class="keyword">new</span> <span class="predefined-type">BufferedReader</span>(<span class="keyword">new</span> <span class="predefined-type">FileReader</span>(fileName));
+      <span class="predefined-type">StringBuilder</span> sb = <span class="keyword">new</span> <span class="predefined-type">StringBuilder</span>();
+      <span class="predefined-type">String</span> line = br.readLine();
+      <span class="keyword">while</span> (line != <span class="predefined-constant">null</span>) {
+        sb.append(line);
+        line = br.readLine();
+      }
+      result = sb.toString();
+      br.close();
+    } <span class="keyword">catch</span> (<span class="exception">Exception</span> e) {
+      e.printStackTrace();
+    }
+    <span class="keyword">return</span> result;
+  }
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The <code>setProperties()</code> private method reads the key value pairs from the <code>CustomConfigSource.json</code> JSON file and writes the information into a map.</p>
+</div>
+<div class="paragraph">
+<p>To register the custom configuration source, create a <code>start/src/main/resources/META-INF/services/org.eclipse.microprofile.config.spi.ConfigSource</code> file and add the full class name into it:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="java">io.openliberty.guides.config.CustomConfigSource</code></pre>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="enabling-dynamic-configuration-injection">Enabling dynamic configuration injection</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Now that the custom configuration source has successfully been set 
+up, you can enable dynamic configuration injection of the properties 
+being set in this ConfigSource.
+To enable this dynamic injection, first access the partially implemented
+ <code>InventoryConfig.java</code> Java class in the <code>start/src/main/java/io/openliberty/guides/inventory</code> directory,
+inject the <code>io_openliberty_guides_inventory_inMaintenance</code> property, and add the <code>isInMaintenance()</code> class method as shown in the following example:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="java"><span class="keyword">package</span> <span class="namespace">io.openliberty.guides.inventory</span>;
+
+<span class="keyword">import</span> <span class="include">javax.enterprise.context.RequestScoped</span>;
+<span class="keyword">import</span> <span class="include">javax.inject.Inject</span>;
+<span class="keyword">import</span> <span class="include">javax.inject.Provider</span>;
+<span class="keyword">import</span> <span class="include">org.eclipse.microprofile.config.inject.ConfigProperty</span>;
+<span class="keyword">import</span> <span class="include">io.openliberty.guides.config.Email</span>;
+
+<span class="annotation">@RequestScoped</span>
+<span class="directive">public</span> <span class="type">class</span> <span class="class">InventoryConfig</span> {
+
+  <span class="annotation">@Inject</span>
+  <span class="annotation">@ConfigProperty</span>(name = <span class="string"><span class="delimiter">"</span><span class="content">io_openliberty_guides_port_number</span><span class="delimiter">"</span></span>)
+  <span class="directive">private</span> <span class="type">int</span> portNumber;
+
+  <span class="annotation">@Inject</span>
+  <span class="annotation">@ConfigProperty</span>(name = <span class="string"><span class="delimiter">"</span><span class="content">io_openliberty_guides_inventory_inMaintenance</span><span class="delimiter">"</span></span>)
+  <span class="directive">private</span> <span class="predefined-type">Provider</span>&lt;<span class="predefined-type">Boolean</span>&gt; inMaintenance;
+
+  <span class="annotation">@Inject</span>
+  <span class="annotation">@ConfigProperty</span>(name = <span class="string"><span class="delimiter">"</span><span class="content">io_openliberty_guides_email</span><span class="delimiter">"</span></span>)
+  <span class="directive">private</span> <span class="predefined-type">Provider</span>&lt;Email&gt; email;
+
+
+  <span class="directive">public</span> <span class="type">boolean</span> isInMaintenance() {
+    <span class="keyword">return</span> inMaintenance.get();
+  }
+
+  <span class="directive">public</span> Email getEmail() {
+    <span class="keyword">return</span> email.get();
+  }
+
+  <span class="directive">public</span> <span class="type">int</span> getPortNumber() {
+    <span class="keyword">return</span> portNumber;
+  }
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The <code>@Inject</code> and <code>@ConfigProperty</code> annotations inject the <code>io_openliberty_guides_inventory_inMaintenance</code> configuration property from the <code>CustomConfigSource.json</code> file.
+The <code>Provider&lt;&gt;</code> interface used, forces the service to 
+retrieve the inMaintenance value just in time. This retrieval of the 
+value just in time makes the config injection dynamic and able to change
+ without having to restart the application.</p>
+</div>
+<div class="paragraph">
+<p>Every time that you invoke the <code>inMaintenance.get()</code> method, the <code>Provider&lt;&gt;</code> interface picks up the
+latest value of the <code>io_openliberty_guides_inventory_inMaintenance</code> property from configuration sources.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="creating-custom-converters">Creating custom converters</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Configuration values are purely Strings. MicroProfile Config API has 
+built-in converters that automatically converts configured Strings into 
+target types such as <code>int</code>, <code>Integer</code>, <code>boolean</code>, <code>Boolean</code>, <code>float</code>, <code>Float</code>, <code>double</code> and <code>Double</code>.
+Therefore, in the previous section, it is type-safe to directly set the variable type to <code>Provider&lt;Boolean&gt;</code>.</p>
+</div>
+<div class="paragraph">
+<p>To convert configured Strings to an arbitrary class type, such as the <code>Email</code> class type, create a <code>start/src/main/java/io/openliberty/guides/config/Email.java</code> file:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="java"><span class="keyword">package</span> <span class="namespace">io.openliberty.guides.config</span>;
+
+<span class="directive">public</span> <span class="type">class</span> <span class="class">Email</span> {
+  <span class="directive">private</span> <span class="predefined-type">String</span> name;
+  <span class="directive">private</span> <span class="predefined-type">String</span> domain;
+
+  <span class="directive">public</span> Email(<span class="predefined-type">String</span> value) {
+    <span class="predefined-type">String</span><span class="type">[]</span> components = value.split(<span class="string"><span class="delimiter">"</span><span class="content">@</span><span class="delimiter">"</span></span>);
+    <span class="keyword">if</span> (components.length == <span class="integer">2</span>) {
+      name = components[<span class="integer">0</span>];
+      domain = components[<span class="integer">1</span>];
+    }
+  }
+
+  <span class="directive">public</span> <span class="predefined-type">String</span> getEmailName() {
+    <span class="keyword">return</span> name;
+  }
+
+  <span class="directive">public</span> <span class="predefined-type">String</span> getEmailDomain() {
+    <span class="keyword">return</span> domain;
+  }
+
+  <span class="directive">public</span> <span class="predefined-type">String</span> toString() {
+    <span class="keyword">return</span> name + <span class="string"><span class="delimiter">"</span><span class="content">@</span><span class="delimiter">"</span></span> + domain;
+  }
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>To use this <code>Email</code> class type, add a custom converter by implementing the generic interface <code>org.eclipse.microprofile.config.spi.Converter&lt;T&gt;</code>.
+The Type parameter of the interface is the target type the String is converted to.</p>
+</div>
+<div class="paragraph">
+<p>Create a <code>start/src/main/java/io/openliberty/guides/config/CustomEmailConverter.java</code> file, and add the following content to override the <code>Converter&lt;T&gt;</code> interface:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="java"><span class="keyword">package</span> <span class="namespace">io.openliberty.guides.config</span>;
+
+<span class="keyword">import</span> <span class="include">org.eclipse.microprofile.config.spi.Converter</span>;
+<span class="keyword">import</span> <span class="include">io.openliberty.guides.config.Email</span>;
+
+<span class="directive">public</span> <span class="type">class</span> <span class="class">CustomEmailConverter</span> <span class="directive">implements</span> Converter&lt;Email&gt; {
+
+  <span class="annotation">@Override</span>
+  <span class="directive">public</span> Email convert(<span class="predefined-type">String</span> value) {
+    <span class="keyword">return</span> <span class="keyword">new</span> Email(value);
+  }
+
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>To register your implementation, create a <code>start/src/main/resources/META-INF/services/org.eclipse.microprofile.config.spi.Converter</code> file and add the fully qualified class name of the custom converter into it:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="java">io.openliberty.guides.config.CustomEmailConverter</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>To use the custom <code>Email</code> converter, open the <code>InventoryConfig.java</code> file, inject the <code>io_openliberty_guides_email</code> property, and add the <code>getEmail()</code> method:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="java"><span class="keyword">package</span> <span class="namespace">io.openliberty.guides.inventory</span>;
+
+<span class="keyword">import</span> <span class="include">javax.enterprise.context.RequestScoped</span>;
+<span class="keyword">import</span> <span class="include">javax.inject.Inject</span>;
+<span class="keyword">import</span> <span class="include">javax.inject.Provider</span>;
+<span class="keyword">import</span> <span class="include">org.eclipse.microprofile.config.inject.ConfigProperty</span>;
+<span class="keyword">import</span> <span class="include">io.openliberty.guides.config.Email</span>;
+
+<span class="annotation">@RequestScoped</span>
+<span class="directive">public</span> <span class="type">class</span> <span class="class">InventoryConfig</span> {
+
+  <span class="annotation">@Inject</span>
+  <span class="annotation">@ConfigProperty</span>(name = <span class="string"><span class="delimiter">"</span><span class="content">io_openliberty_guides_port_number</span><span class="delimiter">"</span></span>)
+  <span class="directive">private</span> <span class="type">int</span> portNumber;
+
+  <span class="annotation">@Inject</span>
+  <span class="annotation">@ConfigProperty</span>(name = <span class="string"><span class="delimiter">"</span><span class="content">io_openliberty_guides_inventory_inMaintenance</span><span class="delimiter">"</span></span>)
+  <span class="directive">private</span> <span class="predefined-type">Provider</span>&lt;<span class="predefined-type">Boolean</span>&gt; inMaintenance;
+
+  <span class="annotation">@Inject</span>
+  <span class="annotation">@ConfigProperty</span>(name = <span class="string"><span class="delimiter">"</span><span class="content">io_openliberty_guides_email</span><span class="delimiter">"</span></span>)
+  <span class="directive">private</span> <span class="predefined-type">Provider</span>&lt;Email&gt; email;
+
+
+  <span class="directive">public</span> <span class="type">boolean</span> isInMaintenance() {
+    <span class="keyword">return</span> inMaintenance.get();
+  }
+
+  <span class="directive">public</span> Email getEmail() {
+    <span class="keyword">return</span> email.get();
+  }
+
+  <span class="directive">public</span> <span class="type">int</span> getPortNumber() {
+    <span class="keyword">return</span> portNumber;
+  }
+}</code></pre>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="adding-configuration-to-the-microservice">Adding configuration to the microservice</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>To use externalized configuration in the <code>inventory</code> service, open the <code>src/main/java/io/openliberty/guides/inventory/InventoryResource.java</code> file.
+Modify the existing class to finalize the code as the following:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="java"><span class="keyword">package</span> <span class="namespace">io.openliberty.guides.inventory</span>;
+
+<span class="keyword">import</span> <span class="include">java.util.Properties</span>;
+
+<span class="comment">// CDI</span>
+<span class="keyword">import</span> <span class="include">javax.enterprise.context.RequestScoped</span>;
+<span class="keyword">import</span> <span class="include">javax.inject.Inject</span>;
+<span class="keyword">import</span> <span class="include">javax.ws.rs.GET</span>;
+<span class="keyword">import</span> <span class="include">javax.ws.rs.Path</span>;
+<span class="keyword">import</span> <span class="include">javax.ws.rs.PathParam</span>;
+<span class="keyword">import</span> <span class="include">javax.ws.rs.Produces</span>;
+<span class="keyword">import</span> <span class="include">javax.ws.rs.core.MediaType</span>;
+<span class="keyword">import</span> <span class="include">javax.ws.rs.core.Response</span>;
+
+<span class="keyword">import</span> <span class="include">io.openliberty.guides.inventory.InventoryConfig</span>;
+
+<span class="annotation">@RequestScoped</span>
+<span class="annotation">@Path</span>(<span class="string"><span class="delimiter">"</span><span class="content">systems</span><span class="delimiter">"</span></span>)
+<span class="directive">public</span> <span class="type">class</span> <span class="class">InventoryResource</span> {
+
+  <span class="annotation">@Inject</span>
+  InventoryManager manager;
+
+  <span class="annotation">@Inject</span>
+  InventoryConfig inventoryConfig;
+
+  <span class="annotation">@GET</span>
+  <span class="annotation">@Path</span>(<span class="string"><span class="delimiter">"</span><span class="content">{hostname}</span><span class="delimiter">"</span></span>)
+  <span class="annotation">@Produces</span>(MediaType.APPLICATION_JSON)
+  <span class="directive">public</span> Response getPropertiesForHost(<span class="annotation">@PathParam</span>(<span class="string"><span class="delimiter">"</span><span class="content">hostname</span><span class="delimiter">"</span></span>) <span class="predefined-type">String</span> hostname) {
+
+    <span class="keyword">if</span> (!inventoryConfig.isInMaintenance()) {
+      <span class="predefined-type">Properties</span> props = manager.get(hostname, inventoryConfig.getPortNumber());
+      <span class="keyword">if</span> (props == <span class="predefined-constant">null</span>) {
+        <span class="keyword">return</span> Response.status(Response.Status.NOT_FOUND)
+                       .entity(
+                           <span class="string"><span class="delimiter">"</span><span class="content">ERROR: Unknown hostname or the resource may not be running on the host machine</span><span class="delimiter">"</span></span>)
+                       .build();
+      }
+      <span class="keyword">return</span> Response.ok(props).build();
+    } <span class="keyword">else</span> {
+      <span class="keyword">return</span> Response.status(Response.Status.SERVICE_UNAVAILABLE)
+                     .entity(
+                         <span class="string"><span class="delimiter">"</span><span class="content">ERROR: Serive is currently in maintenance. Please contact: </span><span class="delimiter">"</span></span>
+                             + inventoryConfig.getEmail().toString())
+                     .build();
+    }
+  }
+
+  <span class="annotation">@GET</span>
+  <span class="annotation">@Produces</span>(MediaType.APPLICATION_JSON)
+  <span class="directive">public</span> Response listContents() {
+    <span class="keyword">if</span> (!inventoryConfig.isInMaintenance()) {
+      <span class="keyword">return</span> Response.ok(manager.list()).build();
+    } <span class="keyword">else</span> {
+      <span class="keyword">return</span> Response.status(Response.Status.SERVICE_UNAVAILABLE)
+                     .entity(
+                         <span class="string"><span class="delimiter">"</span><span class="content">ERROR: Serive is currently in maintenance. Please contact: </span><span class="delimiter">"</span></span>
+                             + inventoryConfig.getEmail().toString())
+                     .build();
+    }
+  }
+
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>To add configuration to the <code>inventory</code> service, the <code>InventoryConfig</code> object is injected to the existing class.</p>
+</div>
+<div class="paragraph">
+<p>The port number from the configuration is retrieved by the <code>inventoryConfig.getPortNumber()</code> method and passed to the <code>manager.get()</code> method as a parameter.</p>
+</div>
+<div class="paragraph">
+<p>To determine whether the inventory service is in maintenance or not (according to the configuration value), <code>inventoryConfig.isInMaintenance()</code> class method is used.
+If you set the <code>io_openliberty_guides_inventory_inMaintenance</code> property to <code>true</code>
+ in the configuration, the inventory service returns the message, 
+"ERROR: Serive is currently in maintenance", along with the contact 
+email.
+The email configuration value can be get by calling <code>inventoryConfig.getEmail()</code> method.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="building-and-running-the-application">Building and running the application</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>To build the application, run the <code>install</code> Maven goal from the command line:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code>mvn install</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>This goal builds the application and creates a <code>.war</code> file in the target directory. The goal also
+configures and installs Open Liberty into the <code>target/liberty/wlp</code> directory.</p>
+</div>
+<div class="paragraph">
+<p>Next, run the <code>liberty:start-server</code> Maven goal:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code>mvn liberty:start-server</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>This goal starts an Open Liberty server instance. Your Maven <code>pom.xml</code> is already configured to start
+the application in this server instance.</p>
+</div>
+<div class="paragraph">
+<p>Once the server is running, the following two microservices should be available to access:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><code><a href="http://localhost:9080/system/properties" class="bare">http://localhost:9080/system/properties</a></code></p>
+</li>
+<li>
+<p><code><a href="http://localhost:9080/inventory/systems" class="bare">http://localhost:9080/inventory/systems</a></code></p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>You can find the service that retrieves configuration information that is specific to this guide at the following location:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><code><a href="http://localhost:9080/config" class="bare">http://localhost:9080/config</a></code></p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>At first, the <code>config_ordinal</code> value of the custom configuration source is set to <code>50</code>.
+A value of <code>50</code> does not override configuration values of the default <code>microprofile-config.properties</code> source, which has a <code>config_ordinal</code> value of <code>100</code>.</p>
+</div>
+<div class="paragraph">
+<p>However, you can manually change the <code>config_ordinal</code> value to a larger number in the <code>CustomConfigSource.json</code> file.</p>
+</div>
+<div class="paragraph">
+<p>Your changes are added dynamically, and you do not need to restart the server.
+Refresh <code><a href="http://localhost:9080/config" class="bare">http://localhost:9080/config</a></code> to see the dynamic changes.</p>
+</div>
+<div class="paragraph">
+<p>Play with this application by changing configuration values for each property in the <code>CustomConfigSource.json</code> file.</p>
+</div>
+<div class="paragraph">
+<p>For example, change <code>io_openliberty_guides_inventory_inMaintenance</code> from <code>false</code> to <code>true</code>, then try to access <code><a href="http://localhost:9080/inventory/systems" class="bare">http://localhost:9080/inventory/systems</a></code> again.
+The following message displays: <code>ERROR: Serive is currently in maintenance</code>.</p>
+</div>
+<div class="paragraph">
+<p>If you make changes to the code, use the Maven <code>package</code> goal to rebuild the application and have the
+running Open Liberty server pick them up automatically:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code>mvn package</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>To stop the Open Liberty server, run the Maven <code>liberty:stop-server</code> goal:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code>mvn liberty:stop-server</code></pre>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="testing-the-application">Testing the application</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Create a <code>start/src/test/java/it/io/openliberty/guides/config/ConfigurationTest.java</code> file and add the following code:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="java"><span class="keyword">package</span> <span class="namespace">it.io.openliberty.guides.config</span>;
+
+<span class="keyword">import</span> <span class="include">static</span> <span class="include">org.junit.Assert</span>.*;
+
+<span class="keyword">import</span> <span class="include">javax.json.JsonObject</span>;
+<span class="keyword">import</span> <span class="include">javax.ws.rs.client.Client</span>;
+<span class="keyword">import</span> <span class="include">javax.ws.rs.client.ClientBuilder</span>;
+
+<span class="keyword">import</span> <span class="include">org.apache.cxf.jaxrs.provider.jsrjsonp.JsrJsonpProvider</span>;
+<span class="keyword">import</span> <span class="include">org.junit.After</span>;
+<span class="keyword">import</span> <span class="include">org.junit.Before</span>;
+<span class="keyword">import</span> <span class="include">org.junit.Test</span>;
+
+<span class="directive">public</span> <span class="type">class</span> <span class="class">ConfigurationTest</span> {
+
+  <span class="directive">private</span> <span class="predefined-type">String</span> port;
+  <span class="directive">private</span> <span class="predefined-type">String</span> baseUrl;
+  <span class="directive">private</span> Client client;
+
+  <span class="directive">private</span> <span class="directive">final</span> <span class="predefined-type">String</span> INVENTORY_HOSTS = <span class="string"><span class="delimiter">"</span><span class="content">inventory/systems</span><span class="delimiter">"</span></span>;
+  <span class="directive">private</span> <span class="directive">final</span> <span class="predefined-type">String</span> CONFIG_MANAGER = <span class="string"><span class="delimiter">"</span><span class="content">config</span><span class="delimiter">"</span></span>;
+  <span class="directive">private</span> <span class="directive">final</span> <span class="predefined-type">String</span> USER_DIR = <span class="predefined-type">System</span>.getProperty(<span class="string"><span class="delimiter">"</span><span class="content">user.dir</span><span class="delimiter">"</span></span>);
+  <span class="directive">private</span> <span class="directive">final</span> <span class="predefined-type">String</span> DEFAULT_CONFIG_FILE = USER_DIR
+      + <span class="string"><span class="delimiter">"</span><span class="content">/src/main/resources/META-INF/microprofile-config.properties</span><span class="delimiter">"</span></span>;
+  <span class="directive">private</span> <span class="directive">final</span> <span class="predefined-type">String</span> CUSTOM_CONFIG_FILE = USER_DIR.split(<span class="string"><span class="delimiter">"</span><span class="content">target</span><span class="delimiter">"</span></span>)[<span class="integer">0</span>]
+      + <span class="string"><span class="delimiter">"</span><span class="content">/../resources/CustomConfigSource.json</span><span class="delimiter">"</span></span>;
+  <span class="directive">private</span> <span class="directive">final</span> <span class="predefined-type">String</span> INV_MAINTENANCE_PROP = <span class="string"><span class="delimiter">"</span><span class="content">io_openliberty_guides_inventory_inMaintenance</span><span class="delimiter">"</span></span>;
+  <span class="directive">private</span> <span class="directive">final</span> <span class="predefined-type">String</span> TEST_OVERWRITE_PROP = <span class="string"><span class="delimiter">"</span><span class="content">io_openliberty_guides_testConfigOverwrite</span><span class="delimiter">"</span></span>;
+
+  <span class="annotation">@Before</span>
+  <span class="directive">public</span> <span class="type">void</span> setup() {
+    port = <span class="predefined-type">System</span>.getProperty(<span class="string"><span class="delimiter">"</span><span class="content">liberty.test.port</span><span class="delimiter">"</span></span>);
+    baseUrl = <span class="string"><span class="delimiter">"</span><span class="content">http://localhost:</span><span class="delimiter">"</span></span> + port + <span class="string"><span class="delimiter">"</span><span class="content">/</span><span class="delimiter">"</span></span>;
+    ConfigTestUtil.setDefaultJsonFile(CUSTOM_CONFIG_FILE);
+
+    client = ClientBuilder.newClient();
+    client.register(JsrJsonpProvider.class);
+  }
+
+  <span class="annotation">@After</span>
+  <span class="directive">public</span> <span class="type">void</span> teardown() {
+    ConfigTestUtil.setDefaultJsonFile(CUSTOM_CONFIG_FILE);
+    client.close();
+  }
+
+  <span class="annotation">@Test</span>
+  <span class="directive">public</span> <span class="type">void</span> testSuite() {
+    <span class="local-variable">this</span>.testInitialServiceStatus();
+    <span class="local-variable">this</span>.testOverrideConfigProperty();
+    <span class="local-variable">this</span>.testPutServiceInMaintenance();
+  }
+
+  <span class="directive">public</span> <span class="type">void</span> testInitialServiceStatus() {
+    <span class="type">boolean</span> status = <span class="predefined-type">Boolean</span>.valueOf(ConfigTestUtil.readPropertyValueInFile(
+        INV_MAINTENANCE_PROP, DEFAULT_CONFIG_FILE));
+    <span class="keyword">if</span> (!status) {
+      assertEquals(<span class="string"><span class="delimiter">"</span><span class="content">The Inventory Service should be available</span><span class="delimiter">"</span></span>, <span class="integer">0</span>,
+          ConfigTestUtil.getJsonObjectFromURL(client, baseUrl + INVENTORY_HOSTS, <span class="integer">1</span>,
+              <span class="predefined-constant">null</span>).getInt(<span class="string"><span class="delimiter">"</span><span class="content">total</span><span class="delimiter">"</span></span>));
+    } <span class="keyword">else</span> {
+      assertEquals(<span class="string"><span class="delimiter">"</span><span class="content">The Inventory Service should be in maintenance</span><span class="delimiter">"</span></span>,
+          <span class="string"><span class="delimiter">"</span><span class="content">ERROR: Serive is currently in maintenance. Please contact: admin@guides.openliberty.io</span><span class="delimiter">"</span></span>,
+          ConfigTestUtil.getStringFromURL(client, baseUrl + INVENTORY_HOSTS));
+    }
+  }
+
+  <span class="directive">public</span> <span class="type">void</span> testOverrideConfigProperty() {
+    JsonObject properties = ConfigTestUtil.getJsonObjectFromURL(client,
+        baseUrl + CONFIG_MANAGER, <span class="integer">2</span>, <span class="string"><span class="delimiter">"</span><span class="content">ConfigProperties</span><span class="delimiter">"</span></span>);
+
+    assertEquals(TEST_OVERWRITE_PROP + <span class="string"><span class="delimiter">"</span><span class="content"> should be DefaultSource in the beginning</span><span class="delimiter">"</span></span>,
+        <span class="string"><span class="delimiter">"</span><span class="content">DefaultSource</span><span class="delimiter">"</span></span>, properties.getString(TEST_OVERWRITE_PROP));
+
+    ConfigTestUtil.changeConfigSourcePriority(CUSTOM_CONFIG_FILE, <span class="integer">150</span>);
+
+    JsonObject newProperties = ConfigTestUtil.getJsonObjectFromURL(client,
+        baseUrl + CONFIG_MANAGER, <span class="integer">2</span>, <span class="string"><span class="delimiter">"</span><span class="content">ConfigProperties</span><span class="delimiter">"</span></span>);
+
+    assertEquals(TEST_OVERWRITE_PROP + <span class="string"><span class="delimiter">"</span><span class="content"> should be CustomSource in the end</span><span class="delimiter">"</span></span>,
+        <span class="string"><span class="delimiter">"</span><span class="content">CustomSource</span><span class="delimiter">"</span></span>, newProperties.getString(TEST_OVERWRITE_PROP));
+  }
+
+  <span class="directive">public</span> <span class="type">void</span> testPutServiceInMaintenance() {
+    JsonObject obj = ConfigTestUtil.getJsonObjectFromURL(client,
+        baseUrl + INVENTORY_HOSTS, <span class="integer">1</span>, <span class="predefined-constant">null</span>);
+
+    assertEquals(<span class="string"><span class="delimiter">"</span><span class="content">The inventory service should be up in the beginning</span><span class="delimiter">"</span></span>, <span class="integer">0</span>,
+        obj.getInt(<span class="string"><span class="delimiter">"</span><span class="content">total</span><span class="delimiter">"</span></span>));
+
+    ConfigTestUtil.changeConfigSourcePriority(CUSTOM_CONFIG_FILE, <span class="integer">150</span>);
+    ConfigTestUtil.switchInventoryMaintenance(CUSTOM_CONFIG_FILE, <span class="predefined-constant">true</span>);
+
+    <span class="predefined-type">String</span> error = ConfigTestUtil.getStringFromURL(client,
+        baseUrl + INVENTORY_HOSTS);
+
+    assertEquals(<span class="string"><span class="delimiter">"</span><span class="content">The inventory service should be down in the end</span><span class="delimiter">"</span></span>,
+        <span class="string"><span class="delimiter">"</span><span class="content">ERROR: Serive is currently in maintenance. Please contact: admin@guides.openliberty.io</span><span class="delimiter">"</span></span>,
+        error);
+  }
+
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The <code>testInitialServiceStatus()</code> test case reads the value of the <code>io_openliberty_guides_inventory_inMaintenance</code> configuration property in the file <code>META-INF/microprofile-config.properties</code> and checks the HTTP response of the inventory service.
+If the configuration value is <code>false</code>, the service returns a valid response. Otherwise, the service returns the following message: <code>ERROR: Serive is currently in maintenance</code>.</p>
+</div>
+<div class="paragraph">
+<p>Because the <code>META-INF/microprofile-config.properties</code> default source has the ordinal value of <code>100</code> in the beginning,
+the <code>testOverrideConfigProperty()</code> test case first checks that the <code><a href="http://localhost:9080/config" class="bare">http://localhost:9080/config</a></code> microservice contains
+the <code>io_openliberty_guides_testConfigOverwrite</code> test property with the <code>DefaultSource</code> value, which is set by this default file.
+Then, the test changes the ordinal value of the custom configuration source from <code>50</code> to <code>150</code> so that the custom configuration source has the higher priority. In the end, the <code>CustomSource</code> value overrides the test property.</p>
+</div>
+<div class="paragraph">
+<p>Because the <code>io_openliberty_guides_inventory_inMaintenance</code> configuration property is set to <code>false</code> by default, the <code>testPutServiceInMaintenance()</code> test case first checks that the inventory service is not in maintenance in the beginning.
+Next, this test increases the priority of the custom configuration source and switches the value of the <code>io_openliberty_guides_inventory_inMaintenance</code> configuration property to <code>true</code>.
+In the end, the inventory service returns the following message: <code>ERROR: Serive is currently in maintenance</code>.</p>
+</div>
+<div class="sect2">
+<h3 id="running-the-tests">Running the tests</h3>
+<div class="paragraph">
+<p>If the server is still running from the previous steps, stop it first using the Maven <code>liberty:stop-server</code> goal:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code>mvn liberty:stop-server</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Then, verify that the tests pass using the Maven <code>verify</code> goal:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code>mvn verify</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>It may take some time before build is complete. If the tests pass, you will see a similar output to the following:</p>
+</div>
+<div class="listingblock no_copy">
+<div class="content">
+<pre class="CodeRay highlight"><code>-------------------------------------------------------
+ T E S T S
+-------------------------------------------------------
+Running it.io.openliberty.guides.config.ConfigurationTest
+Tests run: 1, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 1.322 sec - in it.io.openliberty.guides.config.ConfigurationTest
+Running it.io.openliberty.guides.inventory.EndpointTest
+Tests run: 1, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.307 sec - in it.io.openliberty.guides.inventory.EndpointTest
+
+Results :
+
+Tests run: 2, Failures: 0, Errors: 0, Skipped: 0</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>To see whether the tests detect a failure, remove the configuration resetting line in the <code>setup()</code> method of the <code>`ConfigurationTest.java</code> file.
+Then manually change some configuration values in the <code>guide-microprofile-config/resources/CustomConfigSource.json</code> file.
+Re-run the Maven build. You will see a test failure occur.</p>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="great-work-you-re-done">Great work! You’re done!</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>You just built and tested a MicroProfile application with MicroProfile Config and Open Liberty.</p>
+</div>
+<div class="paragraph">
+<p>Feel free to try one of the related guides. They demonstrate new technologies that you can learn and
+expand on top what you built in this guide.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+
+
+                    <!-- Related guides section -->
+                    
+                    <div id="related-guides" class="sect1">
+                        <h2>Related guides</h2>
+                        <div id="related-guides-cards" class="row">
+                        
+                            
+                            
+                            
+								<!-- Only create a card if we find the permalink -->
+                                
+                            
+                        
+                        </div>
+                    </div>
+                    
+                </div>
+                <div id="copied_to_clipboard_confirmation" style="display: none;">Copied to clipboard</div>
+                <a id="copy_to_clipboard" href="" style="display: none;"></a>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+    </main>
+
+    <footer>
+  <div id="footer_container" class="container">
+      <div class="row">
+          <div class="col-xs-12 text-right">
+              <div id="footer_links_container">
+                  <a href="https://github.com/OpenLiberty/open-liberty/blob/master/LICENSE" target="new" class="footer_link">License</a>
+                  <a href="https://www.ibm.com/privacy/us/en/" target="new" class="footer_link">Privacy policy</a>
+                  <a id="footer_twitter_link" href="https://twitter.com/OpenLibertyIO" target="new" aria-label="Twitter"></a>
+                  <a id="footer_github_link" href="https://github.com/OpenLiberty" target="new" aria-label="GitHub"></a>
+              </div>
+              <p id="footer_text">an IBM open source project</p>
+              <p id="footer_copyright">© Copyright IBM Corp. 2017</p>
+          </div>
+      </div>
+  </div>
+  <div class="hidden">
+    <img src="Configuring%20microservices%20-%20Open%20Liberty_files/footer_twitter_darker.png">
+    <img src="Configuring%20microservices%20-%20Open%20Liberty_files/footer_github_darker.png">
+  </div>
+</footer>
+
+
+    <script src="Configuring%20microservices%20-%20Open%20Liberty_files/jquery.js"></script>
+    <script src="Configuring%20microservices%20-%20Open%20Liberty_files/bootstrap.js"></script>
+
+
+    
+
+    
+      <script type="text/javascript" src="Configuring%20microservices%20-%20Open%20Liberty_files/guide.js"></script>
+    
+
+  
+
+
+</body></html>
