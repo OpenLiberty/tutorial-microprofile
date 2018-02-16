@@ -1,0 +1,926 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+<meta http-equiv="content-type" content="text/html; charset=UTF-8">
+
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <title>Handling failures with Fault Tolerance - Open Liberty</title>
+  <meta name="description" content="Open Liberty is the most flexible server runtime available to Earth’s Java developers.">
+
+  <link rel="stylesheet" href="Handling%20failures%20with%20Fault%20Tolerance%20-%20Open%20Liberty_files/bootstrap.css">
+  <link type="text/css" rel="stylesheet" href="Handling%20failures%20with%20Fault%20Tolerance%20-%20Open%20Liberty_files/openliberty.css">
+  <link type="text/css" rel="stylesheet" href="Handling%20failures%20with%20Fault%20Tolerance%20-%20Open%20Liberty_files/coderay-custom.css">
+
+  
+  
+  
+    <link type="text/css" rel="stylesheet" href="Handling%20failures%20with%20Fault%20Tolerance%20-%20Open%20Liberty_files/guide-card.css">
+  
+    <link type="text/css" rel="stylesheet" href="Handling%20failures%20with%20Fault%20Tolerance%20-%20Open%20Liberty_files/guide.css">
+  
+
+  
+
+  
+
+  <link rel="canonical" href="https://openliberty.io/guides/microprofile-faulttolerance-intro">
+  <link href="Handling%20failures%20with%20Fault%20Tolerance%20-%20Open%20Liberty_files/css.css" rel="stylesheet">
+    
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:site" content="@OpenLibertyIO">
+  <meta name="twitter:title" content="Open Liberty">
+  <meta name="twitter:description" content="Open Liberty is the most flexible server runtime available to Earth’s Java developers.">
+  <meta name="twitter:image" content="https://openliberty.io/img/twitter_card.jpg">
+  
+  <meta name="google-site-verification" content="h2P030H9b66CyL1nEmWfrZB8Fr14h9LmVMG7Ur0caBs">
+
+</head>
+
+
+  <body>
+    
+    
+
+    <header>
+<nav class="navbar navbar-default">
+    <div class="container">
+        <div class="navbar-header">
+            <button id="navbar_responsive_button" class="navbar-toggle collapsed" type="button" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+                        
+        </div>
+        <div id="navbar" class="navbar-collapse collapse">
+            <ul class="nav navbar-nav navbar-right text-right">
+                <li class="hidden-xs"><a id="navbar_github_link" href="https://github.com/OpenLiberty" target="new" aria-label="Open Liberty GitHub Repository"></a></li>
+            </ul>
+        </div>
+    </div>
+  </nav>
+  <div class="hidden">
+    <img src="Handling%20failures%20with%20Fault%20Tolerance%20-%20Open%20Liberty_files/small_logo_white.svg">
+    <img src="Handling%20failures%20with%20Fault%20Tolerance%20-%20Open%20Liberty_files/github_navbar_hover.svg">
+  </div>
+</header>
+
+
+    <main aria-label="Content">
+
+      <div id="background_container" class="black_blue_gradient_background">
+    <div class="container">
+        <div id="title_row" class="row">
+            <div class="col-xs-12">
+                <img id="intro_logo" src="Handling%20failures%20with%20Fault%20Tolerance%20-%20Open%20Liberty_files/guides_page_title_small.svg" alt="Guides">
+            </div>
+        </div>
+        <div class="row">
+            <!-- Guide's table of contents section -->
+            <div id="toc_column" class="col-sm-3">
+                <div id="toc_inner" style="">                    
+                    
+                    <h3 id="toc_title">Contents</h3>
+                    <div id="toc_container">
+                        <ul class="sectlevel1">
+<li><a href="#what-you-ll-learn">What you’ll learn</a>
+<ul class="sectlevel2">
+<li><a href="#why-use-mp-fault-tolerance">Why use MP Fault Tolerance?</a></li>
+</ul>
+</li>
+<li><a href="#getting-started">Getting started</a>
+<ul class="sectlevel2">
+<li><a href="#try-what-you-ll-build">Try what you’ll build</a></li>
+</ul>
+</li>
+<li><a href="#enabling-fault-tolerance-into-the-application">Enabling Fault Tolerance into the application</a>
+<ul class="sectlevel2">
+<li><a href="#adding-the-retry-and-fallback-annotations">Adding the @Retry and @Fallback annotations</a></li>
+</ul>
+</li>
+<li><a href="#building-and-running-the-application">Building and running the application</a></li>
+<li><a href="#testing-the-application">Testing the application</a>
+<ul class="sectlevel2">
+<li><a href="#running-the-tests">Running the tests</a></li>
+</ul>
+</li>
+<li><a href="#great-work-you-re-done">Great work! You’re done!</a></li>
+</ul>
+                    </div>
+                    
+                    
+                </div>
+            </div>
+            <!-- Entire guide section -->
+            <div id="guide_column" class="col-sm-9 position_relative">
+                <div id="guide_content">
+                    <!-- Guide header section -->
+                    <div id="guide_meta" class="sect1">
+                        <h1 id="guide_title">Handling failures with Fault Tolerance</h1>
+                        <div id="preamble">
+<div class="sectionbody">
+<div class="paragraph">
+<p>Learn how to add retry and fallback behavior to microservice dependencies to manage the impact of failures.</p>
+</div>
+</div>
+</div><div id="duration_container">
+                            <img src="Handling%20failures%20with%20Fault%20Tolerance%20-%20Open%20Liberty_files/guide_duration_clock_icon_large.svg" alt="duration">
+                            <span id="guide_duration">15 minutes</span>
+                        </div>
+                    </div>
+
+                    <!-- Guide content section -->
+                    
+<div class="sect1">
+<h2 id="what-you-ll-learn">What you’ll learn</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>You will learn how to build fault tolerant microservices so that you can reduce the impact from failure and
+ensure continued operation of services.</p>
+</div>
+<div class="paragraph">
+<p>The application that you will be working with is an <code>inventory</code> service, which stores the information about
+various JVMs that run on different systems. Whenever a request is made to the <code>inventory</code> service to retrieve
+the JVM system properties of a particular host, the <code>inventory</code> service communicates with the <code>system</code> service on
+that host to get these system properties. The system properties are then stored and returned.</p>
+</div>
+<div class="paragraph">
+<p>You will use the <code>@Retry</code> and <code>@Fallback</code> Fault Tolerance methods to define a criteria on when to retry and when to
+provide an alternative solution for a failed execution.
+Fault Tolerance enables the application to function even when one of it’s services is unavailable,
+making service invocation more resilient.</p>
+</div>
+<div class="paragraph">
+<p>The implementation of the application and its services are provided for you in the <code>start/src</code> directory.
+The <code>system</code> service can be found in <code>start/src/main/java/io/openliberty/guides/system</code>, and the <code>inventory</code>
+service can be found in <code>start/src/main/java/io/openliberty/guides/inventory</code>. If you want to learn how to
+create a RESTful application, see <a href="https://openliberty.io/guides/rest-intro.html">Creating a RESTful web service</a>.</p>
+</div>
+<div class="sect2">
+<h3 id="why-use-mp-fault-tolerance">Why use MP Fault Tolerance?</h3>
+<div class="paragraph">
+<p>It is becoming increasingly important to build fault tolerant microservices and MicroProfile (MP)
+Fault Tolerance provides a simple and flexible solution.
+Fault tolerance is about leveraging different strategies to guide the execution and result of some logic.
+Retry policies, bulkheads, and circuit breakers are popular concepts in this area.
+They dictate whether and when executions should take place, and fallbacks offer an alternative result
+when an execution does not complete successfully.</p>
+</div>
+<div class="paragraph">
+<p>MP Fault Tolerance offers the following Fault Tolerance policies:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Timeout: Define a duration for timeout</p>
+</li>
+<li>
+<p>Retry: Define a criteria on when to retry</p>
+</li>
+<li>
+<p>Fallback: provide an alternative solution for a failed execution</p>
+</li>
+<li>
+<p>CircuitBreaker: offer a way of fail fast by automatically failing execution to prevent the system
+overloading and indefinite wait or timeout by the clients</p>
+</li>
+<li>
+<p>Bulkhead: isolate failures in part of the system while the rest part of the system can still function</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>In this guide we will be focusing on <code>@Retry</code> and <code>@Fallback</code>.</p>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1 no_copy">
+<h2 id="getting-started">Getting started</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>The fastest way to work through this guide is to clone the Git repository and use the starting project that is provided in the <code>start</code> directory. To do this, run the following commands:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>git clone https://github.com/openliberty/draft-guide-microprofile-faulttolerance-intro.git
+cd draft-guide-microprofile-faulttolerance-intro/start</pre>
+</div>
+</div>
+<div class="sect2">
+<h3 id="try-what-you-ll-build">Try what you’ll build</h3>
+<div class="paragraph">
+<p>The <code>finish</code> directory in the root of this guide contains the finished fault tolerance implementation
+for the application. Feel free to give it a try before you proceed with building your own.</p>
+</div>
+<div class="paragraph">
+<p>To try out the application, first navigate to the <code>finish</code> directory and then execute the following
+Maven goals to build the application and run it inside Open Liberty:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code>mvn clean install
+mvn liberty:start-server</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Point your browser to the <code><a href="http://localhost:9080/inventory/systems/localhost" class="bare">http://localhost:9080/inventory/systems/localhost</a></code> URL. You see a result in
+JSON format with the system properties of your local JVM. When you visit this URL, these system properties
+are automatically stored in the inventory.</p>
+</div>
+<div class="paragraph">
+<p>Now navigate to the <code>CustomConfigProperties.json</code> file in the <code>finish/resource</code> directory and change the property
+<code>io_openliberty_guides_system_inMaintenance</code> from <code>false</code> to <code>true</code> and save the file. There is no need to
+restart the server. Now return to your browser and point back to the
+<code><a href="http://localhost:9080/inventory/systems/localhost" class="bare">http://localhost:9080/inventory/systems/localhost</a></code> URL. You will now see the cached properties from
+systems for this localhost due to the system service now being in maintenance.
+You will now see the cached properties for this localhost due to the system service being in maintenance.
+For simplicity, only the OS name and username are stored in cache for each host.</p>
+</div>
+<div class="paragraph">
+<p>Once you are done checking out the application, go to the <code>CustomConfigProperties.json</code> file again and change the
+property <code>io_openliberty_guides_system_inMaintenance</code> from <code>true</code> to <code>false</code> to set this condition back to its original value.</p>
+</div>
+<div class="paragraph">
+<p>Stop the Open Liberty server:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code>mvn liberty:stop-server</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Now, navigate back to the <code>start</code> directory to begin.</p>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="enabling-fault-tolerance-into-the-application">Enabling Fault Tolerance into the application</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>The MicroProfile Fault Tolerance API is added as a dependency in your <code>pom.xml</code> file. Look for the
+dependancy with the groupID <code>org.eclipse.microprofile.fault-tolerance</code>.
+This feature allows you to use the MicroProfile
+Fault Tolerance API to build fault tolerant microservices.
+The <code>mpFaultTolerance-1.0</code> feature has also been enabled in the <code>start/src/main/liberty/config/server.xml</code> file.</p>
+</div>
+<div class="paragraph">
+<p>Now that the MicroProfile Fault Tolerance feature has been enabled, the application’s fallback mechanism needs
+to be set up.</p>
+</div>
+<div class="paragraph">
+<p>For ease of use, the two microservices being run in this application are being "served up"
+by the same server.
+This means that one cannot be taken down without the other.
+To overcome this challenge, we will imitate the HTTP responses and Exceptions that would normally be
+executed when a server cannot be reached due to the server being taken down maintenance. Taking the server
+up and down dynamically will be done in this guide using dynamic configuration with MP config. If you want
+to learn more about setting up dynamic configuration,
+see <a href="https://github.com/OpenLiberty/draft-guide-microprofile-config">Configuring microservices</a>.</p>
+</div>
+<div class="paragraph">
+<p>Create the <code>system</code> resource class in the <code>start/src/main/java/io/openliberty/guides/system/SystemResource.java</code> file:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="java"><span class="keyword">package</span> <span class="namespace">io.openliberty.guides.system</span>;
+
+<span class="keyword">import</span> <span class="include">javax.enterprise.context.RequestScoped</span>;
+<span class="keyword">import</span> <span class="include">javax.inject.Inject</span>;
+<span class="keyword">import</span> <span class="include">javax.ws.rs.GET</span>;
+<span class="keyword">import</span> <span class="include">javax.ws.rs.Path</span>;
+<span class="keyword">import</span> <span class="include">javax.ws.rs.Produces</span>;
+<span class="keyword">import</span> <span class="include">javax.ws.rs.core.MediaType</span>;
+<span class="keyword">import</span> <span class="include">javax.ws.rs.core.Response</span>;
+
+<span class="annotation">@RequestScoped</span>
+<span class="annotation">@Path</span>(<span class="string"><span class="delimiter">"</span><span class="content">properties</span><span class="delimiter">"</span></span>)
+<span class="directive">public</span> <span class="type">class</span> <span class="class">SystemResource</span> {
+
+  <span class="annotation">@Inject</span>
+  SystemConfig systemConfig;
+
+  <span class="annotation">@GET</span>
+  <span class="annotation">@Produces</span>(MediaType.APPLICATION_JSON)
+  <span class="directive">public</span> Response getProperties() {
+    <span class="keyword">if</span> (!systemConfig.isInMaintenance()) {
+      <span class="keyword">return</span> Response.ok(<span class="predefined-type">System</span>.getProperties()).build();
+    }
+    <span class="keyword">return</span> Response.status(Response.Status.SERVICE_UNAVAILABLE).build();
+  }
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>This file retrieves all of the system properties and returns them as a JSON Object.
+The <code>getProperties()</code> method in this class has been modified for this fault tolerance guide so that
+if the config property <code>io_openliberty_guides_system_inMaintenance</code> from the
+<code>CustomConfigProperties.json</code> file is assigned the value of false, a json object containing the system
+properties is returned. However, if this config property is assigned a value of true, then a 503 HTTP
+response is returned to the browser and a message is returned to the terminal to let the developer
+know that the service is down.</p>
+</div>
+<div class="paragraph">
+<p>This 503 HTTP response needs to be recognised and acted upon by the inventory microservice.
+To do this, create the <code>system</code> client class in the
+<code>start/src/main/java/io/openliberty/guides/inventory/client/SystemClient.java</code> file:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="java"><span class="keyword">package</span> <span class="namespace">io.openliberty.guides.inventory.client</span>;
+
+<span class="keyword">import</span> <span class="include">java.io.IOException</span>;
+<span class="keyword">import</span> <span class="include">java.net.URI</span>;
+<span class="keyword">import</span> <span class="include">java.util.Properties</span>;
+<span class="keyword">import</span> <span class="include">javax.ws.rs.client.Client</span>;
+<span class="keyword">import</span> <span class="include">javax.ws.rs.client.ClientBuilder</span>;
+<span class="keyword">import</span> <span class="include">javax.ws.rs.client.Invocation.Builder</span>;
+<span class="keyword">import</span> <span class="include">javax.ws.rs.core.HttpHeaders</span>;
+<span class="keyword">import</span> <span class="include">javax.ws.rs.core.MediaType</span>;
+<span class="keyword">import</span> <span class="include">javax.ws.rs.core.Response</span>;
+<span class="keyword">import</span> <span class="include">javax.ws.rs.core.Response.Status</span>;
+
+<span class="directive">public</span> <span class="type">class</span> <span class="class">SystemClient</span> {
+
+  <span class="comment">// Constants for building URI to the system service.</span>
+  <span class="directive">private</span> <span class="directive">final</span> <span class="type">int</span> DEFAULT_PORT = <span class="predefined-type">Integer</span>.valueOf(<span class="predefined-type">System</span>.getProperty(<span class="string"><span class="delimiter">"</span><span class="content">default.http.port</span><span class="delimiter">"</span></span>));
+  <span class="directive">private</span> <span class="directive">final</span> <span class="predefined-type">String</span> SYSTEM_PROPERTIES = <span class="string"><span class="delimiter">"</span><span class="content">/system/properties</span><span class="delimiter">"</span></span>;
+  <span class="directive">private</span> <span class="directive">final</span> <span class="predefined-type">String</span> PROTOCOL = <span class="string"><span class="delimiter">"</span><span class="content">http</span><span class="delimiter">"</span></span>;
+
+  <span class="directive">private</span> <span class="predefined-type">String</span> url;
+  <span class="directive">private</span> Builder clientBuilder;
+
+  <span class="directive">public</span> <span class="type">void</span> init(<span class="predefined-type">String</span> hostname) {
+    <span class="local-variable">this</span>.initHelper(hostname, DEFAULT_PORT);
+  }
+
+  <span class="directive">public</span> <span class="type">void</span> init(<span class="predefined-type">String</span> hostname, <span class="type">int</span> port) {
+    <span class="local-variable">this</span>.initHelper(hostname, port);
+  }
+
+  <span class="comment">// Helper method to set the attributes.</span>
+  <span class="directive">private</span> <span class="type">void</span> initHelper(<span class="predefined-type">String</span> hostname, <span class="type">int</span> port) {
+    <span class="local-variable">this</span>.url = buildUrl(PROTOCOL, hostname, port, SYSTEM_PROPERTIES);
+    <span class="local-variable">this</span>.clientBuilder = buildClientBuilder(<span class="local-variable">this</span>.url);
+  }
+
+  <span class="comment">// Wrapper function that gets properties</span>
+  <span class="directive">public</span> <span class="predefined-type">Properties</span> getProperties() <span class="directive">throws</span> <span class="exception">IOException</span> {
+    <span class="keyword">return</span> getPropertiesHelper(<span class="local-variable">this</span>.clientBuilder);
+  }
+
+  <span class="directive">protected</span> <span class="predefined-type">String</span> buildUrl(<span class="predefined-type">String</span> protocol, <span class="predefined-type">String</span> host, <span class="type">int</span> port, <span class="predefined-type">String</span> path) {
+    <span class="keyword">try</span> {
+      <span class="predefined-type">URI</span> uri = <span class="keyword">new</span> <span class="predefined-type">URI</span>(protocol, <span class="predefined-constant">null</span>, host, port, path, <span class="predefined-constant">null</span>, <span class="predefined-constant">null</span>);
+      <span class="keyword">return</span> uri.toString();
+    } <span class="keyword">catch</span> (<span class="exception">Exception</span> e) {
+      <span class="predefined-type">System</span>.out.println(<span class="string"><span class="delimiter">"</span><span class="content">URISyntaxException</span><span class="delimiter">"</span></span>);
+      <span class="keyword">return</span> <span class="predefined-constant">null</span>;
+    }
+  }
+
+  <span class="comment">// Method that creates the client builder</span>
+  <span class="directive">protected</span> Builder buildClientBuilder(<span class="predefined-type">String</span> urlString) {
+    <span class="keyword">try</span> {
+      Client client = ClientBuilder.newClient();
+      Builder builder = client.target(urlString).request();
+      <span class="keyword">return</span> builder.header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON);
+    } <span class="keyword">catch</span> (<span class="exception">Exception</span> e) {
+      <span class="predefined-type">System</span>.out.println(<span class="string"><span class="delimiter">"</span><span class="content">ClientBuilderException</span><span class="delimiter">"</span></span>);
+      <span class="keyword">return</span> <span class="predefined-constant">null</span>;
+    }
+  }
+
+  <span class="directive">protected</span> <span class="predefined-type">Properties</span> getPropertiesHelper(Builder builder) <span class="directive">throws</span> <span class="exception">IOException</span> {
+    <span class="keyword">try</span> {
+      Response response = builder.get();
+      <span class="type">int</span> status = response.getStatus();
+      <span class="keyword">if</span> (status == Status.SERVICE_UNAVAILABLE.getStatusCode()) {
+        <span class="keyword">throw</span> <span class="keyword">new</span> <span class="exception">IOException</span>();
+      } <span class="keyword">else</span> <span class="keyword">if</span> (status == Status.OK.getStatusCode()) {
+        <span class="keyword">return</span> response.readEntity(<span class="predefined-type">Properties</span>.class);
+      } <span class="keyword">else</span> {
+        <span class="predefined-type">System</span>.out.println(<span class="string"><span class="delimiter">"</span><span class="content">Response Status is not OK.</span><span class="delimiter">"</span></span>);
+      }
+    } <span class="keyword">catch</span> (<span class="exception">RuntimeException</span> e) {
+      <span class="predefined-type">System</span>.out.println(<span class="string"><span class="delimiter">"</span><span class="content">Runtime exception: </span><span class="delimiter">"</span></span> + e.getMessage());
+    }
+    <span class="keyword">return</span> <span class="predefined-constant">null</span>;
+  }
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>This class is a Client for the system service.</p>
+</div>
+<div class="paragraph">
+<p>In this class there is a method called <code>getPropertiesHelper()</code>. This method returns a response based on whether a 200
+HTTP response is returned by the system service. If a 200 is returned, the method returns the system properties
+returned from the system service. However if the response is anything other than 200, then a message is printed in
+the terminal to explain that the response status was not Ok. In this guide, a new if statement has been added to the
+method that checks to see if the response is specifically a 503 response. A 503 HTTP response is returned if the
+server being called is unable to handle the request due to a temporary overload or scheduled maintenance, which
+would likely be alleviated after some delay. If the response is 503, an IOException is thrown. This type of
+exception is thrown when an input or output operation is failed or interpreted.</p>
+</div>
+<div class="paragraph">
+<p>This <code>getPropertiesHelper()</code> method is called by the public <code>getProperties()</code> method which is used in
+<code>InventoryManager.java</code>.</p>
+</div>
+<div class="sect2">
+<h3 id="adding-the-retry-and-fallback-annotations">Adding the @Retry and @Fallback annotations</h3>
+<div class="paragraph">
+<p>Now that our inventory microservice is able to recognise that the system microservice has been taken
+down for maintenance through the 503 HTTP response retruned as a result and has thrown an IOException
+as a result of this microservice being in maintanence, a fallback method needs to be set out.
+Create the inventory manager class in the <code>start/src/main/java/io/openliberty/guides/inventory/InventoryManager.java</code> file:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="java"><span class="keyword">package</span> <span class="namespace">io.openliberty.guides.inventory</span>;
+
+<span class="keyword">import</span> <span class="include">java.io.IOException</span>;
+<span class="keyword">import</span> <span class="include">java.util.Properties</span>;
+<span class="keyword">import</span> <span class="include">javax.enterprise.context.ApplicationScoped</span>;
+<span class="keyword">import</span> <span class="include">javax.inject.Inject</span>;
+<span class="keyword">import</span> <span class="include">javax.json.Json</span>;
+<span class="keyword">import</span> <span class="include">javax.json.JsonObject</span>;
+<span class="keyword">import</span> <span class="include">javax.json.JsonObjectBuilder</span>;
+<span class="keyword">import</span> <span class="include">org.eclipse.microprofile.faulttolerance.Fallback</span>;
+<span class="keyword">import</span> <span class="include">org.eclipse.microprofile.faulttolerance.Retry</span>;
+<span class="keyword">import</span> <span class="include">io.openliberty.guides.inventory.client.SystemClient</span>;
+<span class="keyword">import</span> <span class="include">io.openliberty.guides.inventory.model.InventoryList</span>;
+<span class="keyword">import</span> <span class="include">io.openliberty.guides.system.SystemConfig</span>;
+
+<span class="annotation">@ApplicationScoped</span>
+<span class="directive">public</span> <span class="type">class</span> <span class="class">InventoryManager</span> {
+
+  <span class="directive">private</span> InventoryList invList = <span class="keyword">new</span> InventoryList();
+  <span class="directive">private</span> SystemClient systemClient = <span class="keyword">new</span> SystemClient();
+  <span class="directive">private</span> <span class="directive">static</span> <span class="type">int</span> retryCounter = <span class="integer">0</span>;
+
+  <span class="annotation">@Inject</span> SystemConfig systemConfig;
+
+  <span class="annotation">@Retry</span>(retryOn = <span class="exception">IOException</span>.class, maxRetries = <span class="integer">3</span>)
+  <span class="annotation">@Fallback</span>(fallbackMethod = <span class="string"><span class="delimiter">"</span><span class="content">fallbackForGet</span><span class="delimiter">"</span></span>)
+  <span class="directive">public</span> <span class="predefined-type">Properties</span> get(<span class="predefined-type">String</span> hostname) <span class="directive">throws</span> <span class="exception">IOException</span> {
+    <span class="keyword">if</span> (systemConfig.isInMaintenance()) {
+      retryCounter++;
+    }
+
+    systemClient.init(hostname);
+    <span class="predefined-type">Properties</span> properties = systemClient.getProperties();
+    <span class="keyword">if</span> (properties != <span class="predefined-constant">null</span>) {
+        invList.addToInventoryList(hostname, properties);
+        <span class="keyword">return</span> properties;
+    }
+    <span class="keyword">return</span> <span class="predefined-constant">null</span>;
+  }
+
+  <span class="directive">public</span> <span class="predefined-type">Properties</span> fallbackForGet(<span class="predefined-type">String</span> hostname) {
+    <span class="predefined-type">Properties</span> properties = invList.findHost(hostname);
+    <span class="keyword">if</span> (properties == <span class="predefined-constant">null</span>) {
+      <span class="predefined-type">Properties</span> msgProp = <span class="keyword">new</span> <span class="predefined-type">Properties</span>();
+      msgProp.setProperty(hostname, <span class="string"><span class="delimiter">"</span><span class="content">System is not found in the inventory</span><span class="delimiter">"</span></span>);
+      <span class="keyword">return</span> msgProp;
+    }
+    <span class="keyword">return</span> properties;
+  }
+
+  <span class="directive">public</span> InventoryList list() {
+    <span class="keyword">return</span> invList;
+  }
+
+  <span class="directive">public</span> <span class="directive">static</span> JsonObject getRetryCounter() {
+    JsonObjectBuilder methods = Json.createObjectBuilder();
+    methods.add(<span class="string"><span class="delimiter">"</span><span class="content">getRetryCounter</span><span class="delimiter">"</span></span>, retryCounter);
+    JsonObjectBuilder retries = Json.createObjectBuilder();
+    retries.add(<span class="string"><span class="delimiter">"</span><span class="content">Inventory</span><span class="delimiter">"</span></span>, methods.build());
+    <span class="keyword">return</span> retries.build();
+  }
+
+  <span class="directive">public</span> <span class="directive">static</span> <span class="type">void</span> resetRetryCounter() {
+    retryCounter = <span class="integer">0</span>;
+  }
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The <code>@Retry</code> annotation specified here dictates on what conditions to retry establishing the connection
+to the system service and how many times it should be retried, in this case three times.
+The <code>@Fallback</code> annotation specified dictates which method to call when the reties are unsuccessful
+(in this case use the fallbackForGet method).</p>
+</div>
+<div class="paragraph">
+<p>The <code>fallbackForGet()</code> method that has been added as the designated fallback method for the original <code>get()</code>
+method, checks to see if the properties variable is null. If the properties variable is null, this suggests
+that the application has not been able to successfully reach the system service to get the system’s
+properties previously, thus the method simply prints out a json warning message in the browser. However, if
+the properties variable is not null, this method returns a json of the cached property values to the browser.</p>
+</div>
+<div class="paragraph">
+<p>Next create the <code>inventory</code> resource class in <code>start/src/main/java/io/openliberty/guides/inventory/InventoryResource.java</code> file:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="java"><span class="keyword">package</span> <span class="namespace">io.openliberty.guides.inventory</span>;
+
+<span class="keyword">import</span> <span class="include">java.util.Properties</span>;
+<span class="keyword">import</span> <span class="include">javax.enterprise.context.RequestScoped</span>;
+<span class="keyword">import</span> <span class="include">javax.inject.Inject</span>;
+<span class="keyword">import</span> <span class="include">javax.ws.rs.GET</span>;
+<span class="keyword">import</span> <span class="include">javax.ws.rs.Path</span>;
+<span class="keyword">import</span> <span class="include">javax.ws.rs.PathParam</span>;
+<span class="keyword">import</span> <span class="include">javax.ws.rs.Produces</span>;
+<span class="keyword">import</span> <span class="include">javax.ws.rs.core.MediaType</span>;
+<span class="keyword">import</span> <span class="include">javax.ws.rs.core.Response</span>;
+
+<span class="keyword">import</span> <span class="include">io.openliberty.guides.inventory.model.InventoryList</span>;
+
+<span class="annotation">@RequestScoped</span>
+<span class="annotation">@Path</span>(<span class="string"><span class="delimiter">"</span><span class="content">systems</span><span class="delimiter">"</span></span>)
+<span class="directive">public</span> <span class="type">class</span> <span class="class">InventoryResource</span> {
+
+  <span class="annotation">@Inject</span> InventoryManager manager;
+  <span class="annotation">@Inject</span> InventoryConfig config;
+
+  <span class="annotation">@GET</span>
+  <span class="annotation">@Path</span>(<span class="string"><span class="delimiter">"</span><span class="content">{hostname}</span><span class="delimiter">"</span></span>)
+  <span class="annotation">@Produces</span>(MediaType.APPLICATION_JSON)
+  <span class="directive">public</span> Response getPropertiesForHost(<span class="annotation">@PathParam</span>(<span class="string"><span class="delimiter">"</span><span class="content">hostname</span><span class="delimiter">"</span></span>) <span class="predefined-type">String</span> hostname) <span class="directive">throws</span> <span class="exception">Exception</span> {
+    <span class="predefined-type">Properties</span> props = manager.get(hostname);
+    <span class="keyword">if</span> (props == <span class="predefined-constant">null</span>) {
+      <span class="keyword">return</span> Response.status(Response.Status.NOT_FOUND)
+                     .entity(<span class="string"><span class="delimiter">"</span><span class="content">ERROR: Unknown hostname or the resource may not be running on the host machine</span><span class="delimiter">"</span></span>)
+                     .build();
+    }
+    <span class="keyword">return</span> Response.ok(props).build();
+  }
+
+  <span class="annotation">@GET</span>
+  <span class="annotation">@Produces</span>(MediaType.APPLICATION_JSON)
+  <span class="directive">public</span> InventoryList listContents() {
+    <span class="keyword">return</span> manager.list();
+  }
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The if statement in this class now returns an error message when the inventory service is down for maintenance
+and calls the <code>get()</code> method in the InventoryManager.java class when the inventory service is up and running
+as normal.
+All references to the email configuration property have been removed from this file.</p>
+</div>
+<div class="paragraph">
+<p>The application has now been successfully set up to be fault tolerant.</p>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="building-and-running-the-application">Building and running the application</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>To build the application, run the Maven install goal from the command line:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code>  mvn install</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>This goal builds the application and creates a .war file in the target directory and also
+configures and installs Open Liberty into the target/liberty/wlp directory.</p>
+</div>
+<div class="paragraph">
+<p>Next, run the Maven liberty:start-server goal:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code>  mvn liberty:start-server</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>This goal starts an Open Liberty server instance. Your Maven pom.xml is already configured to
+start the application in this server instance.</p>
+</div>
+<div class="paragraph">
+<p>Once the server is running, point your browser to the <code><a href="http://localhost:9080/inventory/systems/localhost" class="bare">http://localhost:9080/inventory/systems/localhost</a></code> URL.
+You see a result in JSON format with the system properties of your local JVM.
+You can test the fault tolerance mechanism of your application by dynamically changing
+the <code>io_openliberty_guides_system_inMaintenance</code> property value to <code>true</code> in the <code>start/resource/CustomConfigProperties.json</code> file.
+After saving the file, go back to your browser and click refresh to see the cached version of the properties.
+The cached system properties only have the OS name and username key and value pairs.</p>
+</div>
+<div class="paragraph">
+<p>If you make changes to the code, use the Maven package command to rebuild the application and have
+the running Open Liberty server pick them up automatically:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code>  mvn package</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>To stop the Open Liberty server, run the Maven liberty:stop-server goal:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code>  mvn liberty:stop-server</code></pre>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="testing-the-application">Testing the application</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>While you can test your application manually, you should rely on automated tests since they will trigger a
+failure whenever a code change introduces a defect. Since the application is a RESTful web service application,
+you can use JUnit and the RESTful web service Client API to write tests. In testing the functionality of the
+application, the scopes and dependencies are being tested.</p>
+</div>
+<div class="paragraph">
+<p>Create the <code>FaultToleranceTest</code> class in the <code>start/src/test/java/it/io/openliberty/guides/faulttolerance/</code> file:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="java"><span class="keyword">package</span> <span class="namespace">it.io.openliberty.guides.faulttolerance</span>;
+
+<span class="keyword">import</span> <span class="include">static</span> <span class="include">org.junit.Assert.assertEquals</span>;
+<span class="keyword">import</span> <span class="include">static</span> <span class="include">org.junit.Assert.assertTrue</span>;
+<span class="keyword">import</span> <span class="include">java.io.BufferedReader</span>;
+<span class="keyword">import</span> <span class="include">java.io.File</span>;
+<span class="keyword">import</span> <span class="include">java.io.FileReader</span>;
+<span class="keyword">import</span> <span class="include">java.io.FileWriter</span>;
+<span class="keyword">import</span> <span class="include">java.io.IOException</span>;
+<span class="keyword">import</span> <span class="include">javax.json.JsonObject</span>;
+<span class="keyword">import</span> <span class="include">javax.ws.rs.client.Client</span>;
+<span class="keyword">import</span> <span class="include">javax.ws.rs.client.ClientBuilder</span>;
+<span class="keyword">import</span> <span class="include">javax.ws.rs.client.WebTarget</span>;
+<span class="keyword">import</span> <span class="include">javax.ws.rs.core.Response</span>;
+<span class="keyword">import</span> <span class="include">javax.ws.rs.core.MediaType</span>;
+<span class="keyword">import</span> <span class="include">org.apache.cxf.jaxrs.provider.jsrjsonp.JsrJsonpProvider</span>;
+<span class="keyword">import</span> <span class="include">org.junit.After</span>;
+<span class="keyword">import</span> <span class="include">org.junit.Before</span>;
+<span class="keyword">import</span> <span class="include">org.junit.BeforeClass</span>;
+<span class="keyword">import</span> <span class="include">org.junit.Test</span>;
+
+<span class="directive">public</span> <span class="type">class</span> <span class="class">FaultToleranceTest</span> {
+
+  <span class="directive">private</span> <span class="directive">static</span> <span class="predefined-type">String</span> port;
+  <span class="directive">private</span> <span class="directive">static</span> <span class="predefined-type">String</span> baseUrl;
+  <span class="directive">private</span> Response response;
+
+  <span class="directive">private</span> Client client;
+
+  <span class="directive">private</span> <span class="directive">final</span> <span class="predefined-type">String</span> INVENTORY = <span class="string"><span class="delimiter">"</span><span class="content">inventory/</span><span class="delimiter">"</span></span>;
+  <span class="directive">private</span> <span class="directive">final</span> <span class="predefined-type">String</span> INVENTORY_LOCALHOST = <span class="string"><span class="delimiter">"</span><span class="content">inventory/systems/localhost/</span><span class="delimiter">"</span></span>;
+  <span class="directive">private</span> <span class="directive">final</span> <span class="predefined-type">String</span> SYSTEM_MAINTENANCE_FALSE = <span class="string"><span class="delimiter">"</span><span class="content">io_openliberty_guides_system_inMaintenance</span><span class="char">\"</span><span class="content">:false</span><span class="delimiter">"</span></span>;
+  <span class="directive">private</span> <span class="directive">final</span> <span class="predefined-type">String</span> SYSTEM_MAINTENANCE_TRUE = <span class="string"><span class="delimiter">"</span><span class="content">io_openliberty_guides_system_inMaintenance</span><span class="char">\"</span><span class="content">:true</span><span class="delimiter">"</span></span>;
+  <span class="directive">private</span> <span class="directive">final</span> <span class="predefined-type">String</span> RETRIES = <span class="string"><span class="delimiter">"</span><span class="content">retries</span><span class="delimiter">"</span></span>;
+  <span class="directive">private</span> <span class="directive">final</span> <span class="predefined-type">String</span> RESET = <span class="string"><span class="delimiter">"</span><span class="content">/reset</span><span class="delimiter">"</span></span>;
+
+  <span class="annotation">@BeforeClass</span>
+  <span class="directive">public</span> <span class="directive">static</span> <span class="type">void</span> oneTimeSetup() {
+    port = <span class="predefined-type">System</span>.getProperty(<span class="string"><span class="delimiter">"</span><span class="content">liberty.test.port</span><span class="delimiter">"</span></span>);
+    baseUrl = <span class="string"><span class="delimiter">"</span><span class="content">http://localhost:</span><span class="delimiter">"</span></span> + port + <span class="string"><span class="delimiter">"</span><span class="content">/</span><span class="delimiter">"</span></span>;
+  }
+
+  <span class="annotation">@Before</span>
+  <span class="directive">public</span> <span class="type">void</span> setup() {
+    client = ClientBuilder.newClient();
+    client.register(JsrJsonpProvider.class);
+  }
+
+  <span class="annotation">@After</span>
+  <span class="directive">public</span> <span class="type">void</span> teardown() {
+    client.close();
+    response.close();
+    changeSystemProperty(SYSTEM_MAINTENANCE_TRUE, SYSTEM_MAINTENANCE_FALSE);
+    <span class="comment">// resetRetryCounter();</span>
+  }
+
+  <span class="annotation">@Test</span>
+  <span class="directive">public</span> <span class="type">void</span> testSuite() {
+    testFallbackForGet();
+    testRetryGettingSystemProperties();
+  }
+
+  <span class="directive">public</span> <span class="type">void</span> testFallbackForGet() {
+    response = <span class="local-variable">this</span>.getResponse(baseUrl + INVENTORY_LOCALHOST);
+    assertResponse(baseUrl, response);
+    JsonObject obj = response.readEntity(JsonObject.class);
+    <span class="type">int</span> propertiesSize = obj.size();
+    changeSystemProperty(SYSTEM_MAINTENANCE_FALSE, SYSTEM_MAINTENANCE_TRUE);
+    response = <span class="local-variable">this</span>.getResponse(baseUrl + INVENTORY_LOCALHOST);
+    assertResponse(baseUrl, response);
+    obj = response.readEntity(JsonObject.class);
+    <span class="type">int</span> propertiesSizeFallBack = obj.size();
+    assertTrue(propertiesSize &gt; propertiesSizeFallBack);
+  }
+
+  <span class="directive">public</span> <span class="type">void</span> testRetryGettingSystemProperties() {
+    resetRetryCounter();
+    response = <span class="local-variable">this</span>.getResponse(baseUrl + INVENTORY_LOCALHOST);
+    assertResponse(baseUrl, response);
+    response = <span class="local-variable">this</span>.getResponse(baseUrl + INVENTORY + RETRIES);
+    assertResponse(baseUrl, response);
+    JsonObject obj = response.readEntity(JsonObject.class);
+    <span class="type">int</span> getCounterValue = obj.getJsonObject(<span class="string"><span class="delimiter">"</span><span class="content">Inventory</span><span class="delimiter">"</span></span>).getInt(<span class="string"><span class="delimiter">"</span><span class="content">getRetryCounter</span><span class="delimiter">"</span></span>);
+    <span class="type">int</span> expectedHits = <span class="integer">4</span>;
+    assertEquals(getCounterValue, expectedHits);
+  }
+
+  <span class="directive">private</span> Response getResponse(<span class="predefined-type">String</span> url) {
+    <span class="keyword">return</span> client.target(url).request().get();
+  }
+
+  <span class="directive">private</span> <span class="type">void</span> assertResponse(<span class="predefined-type">String</span> url, Response response) {
+    assertEquals(<span class="string"><span class="delimiter">"</span><span class="content">Incorrect response code from </span><span class="delimiter">"</span></span> + url, <span class="integer">200</span>, response.getStatus());
+  }
+
+  <span class="directive">private</span> <span class="type">void</span> changeSystemProperty(<span class="predefined-type">String</span> oldValue, <span class="predefined-type">String</span> newValue) {
+    <span class="keyword">try</span> {
+      <span class="predefined-type">String</span> fileName = <span class="predefined-type">System</span>.getProperty(<span class="string"><span class="delimiter">"</span><span class="content">user.dir</span><span class="delimiter">"</span></span>).split(<span class="string"><span class="delimiter">"</span><span class="content">target</span><span class="delimiter">"</span></span>)[<span class="integer">0</span>]
+          + <span class="string"><span class="delimiter">"</span><span class="content">/resource/CustomConfigSource.json</span><span class="delimiter">"</span></span>;
+      <span class="predefined-type">BufferedReader</span> reader = <span class="keyword">new</span> <span class="predefined-type">BufferedReader</span>(<span class="keyword">new</span> <span class="predefined-type">FileReader</span>(<span class="keyword">new</span> <span class="predefined-type">File</span>(fileName)));
+      <span class="predefined-type">String</span> line = <span class="string"><span class="delimiter">"</span><span class="delimiter">"</span></span>;
+      <span class="predefined-type">String</span> oldContent = <span class="string"><span class="delimiter">"</span><span class="delimiter">"</span></span>, newContent = <span class="string"><span class="delimiter">"</span><span class="delimiter">"</span></span>;
+      <span class="keyword">while</span> ((line = reader.readLine()) != <span class="predefined-constant">null</span>) {
+        oldContent += line + <span class="string"><span class="delimiter">"</span><span class="char">\r</span><span class="char">\n</span><span class="delimiter">"</span></span>;
+      }
+      reader.close();
+      newContent = oldContent.replaceAll(oldValue, newValue);
+      <span class="predefined-type">FileWriter</span> writer = <span class="keyword">new</span> <span class="predefined-type">FileWriter</span>(fileName);
+      writer.write(newContent);
+      writer.close();
+    } <span class="keyword">catch</span> (<span class="exception">IOException</span> e) {
+      e.printStackTrace();
+    }
+  }
+
+  <span class="directive">public</span> <span class="type">void</span> resetRetryCounter() {
+    WebTarget target = client.target(baseUrl + INVENTORY + RETRIES + RESET);
+    Response response = target.request(MediaType.TEXT_PLAIN).get();
+    assertResponse(baseUrl, response);
+  }
+
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The <code>@BeforeClass</code> annotation is placed on a method that executes before any of the test cases. In this case,
+the <code>oneTimeSetup()</code> method retrieves the port number for the Open Liberty server and builds a base URL string
+that is used throughout the tests.</p>
+</div>
+<div class="paragraph">
+<p>The <code>@Before</code> and <code>@After</code> annotations are placed on methods that execute before and after every test case. These
+methods are generally used to perform any setup and teardown tasks. In this case, the setup method creates a
+JAX-RS client which makes HTTP requests to the inventory service. This client must also be registered with a
+JSON-P provider (JsrJsonpProvider) to process JSON resources. The teardown method simply destroys this client
+instance as well as the HTTP responses, resets the changed configuration file and the retry counter.</p>
+</div>
+<div class="paragraph">
+<p>Let’s break down the test cases:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><code>testFallbackForGet()</code> sends a request to <code>inventory</code> service to get the systems properties for a
+hostname, when <code>system</code> service is avialable. Then, it puts the <code>system</code> service on maintenance. After that,
+it makes a second request to <code>inventory</code> service to return the system properties for that hostname.
+Lastly, it asserts if the system properties returned from the first request were more than the second time.</p>
+<div class="ulist">
+<ul>
+<li>
+<p>In the second request, the fallback method from <code>inventory</code> service was called to return the cached properties. However for the first request, the <code>inventory</code> service returned the properties from making a connection to <code>system</code> service.</p>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p><code>testRetryGettingSystemProperties()</code> sends a request to <code>inventory</code> service to try to get the system properties even though
+<code>system</code> service is still in maintenanace from previous test case. Then, it reads the retry counter in <code>/inventory/retries</code> endpoint to assert it with the number of retries happened to get the system properties from <code>inventory</code> service.</p>
+<div class="ulist">
+<ul>
+<li>
+<p>The <code>inventory</code> service should retry the same number of times as stated by the <code>maxRetries</code> attribute in the <code>@Retry</code> annotation to get the system properties. However, it makes a first call on the annotated method assuming that <code>system</code> service is avialable. As a result, the total calls on this method are four.</p>
+</li>
+</ul>
+</div>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>To force these test cases to execute in a particular order, put them in a testSuite() method and label it with
+a <code>@Test</code> annotation so that it automatically executes when your test class run.</p>
+</div>
+<div class="sect2">
+<h3 id="running-the-tests">Running the tests</h3>
+<div class="paragraph">
+<p>If the server is still running from the previous steps, stop it first using the Maven <code>liberty:stop-server</code> goal:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code>mvn liberty:stop-server</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Then, verify that the tests pass using the Maven <code>verify</code> goal:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code>mvn verify</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>It may take some time before build is complete. If the tests pass, you will see a similar output to the following:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code>-------------------------------------------------------
+ T E S T S
+-------------------------------------------------------
+Running it.io.openliberty.guides.faulttolerance.FaultToleranceTest
+Tests run: 1, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 1.322 sec - in it.io.openliberty.guides.faulttolerance.FaultToleranceTest
+Running it.io.openliberty.guides.inventory.EndpointTest
+Tests run: 1, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.307 sec - in it.io.openliberty.guides.inventory.EndpointTest
+
+Results :
+
+Tests run: 2, Failures: 0, Errors: 0, Skipped: 0</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>To see whether the tests detect a failure, remove the reset retries method of
+the <code>FaultToleranceTest.java</code> file. Re-run the Maven build. You will see a test failure occur for the
+<code>testRetryGettingSystemProperties()</code> test case.</p>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="great-work-you-re-done">Great work! You’re done!</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>You just built and tested a micorservice application with MicroProfile Fault Tolerance and Open Liberty.</p>
+</div>
+</div>
+</div>
+
+
+                    <!-- Related guides section -->
+                    
+                </div>
+                <div id="copied_to_clipboard_confirmation" style="display: none;">Copied to clipboard</div>
+                <a id="copy_to_clipboard" href="" style="display: none;"></a>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+    </main>
+
+    <footer>
+  <div id="footer_container" class="container">
+      <div class="row">
+          <div class="col-xs-12 text-right">
+              <div id="footer_links_container">
+                  <a href="https://github.com/OpenLiberty/open-liberty/blob/master/LICENSE" target="new" class="footer_link">License</a>
+                  <a href="https://www.ibm.com/privacy/us/en/" target="new" class="footer_link">Privacy policy</a>
+                  <a id="footer_twitter_link" href="https://twitter.com/OpenLibertyIO" target="new" aria-label="Twitter"></a>
+                  <a id="footer_github_link" href="https://github.com/OpenLiberty" target="new" aria-label="GitHub"></a>
+              </div>
+              <p id="footer_text">an IBM open source project</p>
+              <p id="footer_copyright">© Copyright IBM Corp. 2017</p>
+          </div>
+      </div>
+  </div>
+  <div class="hidden">
+    <img src="Handling%20failures%20with%20Fault%20Tolerance%20-%20Open%20Liberty_files/footer_twitter_darker.png">
+    <img src="Handling%20failures%20with%20Fault%20Tolerance%20-%20Open%20Liberty_files/footer_github_darker.png">
+  </div>
+</footer>
+
+
+    <script src="Handling%20failures%20with%20Fault%20Tolerance%20-%20Open%20Liberty_files/jquery.js"></script>
+    <script src="Handling%20failures%20with%20Fault%20Tolerance%20-%20Open%20Liberty_files/bootstrap.js"></script>
+
+
+    
+
+    
+      <script type="text/javascript" src="Handling%20failures%20with%20Fault%20Tolerance%20-%20Open%20Liberty_files/guide.js"></script>
+    
+
+  
+
+
+</body></html>
