@@ -1,0 +1,740 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+<meta http-equiv="content-type" content="text/html; charset=UTF-8">
+
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <title>Adding health reporting to a microservice - Open Liberty</title>
+  <meta name="description" content="Open Liberty is the most flexible server runtime available to Earth’s Java developers.">
+
+  <link rel="stylesheet" href="Adding%20health%20reporting%20to%20a%20microservice%20-%20Open%20Liberty_files/bootstrap.css">
+  <link type="text/css" rel="stylesheet" href="Adding%20health%20reporting%20to%20a%20microservice%20-%20Open%20Liberty_files/openliberty.css">
+  <link type="text/css" rel="stylesheet" href="Adding%20health%20reporting%20to%20a%20microservice%20-%20Open%20Liberty_files/coderay-custom.css">
+
+  
+  
+  
+    <link type="text/css" rel="stylesheet" href="Adding%20health%20reporting%20to%20a%20microservice%20-%20Open%20Liberty_files/guide-card.css">
+  
+    <link type="text/css" rel="stylesheet" href="Adding%20health%20reporting%20to%20a%20microservice%20-%20Open%20Liberty_files/guide.css">
+  
+
+  
+
+  
+
+  <link rel="canonical" href="https://openliberty.io/guides/mp-health">
+  <link href="Adding%20health%20reporting%20to%20a%20microservice%20-%20Open%20Liberty_files/css.css" rel="stylesheet">
+    
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:site" content="@OpenLibertyIO">
+  <meta name="twitter:title" content="Open Liberty">
+  <meta name="twitter:description" content="Open Liberty is the most flexible server runtime available to Earth’s Java developers.">
+  <meta name="twitter:image" content="https://openliberty.io/img/twitter_card.jpg">
+  
+  <meta name="google-site-verification" content="h2P030H9b66CyL1nEmWfrZB8Fr14h9LmVMG7Ur0caBs">
+
+</head>
+
+
+  <body>
+    
+    
+
+    <header>
+<nav class="navbar navbar-default">
+    <div class="container">
+        <div class="navbar-header">
+            <button id="navbar_responsive_button" class="navbar-toggle collapsed" type="button" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+                      
+        </div>
+        <div id="navbar" class="navbar-collapse collapse">
+            <ul class="nav navbar-nav navbar-right text-right">
+                <li class="hidden-xs"><a id="navbar_github_link" href="https://github.com/OpenLiberty" target="new" aria-label="Open Liberty GitHub Repository"></a></li>
+            </ul>
+        </div>
+    </div>
+  </nav>
+  <div class="hidden">
+    <img src="Adding%20health%20reporting%20to%20a%20microservice%20-%20Open%20Liberty_files/small_logo_white.svg">
+    <img src="Adding%20health%20reporting%20to%20a%20microservice%20-%20Open%20Liberty_files/github_navbar_hover.svg">
+  </div>
+</header>
+
+
+    <main aria-label="Content">
+
+      <div id="background_container" class="black_blue_gradient_background">
+    <div class="container">
+        <div id="title_row" class="row">
+            <div class="col-xs-12">
+                <img id="intro_logo" src="Adding%20health%20reporting%20to%20a%20microservice%20-%20Open%20Liberty_files/guides_page_title_small.svg" alt="Guides">
+            </div>
+        </div>
+        <div class="row">
+            <!-- Guide's table of contents section -->
+            <div id="toc_column" class="col-sm-3">
+                <div id="toc_inner" style="">                    
+                    
+                    <h3 id="toc_title">Contents</h3>
+                    <div id="toc_container">
+                        <ul class="sectlevel1">
+<li><a href="#what-you-ll-learn">What you’ll learn</a></li>
+<li><a href="#getting-started">Getting started</a>
+<ul class="sectlevel2">
+<li><a href="#try-what-you-ll-build">Try what you’ll build</a></li>
+</ul>
+</li>
+<li><a href="#adding-health-check-to-restful-services">Adding health check to RESTful services</a>
+<ul class="sectlevel2">
+<li><a href="#adding-health-check-to-system-service">Adding health check to system service</a></li>
+<li><a href="#adding-health-check-to-inventory-service">Adding health check to inventory service</a></li>
+</ul>
+</li>
+<li><a href="#building-and-running-the-application">Building and running the application</a></li>
+<li><a href="#testing-health-check">Testing health check</a>
+<ul class="sectlevel2">
+<li><a href="#running-the-tests">Running the tests</a></li>
+</ul>
+</li>
+<li><a href="#great-work-you-re-done">Great work! You’re done!</a></li>
+</ul>
+                    </div>
+                    
+                    
+                </div>
+            </div>
+            <!-- Entire guide section -->
+            <div id="guide_column" class="col-sm-9 position_relative">
+                <div id="guide_content">
+                    <!-- Guide header section -->
+                    <div id="guide_meta" class="sect1">
+                        <h1 id="guide_title">Adding health reporting to a microservice</h1>
+                        <div id="preamble">
+<div class="sectionbody">
+<div class="paragraph">
+<p>Learn how to provide and check the health of a microservice using MicroProfile Health.</p>
+</div>
+</div>
+</div><div id="duration_container">
+                            <img src="Adding%20health%20reporting%20to%20a%20microservice%20-%20Open%20Liberty_files/guide_duration_clock_icon_large.svg" alt="duration">
+                            <span id="guide_duration">20 minutes</span>
+                        </div>
+                    </div>
+
+                    <!-- Guide content section -->
+                    
+<div class="sect1">
+<h2 id="what-you-ll-learn">What you’ll learn</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>You will learn how to use MicroProfile Health feature to report the health of
+a RESTful application. The great benefit from adding a health check is that it allows your RESTful
+service to participate in the decision making process about its health.</p>
+</div>
+<div class="paragraph">
+<p>The MicroProfile Health feature provides an endpoint that you can get the health check results as a
+JSON object. This HTTP request endpoint returns a status code of <code>200</code> if the application outcome
+is <code>UP</code>, otherwise, a status code of <code>503</code> if it is <code>DOWN</code>.</p>
+</div>
+<div class="paragraph">
+<p>The health check is used to assess the state of a service in an application. The state of a service
+is either <code>UP</code> or <code>DOWN</code>. When the state is <code>UP</code>, the service is available. However,
+when it is <code>DOWN</code>, the service is currently not available (or in maintenance).
+The overall outcome of the application is <code>UP</code> only when the checks of all the services are <code>UP</code>.
+It is important to note that a <code>DOWN</code> result can be used by a service orchestrator to drive decisions
+about when to replace an instance of a service.</p>
+</div>
+<div class="paragraph">
+<p>Before the service reports its state, it should check what it has to be available. Depending on
+what the service has or what is provided to it, it can report whether it is healthy or not
+via the Microprofile Health API implementation. A self check can be anything related to the
+service. It could be a dependency, a successful connection to an endpoint, availability
+of resources (e.g. a database), a system property and many others.</p>
+</div>
+<div class="paragraph">
+<p>You will add health checks to report the states of the <code>system</code> and <code>inventory</code>
+RESTful services in an inventory manager application. This application and the two services in it
+are provided for you in this guide. If you want to learn how to create a RESTful application, see
+<a href="https://openliberty.io/guides/rest-intro.html">Creating a RESTful web service</a>.</p>
+</div>
+<div class="paragraph">
+<p>After starting the application, you will be able to access two microservices to test their availability:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><code><a href="http://localhost:9080/system/properties" class="bare">http://localhost:9080/system/properties</a></code> retrieves the information for a specific host</p>
+</li>
+<li>
+<p><code><a href="http://localhost:9080/inventory/systems" class="bare">http://localhost:9080/inventory/systems</a></code> retrieves the information for a list of all previously registered hosts</p>
+</li>
+</ul>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="getting-started">Getting started</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>The fastest way to work through this guide is to clone the Git repository and use the starting project
+that is provided in the <code>start</code> directory. To do this, run the following commands:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>git clone https://github.com/OpenLiberty/draft-guide-microprofile-health.git
+cd draft-guide-microprofile-health/start</pre>
+</div>
+</div>
+<div class="sect2">
+<h3 id="try-what-you-ll-build">Try what you’ll build</h3>
+<div class="paragraph">
+<p>The <code>finish</code> directory in the root of this guide contains the finished
+health check implementation for the services in the application. Feel free to give it a try before
+you proceed with building your own.</p>
+</div>
+<div class="paragraph">
+<p>To try out the application, first navigate to the <code>finish</code> directory and then execute the following
+Maven goals to build the application and run it inside Open Liberty:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code>mvn install liberty:start-server</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Point your browser to MicroProfile Health Check endpoint: <code><a href="http://localhost:9080/health" class="bare">http://localhost:9080/health</a></code>. From
+here, you can see the health of the two services as well as the overall health outcome of the
+application. As shown, there are two checks. One that shows the state of <code>system</code>
+service and the other shows the state of <code>inventory</code> service. They are both in <code>UP</code> state
+as you may expect and because of that the overall outcome of the application is <code>UP</code>.</p>
+</div>
+<div class="paragraph">
+<p>Once you are done checking out the application, stop the Open Liberty server:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code>mvn liberty:stop-server</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Now, navigate back to the <code>start</code> directory to begin.</p>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="adding-health-check-to-restful-services">Adding health check to RESTful services</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Begin by navigating to the <code>pom.xml</code> file to check the required dependency. The <code>microprofile-health-api</code>
+dependency has been added for you in the <code>start/pom.xml</code> file. This dependency allows you to
+use the MicroProfile Health API to provide health checks to your RESTful services.
+The <code>mpHealth-1.0</code> feature has been also enabled in the <code>start/src/main/liberty/config/server.xml</code> file.
+This feature provides <code><a href="http://localhost:9080/health" class="bare">http://localhost:9080/health</a></code> endpoint to your application.</p>
+</div>
+<div class="paragraph">
+<p>Proceed with the two sections below to add health checks to <code>system</code> and <code>inventory</code> services.</p>
+</div>
+<div class="sect2">
+<h3 id="adding-health-check-to-system-service">Adding health check to system service</h3>
+<div class="paragraph">
+<p>Create the class <code>start/src/main/java/io/openliberty/guides/system/SystemHealth.java</code>:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="java"><span class="keyword">package</span> <span class="namespace">io.openliberty.guides.system</span>;
+
+<span class="keyword">import</span> <span class="include">javax.enterprise.context.ApplicationScoped</span>;
+
+<span class="keyword">import</span> <span class="include">org.eclipse.microprofile.health.Health</span>;
+<span class="keyword">import</span> <span class="include">org.eclipse.microprofile.health.HealthCheck</span>;
+<span class="keyword">import</span> <span class="include">org.eclipse.microprofile.health.HealthCheckResponse</span>;
+
+<span class="annotation">@Health</span>
+<span class="annotation">@ApplicationScoped</span>
+
+<span class="directive">public</span> <span class="type">class</span> <span class="class">SystemHealth</span> <span class="directive">implements</span> HealthCheck {
+  <span class="annotation">@Override</span>
+  <span class="directive">public</span> HealthCheckResponse call() {
+    <span class="keyword">if</span> (!<span class="predefined-type">System</span>.getProperty(<span class="string"><span class="delimiter">"</span><span class="content">wlp.server.name</span><span class="delimiter">"</span></span>).equals(<span class="string"><span class="delimiter">"</span><span class="content">defaultServer</span><span class="delimiter">"</span></span>)) {
+      <span class="keyword">return</span> HealthCheckResponse.named(SystemResource.class.getSimpleName()).down().build();
+    }
+    <span class="keyword">return</span> HealthCheckResponse.named(SystemResource.class.getSimpleName()).up().build();
+  }
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The <code>org.eclipse.microprofile</code> package contains the required MicroProfile Health Check classes.</p>
+</div>
+<div class="paragraph">
+<p>The <code>@Health</code> annotation indicates that this class will be read for reporting the state of
+a desired service to <code><a href="http://localhost:9080/health" class="bare">http://localhost:9080/health</a></code>. The <code>@ApplicationScoped</code> annotation is
+required because the health check service must stay active within the lifetime of the application
+for the state to be reported.</p>
+</div>
+<div class="paragraph">
+<p>This class implements the <code>HealthCheck</code> interface, which means you must override the <code>call()</code>
+method from this interface.</p>
+</div>
+<div class="paragraph">
+<p>The <code>system</code> service should do a self check. As you can see, it is reporting its healthy state
+by reading the system property of the host. If the system property <code>wlp.server.name</code> is
+<code>defaultServer</code>, then the state is <code>UP</code>, otherwise, it is <code>DOWN</code>.</p>
+</div>
+<div class="paragraph">
+<p>Lastly, you need to pass the service name <code>system</code> as an argument to the <code>named()</code>
+method to indicate that this is the service being reported.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="adding-health-check-to-inventory-service">Adding health check to inventory service</h3>
+<div class="paragraph">
+<p>Create the class <code>start/src/main/java/io/openliberty/guides/inventory/InventoryHealth.java</code>:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="java"><span class="keyword">package</span> <span class="namespace">io.openliberty.guides.inventory</span>;
+
+<span class="keyword">import</span> <span class="include">javax.enterprise.context.ApplicationScoped</span>;
+<span class="keyword">import</span> <span class="include">javax.inject.Inject</span>;
+<span class="keyword">import</span> <span class="include">javax.ws.rs.client.Client</span>;
+<span class="keyword">import</span> <span class="include">javax.ws.rs.client.ClientBuilder</span>;
+<span class="keyword">import</span> <span class="include">javax.ws.rs.core.MediaType</span>;
+<span class="keyword">import</span> <span class="include">javax.ws.rs.core.Response</span>;
+<span class="keyword">import</span> <span class="include">io.openliberty.guides.inventory.client.SystemClient</span>;
+
+<span class="keyword">import</span> <span class="include">org.eclipse.microprofile.health.Health</span>;
+<span class="keyword">import</span> <span class="include">org.eclipse.microprofile.health.HealthCheck</span>;
+<span class="keyword">import</span> <span class="include">org.eclipse.microprofile.health.HealthCheckResponse</span>;
+
+<span class="annotation">@Health</span>
+<span class="annotation">@ApplicationScoped</span>
+<span class="directive">public</span> <span class="type">class</span> <span class="class">InventoryHealth</span> <span class="directive">implements</span> HealthCheck {
+  <span class="annotation">@Inject</span>
+  InventoryConfig config;
+
+  <span class="directive">public</span> <span class="type">boolean</span> isHealthy() {
+    <span class="keyword">if</span> (config.isInMaintenance()) {
+      <span class="keyword">return</span> <span class="predefined-constant">false</span>;
+    }
+    <span class="predefined-type">String</span> url = SystemClient.buildUrl(<span class="string"><span class="delimiter">"</span><span class="content">http</span><span class="delimiter">"</span></span>, <span class="string"><span class="delimiter">"</span><span class="content">localhost</span><span class="delimiter">"</span></span>, config.getPortNumber(), <span class="string"><span class="delimiter">"</span><span class="content">/system/properties</span><span class="delimiter">"</span></span>);
+    Client client = ClientBuilder.newClient();
+    Response response = client.target(url).request(MediaType.APPLICATION_JSON).get();
+    <span class="keyword">if</span> (response.getStatus() != <span class="integer">200</span>) {
+      <span class="keyword">return</span> <span class="predefined-constant">false</span>;
+    }
+    <span class="keyword">return</span> <span class="predefined-constant">true</span>;
+  }
+
+  <span class="annotation">@Override</span>
+  <span class="directive">public</span> HealthCheckResponse call() {
+    <span class="keyword">if</span> (!isHealthy()) {
+      <span class="keyword">return</span> HealthCheckResponse.named(InventoryResource.class.getSimpleName()).down().build();
+    }
+    <span class="keyword">return</span> HealthCheckResponse.named(InventoryResource.class.getSimpleName()).up().build();
+  }
+
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>This service reports its healthy state depending on two things:</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>A property of type boolean found in <code>resources/CustomConfigSource.json</code>. The property in this
+file is used to manipulate on the state of the service. This file is provided for you in this guide and
+if you want to learn how to configure it, see
+<a href="https://openliberty.io/guides/microprofile-config-intro.html">Configuring Microservices using MicroProfile Config</a>.</p>
+<div class="literalblock">
+<div class="content">
+<pre>"io.openliberty.guides.microprofile.inventory.inMaintenance": false</pre>
+</div>
+</div>
+</li>
+<li>
+<p><code>system</code> service availability (i.e. returns 200 response code).</p>
+</li>
+</ol>
+</div>
+<div class="paragraph">
+<p>As you can see, adding health check to this service is similar as in the previous section above.
+However, there are minor adjustments and additions.</p>
+</div>
+<div class="paragraph">
+<p>The <code>@Inject</code> annotation is used to initialize the <code>InventoryConfig</code> object. This object will allow
+you to read the property in the <code>CustomConfigSource.json</code> file. You can learn more about the
+<code>@Inject</code> annotation from
+<a href="https://openliberty.io/guides/rest-intro.html">Handling dependencies with RESTful web services</a>.</p>
+</div>
+<div class="paragraph">
+<p>The <code>isHealthy()</code> method returns a boolean that determines the health of <code>inventory</code> service.
+It checkes the two conditions that were mentioned above. This method is used as the condition in
+<code>call()</code> method. The state of <code>inventory</code> service is <code>UP</code> if isHealthy returns <code>true</code> and <code>DOWN</code>
+if isHealthy returns <code>false</code>.</p>
+</div>
+<div class="paragraph">
+<p>Now, open <code>inventory</code> service from <code>start/src/main/java/io/openliberty/guides/inventory/InventoryResource.java</code>:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="java"><span class="keyword">package</span> <span class="namespace">io.openliberty.guides.inventory</span>;
+
+<span class="keyword">import</span> <span class="include">java.util.Properties</span>;
+
+<span class="comment">// CDI</span>
+<span class="keyword">import</span> <span class="include">javax.enterprise.context.RequestScoped</span>;
+<span class="keyword">import</span> <span class="include">javax.inject.Inject</span>;
+<span class="keyword">import</span> <span class="include">javax.ws.rs.GET</span>;
+<span class="keyword">import</span> <span class="include">javax.ws.rs.Path</span>;
+<span class="keyword">import</span> <span class="include">javax.ws.rs.PathParam</span>;
+<span class="keyword">import</span> <span class="include">javax.ws.rs.Produces</span>;
+<span class="keyword">import</span> <span class="include">javax.ws.rs.core.MediaType</span>;
+<span class="keyword">import</span> <span class="include">javax.ws.rs.core.Response</span>;
+
+<span class="keyword">import</span> <span class="include">io.openliberty.guides.inventory.InventoryConfig</span>;
+
+<span class="annotation">@RequestScoped</span>
+<span class="annotation">@Path</span>(<span class="string"><span class="delimiter">"</span><span class="content">systems</span><span class="delimiter">"</span></span>)
+<span class="directive">public</span> <span class="type">class</span> <span class="class">InventoryResource</span> {
+
+  <span class="annotation">@Inject</span>
+  InventoryManager manager;
+
+  <span class="annotation">@Inject</span>
+  InventoryConfig inventoryConfig;
+
+  <span class="annotation">@GET</span>
+  <span class="annotation">@Path</span>(<span class="string"><span class="delimiter">"</span><span class="content">{hostname}</span><span class="delimiter">"</span></span>)
+  <span class="annotation">@Produces</span>(MediaType.APPLICATION_JSON)
+  <span class="directive">public</span> Response getPropertiesForHost(<span class="annotation">@PathParam</span>(<span class="string"><span class="delimiter">"</span><span class="content">hostname</span><span class="delimiter">"</span></span>) <span class="predefined-type">String</span> hostname) {
+
+    <span class="keyword">if</span> (!inventoryConfig.isInMaintenance()) {
+      <span class="predefined-type">Properties</span> props = manager.get(hostname, inventoryConfig.getPortNumber());
+      <span class="keyword">if</span> (props == <span class="predefined-constant">null</span>) {
+        <span class="keyword">return</span> Response.status(Response.Status.NOT_FOUND)
+                       .entity(
+                           <span class="string"><span class="delimiter">"</span><span class="content">ERROR: Unknown hostname or the resource may not be running on the host machine</span><span class="delimiter">"</span></span>)
+                       .build();
+      }
+      <span class="keyword">return</span> Response.ok(props).build();
+    } <span class="keyword">else</span> {
+      <span class="keyword">return</span> Response.status(Response.Status.SERVICE_UNAVAILABLE)
+                     .entity(
+                         <span class="string"><span class="delimiter">"</span><span class="content">ERROR: Service is currently in maintenance. Please contact: </span><span class="delimiter">"</span></span>
+                             + inventoryConfig.getEmail().toString())
+                     .build();
+    }
+  }
+
+  <span class="annotation">@GET</span>
+  <span class="annotation">@Produces</span>(MediaType.APPLICATION_JSON)
+  <span class="directive">public</span> Response listContents() {
+    <span class="keyword">if</span> (!inventoryConfig.isInMaintenance()) {
+      <span class="keyword">return</span> Response.ok(manager.list()).build();
+    } <span class="keyword">else</span> {
+      <span class="keyword">return</span> Response.status(Response.Status.SERVICE_UNAVAILABLE)
+                     .entity(
+                         <span class="string"><span class="delimiter">"</span><span class="content">ERROR: Service is currently in maintenance. Please contact: </span><span class="delimiter">"</span></span>
+                             + inventoryConfig.getEmail().toString())
+                     .build();
+    }
+  }
+
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The service invokes <code>getPropertiesForHost()</code> method to display
+the system properties for a hostname. This can only happen if
+<code>io.openliberty.guides.microprofile.inventory.inMaintenance</code> configuration is set to <code>false</code>.
+Otherwise the service responds with the message <code>Service is currently in maintenance</code> and also
+a <code>503</code> response code. If the service displays the system properties as desired, then
+the health of this service is <code>UP</code>. If the service is down for maintenance, then its health is
+<code>DOWN'. Notice the second condition in the `isHealthy()</code> method of the <code>InventoryHealth</code> class
+is relying on this setting.</p>
+</div>
+<div class="paragraph">
+<p>The same condition is applied for the <code>listContents()</code> method in this service. This method lists
+the stored hosts.</p>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="building-and-running-the-application">Building and running the application</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>To build the application, run the Maven install goal from the command line:</p>
+</div>
+<div class="literalblock">
+<div class="content">
+<pre>mvn install</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>This goal builds the application and creates a .war file in the target directory. The goal also
+configures and installs Open Liberty into the target/liberty/wlp directory.</p>
+</div>
+<div class="paragraph">
+<p>Next, run the Maven liberty:start-server goal:</p>
+</div>
+<div class="literalblock">
+<div class="content">
+<pre>mvn liberty:start-server</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>This goal starts an Open Liberty server instance. Your Maven pom.xml is already configured to
+start the application in this server instance.</p>
+</div>
+<div class="paragraph">
+<p>Once the server is running, you can find the health endpoint
+reporting the state of the two services at the following URL:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><code><a href="http://localhost:9080/health" class="bare">http://localhost:9080/health</a></code></p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>Now, try to turn the <code>inventory</code> service down (i.e. in maintenance) by changing the
+property <code>io_openliberty_guides_inventory_inMaintenance</code> value to <code>true</code>. This property is found in
+<code>resources/CustomConfigSource.json</code>. Refresh the browser. You will see the state of the
+<code>inventory</code> is currently <code>DOWN</code> and because of that the overall outcome is <code>DOWN</code>. You can
+verify that by pointing your browser to the inventory service
+<code><a href="http://localhost:9080/inventory/systems" class="bare">http://localhost:9080/inventory/systems</a></code>. As you can see, the service
+is responding with a message telling you that it is in maintenance.</p>
+</div>
+<div class="paragraph">
+<p>After you are done trying out your application, go to the <code>resources/CustomConfigProperties.json</code> file again and change the property <code>io_openliberty_guides_system_inMaintenance</code> from <code>true</code> to <code>false</code> to set this condition back to its original value.</p>
+</div>
+<div class="paragraph">
+<p>If you make changes to the code, use the Maven package goal to rebuild the application and have
+the running Open Liberty server pick them up automatically:</p>
+</div>
+<div class="literalblock">
+<div class="content">
+<pre>mvn package</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>To stop the Open Liberty server, run the Maven liberty:stop-server goal:</p>
+</div>
+<div class="literalblock">
+<div class="content">
+<pre>mvn liberty:stop-server</pre>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="testing-health-check">Testing health check</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>You will write two test methods <code>testIfServicesAreUp()</code> and <code>testIfInventoryServiceIsDown()</code> to
+validate the state of the Inventory Manager Application among with the <code>system</code> and
+<code>inventory</code> services.</p>
+</div>
+<div class="paragraph">
+<p>Begin by creating a test class <code>start/src/test/java/it/io/openliberty/guides/health/HealthTest.java</code>:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="java"><span class="keyword">package</span> <span class="namespace">it.io.openliberty.guides.health</span>;
+
+<span class="keyword">import</span> <span class="include">static</span> <span class="include">org.junit.Assert.assertEquals</span>;
+
+<span class="keyword">import</span> <span class="include">java.util.HashMap</span>;
+<span class="keyword">import</span> <span class="include">javax.json.JsonArray</span>;
+<span class="keyword">import</span> <span class="include">org.junit.After</span>;
+<span class="keyword">import</span> <span class="include">org.junit.Test</span>;
+
+<span class="directive">public</span> <span class="type">class</span> <span class="class">HealthTest</span> {
+
+  <span class="directive">private</span> JsonArray servicesStates;
+  <span class="directive">private</span> <span class="directive">static</span> <span class="predefined-type">HashMap</span>&lt;<span class="predefined-type">String</span>, <span class="predefined-type">String</span>&gt; dataWhenServicesUP, dataWhenInventoryDown;
+
+  <span class="directive">static</span> {
+    dataWhenServicesUP = <span class="keyword">new</span> <span class="predefined-type">HashMap</span>&lt;<span class="predefined-type">String</span>, <span class="predefined-type">String</span>&gt;();
+    dataWhenInventoryDown = <span class="keyword">new</span> <span class="predefined-type">HashMap</span>&lt;<span class="predefined-type">String</span>, <span class="predefined-type">String</span>&gt;();
+
+    dataWhenServicesUP.put(<span class="string"><span class="delimiter">"</span><span class="content">SystemResource</span><span class="delimiter">"</span></span>, <span class="string"><span class="delimiter">"</span><span class="content">UP</span><span class="delimiter">"</span></span>);
+    dataWhenServicesUP.put(<span class="string"><span class="delimiter">"</span><span class="content">InventoryResource</span><span class="delimiter">"</span></span>, <span class="string"><span class="delimiter">"</span><span class="content">UP</span><span class="delimiter">"</span></span>);
+
+    dataWhenInventoryDown.put(<span class="string"><span class="delimiter">"</span><span class="content">SystemResource</span><span class="delimiter">"</span></span>, <span class="string"><span class="delimiter">"</span><span class="content">UP</span><span class="delimiter">"</span></span>);
+    dataWhenInventoryDown.put(<span class="string"><span class="delimiter">"</span><span class="content">InventoryResource</span><span class="delimiter">"</span></span>, <span class="string"><span class="delimiter">"</span><span class="content">DOWN</span><span class="delimiter">"</span></span>);
+  }
+
+  <span class="annotation">@Test</span>
+  <span class="directive">public</span> <span class="type">void</span> testIfServicesAreUp() {
+    servicesStates = HealthTestUtil.connectToHealthEnpoint(<span class="integer">200</span>);
+    checkServicesStates(dataWhenServicesUP, servicesStates);
+  }
+
+  <span class="annotation">@Test</span>
+  <span class="directive">public</span> <span class="type">void</span> testIfInventoryServiceIsDown() {
+    servicesStates = HealthTestUtil.connectToHealthEnpoint(<span class="integer">200</span>);
+    checkServicesStates(dataWhenServicesUP, servicesStates);
+    HealthTestUtil.changeInventoryProperty(HealthTestUtil.INV_MAINTENANCE_FALSE, HealthTestUtil.INV_MAINTENANCE_TRUE);
+    servicesStates = HealthTestUtil.connectToHealthEnpoint(<span class="integer">503</span>);
+    checkServicesStates(dataWhenInventoryDown, servicesStates);
+  }
+
+  <span class="directive">private</span> <span class="type">void</span> checkServicesStates(<span class="predefined-type">HashMap</span>&lt;<span class="predefined-type">String</span>, <span class="predefined-type">String</span>&gt; testData, JsonArray servicesStates) {
+    testData.forEach((service, expectedState) -&gt; {
+      assertEquals(<span class="string"><span class="delimiter">"</span><span class="content">The state of </span><span class="delimiter">"</span></span> + service + <span class="string"><span class="delimiter">"</span><span class="content"> service is not matching the </span><span class="delimiter">"</span></span>, expectedState,
+                   HealthTestUtil.getActualState(service, servicesStates));
+    });
+
+  }
+
+  <span class="annotation">@After</span>
+  <span class="directive">public</span> <span class="type">void</span> teardown() {
+    HealthTestUtil.cleanUp();
+  }
+
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The <code>static</code> keyword with curly brackets is used to initialize the static fields such as the
+<code>JsonArray</code> field that hold the states of the services, the two maps for storing the states when the
+services are up and when they are down, and the constant to hold the property that will be read.</p>
+</div>
+<div class="paragraph">
+<p>The <code>@After</code> annotation is placed on methods that execute after every test case. These methods are
+generally used to perform any teardown tasks. In this case, the <code>teardown()</code> method simply resets
+the property’s value.</p>
+</div>
+<div class="paragraph">
+<p>There are few test case methods annotated with <code>@Test</code> to test the functionality of the inventory
+application after adding health checks.</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>The <code>testIfServicesAreUp()</code> method sends a request to <code><a href="http://localhost:9080/health" class="bare">http://localhost:9080/health</a></code> then it
+verifies the <code>200</code> response code is returned. After that, it calls the <code>connectToHealthEndpoint()</code> helper method
+to read the response as <code>JsonArray</code> which contains the actual states of the two services. Then, this
+<code>JsonArray</code> is passed to <code>checkServicesStates()</code> method which compares and asserts the <code>JsonArray</code>
+with the expected services states. This method uses the helper method <code>getActualState()</code> to return
+the actual state of each service from this <code>JsonArray</code>. The expected state for both of the services in
+this test is <code>UP</code>.</p>
+</li>
+<li>
+<p>The <code>testIfInventoryServiceIsDown()</code> method follows a similar procedure as in the previous test
+case. It first checks if the services' states are <code>UP</code>. Next, the
+<code>io.openliberty.guides.microprofile.inventory.inMaintenance</code> property value is changed from
+<code>false</code> to <code>true</code> in the <code>CustomConfigSource.json</code> file. With the property update, we send a
+request to check the services' states again. This time the expected response code should be 503.
+Lastly, we assert if the state of the <code>inventory</code> service is <code>DOWN</code> and the state of
+<code>system</code> service is <code>UP</code>.</p>
+</li>
+</ul>
+</div>
+<div class="sect2">
+<h3 id="running-the-tests">Running the tests</h3>
+<div class="paragraph">
+<p>Go to <code>start</code> directory and run <code>mvn clean install</code>. You should see two tests pass with the
+following results:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code>-------------------------------------------------------
+ T E S T S
+-------------------------------------------------------
+Running it.io.openliberty.guides.health.HealthTest
+Tests run: 2, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 1.21 sec - in it.io.openliberty.guides.health.HealthTest
+Running it.io.openliberty.guides.inventory.EndpointTest
+Tests run: 1, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.169 sec - in it.io.openliberty.guides.inventory.EndpointTest
+
+Results :
+
+Tests run: 3, Failures: 0, Errors: 0, Skipped: 0</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>To see whether the tests detect a failure, change the values of the tests maps inside the <code>static</code> curly brackets.
+Re-run the Maven build. You will see a test failure occur.</p>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="great-work-you-re-done">Great work! You’re done!</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>You have learned how to add health checks to report the states of microservices in an
+application. Then you wrote tests to validate that.</p>
+</div>
+<div class="paragraph">
+<p>Feel free to try one of the related MicroProfile guides. They 
+demonstrate new technologies that you can learn and expand on top what 
+you built in this guide.</p>
+</div>
+</div>
+</div>
+
+
+                    
+                </div>
+                <div id="copied_to_clipboard_confirmation" style="display: none;">Copied to clipboard</div>
+                <a id="copy_to_clipboard" href="" style="display: none;"></a>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+    </main>
+
+    <footer>
+  <div id="footer_container" class="container">
+      <div class="row">
+          <div class="col-xs-12 text-right">
+              <div id="footer_links_container">
+                  <a href="https://github.com/OpenLiberty/open-liberty/blob/master/LICENSE" target="new" class="footer_link">License</a>
+                  <a href="https://www.ibm.com/privacy/us/en/" target="new" class="footer_link">Privacy policy</a>
+                  <a id="footer_twitter_link" href="https://twitter.com/OpenLibertyIO" target="new" aria-label="Twitter"></a>
+                  <a id="footer_github_link" href="https://github.com/OpenLiberty" target="new" aria-label="GitHub"></a>
+              </div>
+              <p id="footer_text">an IBM open source project</p>
+              <p id="footer_copyright">© Copyright IBM Corp. 2017</p>
+          </div>
+      </div>
+  </div>
+  <div class="hidden">
+    <img src="Adding%20health%20reporting%20to%20a%20microservice%20-%20Open%20Liberty_files/footer_twitter_darker.png">
+    <img src="Adding%20health%20reporting%20to%20a%20microservice%20-%20Open%20Liberty_files/footer_github_darker.png">
+  </div>
+</footer>
+
+
+    <script src="Adding%20health%20reporting%20to%20a%20microservice%20-%20Open%20Liberty_files/jquery.js"></script>
+    <script src="Adding%20health%20reporting%20to%20a%20microservice%20-%20Open%20Liberty_files/bootstrap.js"></script>
+
+
+    
+
+    
+      <script type="text/javascript" src="Adding%20health%20reporting%20to%20a%20microservice%20-%20Open%20Liberty_files/guide.js"></script>
+    
+
+  
+
+
+</body></html>
