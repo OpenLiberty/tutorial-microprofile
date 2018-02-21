@@ -693,7 +693,7 @@ Modify the existing class to finalize the code as the following:</p>
     } <span class="keyword">else</span> {
       <span class="keyword">return</span> Response.status(Response.Status.SERVICE_UNAVAILABLE)
                      .entity(
-                         <span class="string"><span class="delimiter">"</span><span class="content">ERROR: Serive is currently in maintenance. Please contact: </span><span class="delimiter">"</span></span>
+                         <span class="string"><span class="delimiter">"</span><span class="content">ERROR: Service is currently in maintenance. Please contact: </span><span class="delimiter">"</span></span>
                              + inventoryConfig.getEmail().toString())
                      .build();
     }
@@ -707,7 +707,7 @@ Modify the existing class to finalize the code as the following:</p>
     } <span class="keyword">else</span> {
       <span class="keyword">return</span> Response.status(Response.Status.SERVICE_UNAVAILABLE)
                      .entity(
-                         <span class="string"><span class="delimiter">"</span><span class="content">ERROR: Serive is currently in maintenance. Please contact: </span><span class="delimiter">"</span></span>
+                         <span class="string"><span class="delimiter">"</span><span class="content">ERROR: Service is currently in maintenance. Please contact: </span><span class="delimiter">"</span></span>
                              + inventoryConfig.getEmail().toString())
                      .build();
     }
@@ -726,7 +726,7 @@ Modify the existing class to finalize the code as the following:</p>
 <p>To determine whether the inventory service is in maintenance or not (according to the configuration value), <code>inventoryConfig.isInMaintenance()</code> class method is used.
 If you set the <code>io_openliberty_guides_inventory_inMaintenance</code> property to <code>true</code>
  in the configuration, the inventory service returns the message, 
-"ERROR: Serive is currently in maintenance", along with the contact 
+"ERROR: Service is currently in maintenance", along with the contact 
 email.
 The email configuration value can be get by calling <code>inventoryConfig.getEmail()</code> method.</p>
 </div>
@@ -798,7 +798,7 @@ Refresh <code><a href="http://localhost:9080/config" class="bare">http://localho
 </div>
 <div class="paragraph">
 <p>For example, change <code>io_openliberty_guides_inventory_inMaintenance</code> from <code>false</code> to <code>true</code>, then try to access <code><a href="http://localhost:9080/inventory/systems" class="bare">http://localhost:9080/inventory/systems</a></code> again.
-The following message displays: <code>ERROR: Serive is currently in maintenance</code>.</p>
+The following message displays: <code>ERROR: Service is currently in maintenance</code>.</p>
 </div>
 <div class="paragraph">
 <p>If you make changes to the code, use the Maven <code>package</code> goal to rebuild the application and have the
@@ -888,7 +888,7 @@ running Open Liberty server pick them up automatically:</p>
               <span class="predefined-constant">null</span>).getInt(<span class="string"><span class="delimiter">"</span><span class="content">total</span><span class="delimiter">"</span></span>));
     } <span class="keyword">else</span> {
       assertEquals(<span class="string"><span class="delimiter">"</span><span class="content">The Inventory Service should be in maintenance</span><span class="delimiter">"</span></span>,
-          <span class="string"><span class="delimiter">"</span><span class="content">ERROR: Serive is currently in maintenance. Please contact: admin@guides.openliberty.io</span><span class="delimiter">"</span></span>,
+          <span class="string"><span class="delimiter">"</span><span class="content">ERROR: Service is currently in maintenance. Please contact: admin@guides.openliberty.io</span><span class="delimiter">"</span></span>,
           ConfigTestUtil.getStringFromURL(client, baseUrl + INVENTORY_HOSTS));
     }
   }
@@ -923,7 +923,7 @@ running Open Liberty server pick them up automatically:</p>
         baseUrl + INVENTORY_HOSTS);
 
     assertEquals(<span class="string"><span class="delimiter">"</span><span class="content">The inventory service should be down in the end</span><span class="delimiter">"</span></span>,
-        <span class="string"><span class="delimiter">"</span><span class="content">ERROR: Serive is currently in maintenance. Please contact: admin@guides.openliberty.io</span><span class="delimiter">"</span></span>,
+        <span class="string"><span class="delimiter">"</span><span class="content">ERROR: Service is currently in maintenance. Please contact: admin@guides.openliberty.io</span><span class="delimiter">"</span></span>,
         error);
   }
 
@@ -932,7 +932,7 @@ running Open Liberty server pick them up automatically:</p>
 </div>
 <div class="paragraph">
 <p>The <code>testInitialServiceStatus()</code> test case reads the value of the <code>io_openliberty_guides_inventory_inMaintenance</code> configuration property in the file <code>META-INF/microprofile-config.properties</code> and checks the HTTP response of the inventory service.
-If the configuration value is <code>false</code>, the service returns a valid response. Otherwise, the service returns the following message: <code>ERROR: Serive is currently in maintenance</code>.</p>
+If the configuration value is <code>false</code>, the service returns a valid response. Otherwise, the service returns the following message: <code>ERROR: Service is currently in maintenance</code>.</p>
 </div>
 <div class="paragraph">
 <p>Because the <code>META-INF/microprofile-config.properties</code> default source has the ordinal value of <code>100</code> in the beginning,
@@ -943,7 +943,7 @@ Then, the test changes the ordinal value of the custom configuration source from
 <div class="paragraph">
 <p>Because the <code>io_openliberty_guides_inventory_inMaintenance</code> configuration property is set to <code>false</code> by default, the <code>testPutServiceInMaintenance()</code> test case first checks that the inventory service is not in maintenance in the beginning.
 Next, this test increases the priority of the custom configuration source and switches the value of the <code>io_openliberty_guides_inventory_inMaintenance</code> configuration property to <code>true</code>.
-In the end, the inventory service returns the following message: <code>ERROR: Serive is currently in maintenance</code>.</p>
+In the end, the inventory service returns the following message: <code>ERROR: Service is currently in maintenance</code>.</p>
 </div>
 <div class="sect2">
 <h3 id="running-the-tests">Running the tests</h3>
