@@ -6,6 +6,13 @@ designed to be taken independently so if you just want to learn about a specific
 If, however, you're goal is to learn about all the MicroProfile capabilities, then working through them in the order shown 
 below is recommended.
 
+### Pre-requisites
+
+To use these guides you need the following pre-requisites:
+1. A Java 8 JDK (e.g. https://adoptopenjdk.net/?variant=openjdk8-openj9)
+1. Apache Maven (https://maven.apache.org/)
+1. An editor with Java support (e.g. Eclipse, VS Code, IntelliJ)
+
 
 ### Creating a RESTful web service
 
@@ -24,6 +31,16 @@ The Guide: https://openliberty.io/guides/cdi-intro.html
        
 If you have feedback or find problems, please raise an issue here:
 https://github.com/OpenLiberty/guide-rest-cdi
+
+
+### Consuming RESTful services with template interfaces    
+
+Learn how to use MicroProfile Rest Client to invoke RESTful microservices over HTTP in a type-safe way.      
+        
+The Guide: https://openliberty.io/guides/microprofile-rest-client.html
+       
+If you have feedback or find problems, please raise an issue here:
+https://github.com/openliberty/guide-microprofile-rest-client
 
 
 ### Configuring Microservices
@@ -58,6 +75,17 @@ https://github.com/OpenLiberty/guide-microprofile-jwt
 
 
 
+### Documenting RESTful APIs
+
+Explore how to document and filter RESTful APIs from code or static files by using MicroProfile OpenAPI.
+
+The Guide: https://openliberty.io/guides/microprofile-openapi.html
+
+If you have feedback or find problems, please raise an issue here:
+https://github.com/OpenLiberty/guide-microprofile-openapi
+
+
+
  ### Providing metrics from a microservice
  
 Learn how to provide system and application metrics from a microservice using MicroProfile Metrics.
@@ -89,13 +117,3 @@ The Guide: https://openliberty.io/guides/microprofile-opentracing.html
 If you have feedback or find problems, please raise an issue here:
 https://github.com/OpenLiberty/guide-microprofile-opentracing
 
-
-
-### Documenting RESTful APIs
-
-Explore how to document and filter RESTful APIs from code or static files by using MicroProfile OpenAPI.
-
-The Guide: https://openliberty.io/guides/microprofile-openapi.html
-
-If you have feedback or find problems, please raise an issue here:
-https://github.com/OpenLiberty/guide-microprofile-openapi
