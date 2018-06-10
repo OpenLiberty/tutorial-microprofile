@@ -30,7 +30,7 @@ Learn how to use Contexts and Dependency Injection to manage and inject dependen
 The Guide: https://openliberty.io/guides/cdi-intro.html
        
 If you have feedback or find problems, please raise an issue here:
-https://github.com/OpenLiberty/guide-rest-cdi
+https://github.com/OpenLiberty/guide-cdi-intro
 
 
 ### Consuming RESTful services with template interfaces    
@@ -61,7 +61,7 @@ of the microservices is unavailable.
 The Guide: https://openliberty.io/guides/microprofile-fallback.html
 
 If you have feedback or find problems, please raise an issue here:
-https://github.com/OpenLiberty/guide-microprofile-faulttolerance-intro
+https://github.com/OpenLiberty/guide-microprofile-fallback
        
 
 ### Securing microservices with JSON Web Tokens
