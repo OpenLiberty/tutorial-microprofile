@@ -2,8 +2,7 @@
 
 This tutorial demonstrates the use of MicroProfile technologies for implementing a set of cloud-native microservices. The tutorial is 
 made up of a number of Open Liberty Guides each of which demonstrates different MicroProfile technologies. Each Guide is 
-designed to be taken independently so if you just want to learn about a specific technology you can just take that guide.  
-If, however, you're goal is to learn about all the MicroProfile capabilities, then working through them in the order shown below is recommended.
+designed to be taken independently so if you just want to learn about a specific technology you can just take that guide. If, however, you're goal is to learn about all the MicroProfile capabilities, then working through them in the order shown below is recommended.
 
 ### Pre-requisites
 
@@ -16,13 +15,13 @@ To use these guides you need the following pre-requisites:
 
 Cloud-native is an approach to application development and deployment.  It's the product of a number of industry movements over the past 10-15 years - agile development practices, DevOps, Microservices and Cloud.  Cloud-native applications are developed using agile practices, use continuous integration/continuous delivery to streamline deployment, are architected around team-aligned microservices, and leverage the cloud for rapid deployment at scale.
 
-Cloud-native doesn't change the principals around which solutions are chosen and so often avoiding vendor lock-in is key.  Open source and open standards are essential enablers for avoiding vendors lock-in.  
+When choosing which technologies to use for cloud-native Microservices, the combination of open source and open standards can be very important.  The combination enables a low cost (free) of entry and at the same time avoids being locked in to a single vendor implementation.  
 
-Eclipse MicroProfile is a set of industry specifications for developing and deploying cloud-native Java Microservices.  The specifications address the important challenges of cloud-native microservices, such as toleration of service failures, security, service metrics and health, and more.
+Eclipse MicroProfile is a set of industry specifications for developing and deploying cloud-native Java Microservices.  The specifications address the important challenges of cloud-native microservices, such as toleration of service failures, security, service metrics and health, and more.  Open Liberty is an open source, lightweight, composable Java server that implements the MicroProfile specifications. 
 
-Each guide in this tutorial demonstrates how to address a particular cloud-native microservice need using MicroProfile technology and can be taken independently, or in the order they are introduced, below.
+This tutorial demonstrates how to address cloud-native microservice requirements using MicroProfile technology provided by Open Liberty.  The tutorial guices can be taken independently, or in the order they are introduced, below.
 
-If you have feedback on a specific guide, we'd appreciated a github issue or pull request against that guide, and similarly if you have feedback on this tutorial document.  
+If you have feedback on a specific guide, we'd appreciated a github issue or pull request against that guide, and similarly if you have feedback on this tutorial document, please raise an issue or submitt a pull request. 
 
 ### Creating a RESTful web service
 
