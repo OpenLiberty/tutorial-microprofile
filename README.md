@@ -1,10 +1,9 @@
 # MicroProfile Tutorial
 
-This tutorial demonstrates the use of MicroProfile technologies for implementing a set of Microservices. The tutorial is 
+This tutorial demonstrates the use of MicroProfile technologies for implementing a set of cloud-native microservices. The tutorial is 
 made up of a number of Open Liberty Guides each of which demonstrates different MicroProfile technologies. Each Guide is 
 designed to be taken independently so if you just want to learn about a specific technology you can just take that guide.  
-If, however, you're goal is to learn about all the MicroProfile capabilities, then working through them in the order shown 
-below is recommended.
+If, however, you're goal is to learn about all the MicroProfile capabilities, then working through them in the order shown below is recommended.
 
 ### Pre-requisites
 
@@ -13,6 +12,17 @@ To use these guides you need the following pre-requisites:
 1. Apache Maven (https://maven.apache.org/)
 1. An editor with Java support (e.g. Eclipse, VS Code, IntelliJ)
 
+## Introduction
+
+Cloud-native is an approach to application development and deployment.  It's the product of a number of industry movements over the past 10-15 years - agile development practices, DevOps, Microservices and Cloud.  Cloud-native applications are developed using agile practices, use continuous integration/continuous delivery to streamline deployment, are architected around team-aligned microservices, and leverage the cloud for rapid deployment at scale.
+
+Cloud-native doesn't change the principals around which solutions are chosen and so often avoiding vendor lock-in is key.  Open source and open standards are essential enablers for avoiding vendors lock-in.  
+
+Eclipse MicroProfile is a set of industry specifications for developing and deploying cloud-native Java Microservices.  The specifications address the important challenges of cloud-native microservices, such as toleration of service failures, security, service metrics and health, and more.
+
+Each guide in this tutorial demonstrates how to address a particular cloud-native microservice need using MicroProfile technology and can be taken independently, or in the order they are introduced, below.
+
+If you have feedback on a specific guide, we'd appreciated a github issue or pull request against that guide, and similarly if you have feedback on this tutorial document.  
 
 ### Creating a RESTful web service
 
