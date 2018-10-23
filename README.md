@@ -21,7 +21,7 @@ Eclipse MicroProfile is a set of industry specifications for developing and depl
 
 This tutorial demonstrates how to address cloud-native microservice requirements using MicroProfile technology provided by Open Liberty.  The tutorial guices can be taken independently, or in the order they are introduced, below.
 
-If you have feedback on a specific guide, we'd appreciated a github issue or pull request against that guide, and similarly if you have feedback on this tutorial document, please raise an issue or submitt a pull request. 
+If you have feedback on a specific guide, we'd appreciated a github issue or pull request against that guide, and similarly if you have feedback on this tutorial document, please raise an issue or submit a pull request. 
 
 ### Creating a RESTful web service
 
