@@ -13,9 +13,8 @@
  See the License for the specific language governing permissions and
  limitations under the License.
 -->
-<server description="Sample Servlet server">
+<server description="Dummy Server">
     <featureManager>
-        <feature>jsp-2.3</feature>
     </featureManager>
     
     <httpEndpoint httpPort="9080" httpsPort="9443" id="defaultHttpEndpoint" />

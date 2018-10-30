@@ -6,7 +6,7 @@ designed to be taken independently so if you just want to learn about a specific
 
 ## Tutorial Preparation
 
-The save time during the tutorial, it's best to set up your machine ahead of time. The instructions below show the pre-requisites and how to avoid lengthy downloads.
+The save time during the tutorial, it's best to set up your machine beforehand. The instructions below show the pre-requisites and how to avoid lengthy downloads.
 
 ### Pre-requisites
 
@@ -15,10 +15,11 @@ To use these guides you need the following pre-requisites:
 1. Apache Maven (https://maven.apache.org/)
 1. A git client
 1. An editor with Java support (e.g. Eclipse, VS Code, IntelliJ)
+1. Docker (Optional - not required for the guides in this tutorial but used in other guides you may wish to try afterwards)
 
 ### Downloads
 
-If you would like to set up your machine ready to run through the tutorial at a location where you will have limited network connectivity, run the following commands to populate your local .m2 repo and Docker cache.
+If you will be taking the tutorial at a location with limited network bandwidth, it is recommended you do the following beforehand in order to populate your local .m2 repo and Docker cache (as before, the Docker step is optional).
 
 ```
 git clone https://github.com/OpenLiberty/tutorial-microprofile.git
@@ -142,3 +143,9 @@ The Guide: https://openliberty.io/guides/microprofile-opentracing.html
 If you have feedback or find problems, please raise an issue here:
 https://github.com/OpenLiberty/guide-microprofile-opentracing
 
+## More guides to try
+
+If you'd like to continue you learning we recommend taking a looking at the Docker and Kubernetes guides.
+
+* https://openliberty.io/guides/?search=docker
+* https://openliberty.io/guides/?search=kubernetes
