@@ -11,7 +11,7 @@ To save time during the tutorial, it's best to set up your machine beforehand. T
 ### Pre-requisites
 
 To use these guides you need the following pre-requisites:
-1. A Java 8 JDK (e.g. https://adoptopenjdk.net/?variant=openjdk8-openj9)
+1. A Java 8 JDK (e.g. https://adoptopenjdk.net/?variant=openjdk8&jvmVariant=openj9)
 1. Apache Maven (https://maven.apache.org/)
 1. A git client
 1. An editor with Java support (e.g. Eclipse, VS Code, IntelliJ)
