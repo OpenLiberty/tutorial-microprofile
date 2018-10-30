@@ -6,7 +6,7 @@ designed to be taken independently so if you just want to learn about a specific
 
 ## Tutorial Preparation
 
-The save time during the tutorial, it's best to set up your machine beforehand. The instructions below show the pre-requisites and how to avoid lengthy downloads.
+The save time during the tutorial, it's best to set up your machine beforehand. The instructions below show the pre-requisites to install and how to avoid lengthy downloads.
 
 ### Pre-requisites
 
@@ -145,7 +145,7 @@ https://github.com/OpenLiberty/guide-microprofile-opentracing
 
 ## More guides to try
 
-If you'd like to continue you learning we recommend taking a looking at the Docker and Kubernetes guides.
+If you'd like to continue your learning we recommend taking a look at the Docker and Kubernetes guides.
 
 * https://openliberty.io/guides/?search=docker
 * https://openliberty.io/guides/?search=kubernetes
