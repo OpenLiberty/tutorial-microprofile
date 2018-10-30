@@ -4,12 +4,29 @@ This tutorial demonstrates the use of MicroProfile technologies for implementing
 made up of a number of Open Liberty Guides each of which demonstrates different MicroProfile technologies. Each Guide is 
 designed to be taken independently so if you just want to learn about a specific technology you can just take that guide. If, however, you're goal is to learn about all the MicroProfile capabilities, then working through them in the order shown below is recommended.
 
+## Tutorial Preparation
+
+To save time during the tutorial, it's best to set up your machine beforehand. The instructions below show the pre-requisites to install and how to avoid lengthy downloads.
+
 ### Pre-requisites
 
 To use these guides you need the following pre-requisites:
 1. A Java 8 JDK (e.g. https://adoptopenjdk.net/?variant=openjdk8-openj9)
 1. Apache Maven (https://maven.apache.org/)
+1. A git client
 1. An editor with Java support (e.g. Eclipse, VS Code, IntelliJ)
+1. Docker (Optional - not required for the guides in this tutorial but used in other guides you may wish to try afterwards)
+
+### Downloads
+
+If you will be taking the tutorial at a location with limited network bandwidth, it is recommended you do the following beforehand in order to populate your local .m2 repo and Docker cache (as before, the Docker step is optional).
+
+```
+git clone https://github.com/OpenLiberty/tutorial-microprofile.git
+cd tutorial-microprofile
+mvn package
+docker build -t prime:mym2 .
+```
 
 ## Introduction
 
@@ -126,3 +143,9 @@ The Guide: https://openliberty.io/guides/microprofile-opentracing.html
 If you have feedback or find problems, please raise an issue here:
 https://github.com/OpenLiberty/guide-microprofile-opentracing
 
+## More guides to try
+
+If you'd like to continue your learning we recommend taking a look at the Docker and Kubernetes guides.
+
+* https://openliberty.io/guides/?search=docker
+* https://openliberty.io/guides/?search=kubernetes
