@@ -6,7 +6,7 @@ designed to be taken independently so if you just want to learn about a specific
 
 ## Tutorial Preparation
 
-The save time during the tutorial, it's best to set up your machine beforehand. The instructions below show the pre-requisites to install and how to avoid lengthy downloads.
+To save time during the tutorial, it's best to set up your machine beforehand. The instructions below show the pre-requisites to install and how to avoid lengthy downloads.
 
 ### Pre-requisites
 
