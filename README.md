@@ -24,7 +24,7 @@ If you will be taking the tutorial at a location with limited network bandwidth,
 ```
 git clone https://github.com/OpenLiberty/tutorial-microprofile.git
 cd tutorial-microprofile
-mvn package
+mvn install
 docker build -t prime:mym2 .
 ```
 
