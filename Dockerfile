@@ -1,5 +1,6 @@
 FROM open-liberty as server-setup
 COPY /target/mym2.zip /config/
+USER root
 RUN apt-get update \
     && apt-get install -y --no-install-recommends unzip
 RUN unzip /config/mym2.zip && \
