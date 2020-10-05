@@ -138,14 +138,40 @@ https://github.com/OpenLiberty/guide-microprofile-health
 
 Explore how to enable and customize tracing of JAX-RS and non-JAX-RS methods by using MicroProfile OpenTracing.
 
-The Guide: https://openliberty.io/guides/microprofile-opentracing.html
+The Guide: https://openliberty.io/guides/microprofile-opentracing-jaeger.html
 
 If you have feedback or find problems, please raise an issue here:
-https://github.com/OpenLiberty/guide-microprofile-opentracing
+https://github.com/OpenLiberty/guide-microprofile-opentracing-jaeger/
 
-## More guides to try
+## Containerize microservices
 
-If you'd like to continue your learning we recommend taking a look at the Docker and Kubernetes guides.
+Explore how to containerize microservices using Docker.
+The Guide: https://openliberty.io/guides/containerize.html
 
-* https://openliberty.io/guides/?search=docker
-* https://openliberty.io/guides/?search=kubernetes
+## Deploy microservices to Kubernetes
+
+Explore how to deploy microservices to Kubernetes and mange them with Kubernetes CLI.
+The Guide: https://openliberty.io/guides/kubernetes-intro.html
+
+Explore how to externize configuration and use Kubernetes ConfigMpas and Secrets to configure your microservices.
+The Guide: https://openliberty.io/guides/kubernetes-microprofile-config.html
+
+Learn how to check the health of microservices on Kubernetes by setting up readiness and liveness probes to inspect MicroProfile Health Check endpoints.
+The Guide: https://openliberty.io/guides/kubernetes-microprofile-health.html
+
+## Manage your services using Istio
+
+Explore how to manage microservice traffic using Istio.
+The Guide: https://openliberty.io/guides/istio-intro.html
+
+Explore how to manage the impact of failures by using MicroProfile and Istio Fault Tolerance to add retry and fallback behaviours to microservices.
+The Guide: https://openliberty.io/guides/microprofile-istio-retry-fallback.html
+
+## Cloud deployment
+
+Explore how to use Minishift to deploy microservices to an Origin Community Distribution of Kubernetes (OKD) cluster.
+The Guide: https://openliberty.io/guides/okd.html
+
+Explore how to deploy microservices to Red Hat OpenShift.
+The Guide: https://openliberty.io/guides/cloud-openshift.html
+
