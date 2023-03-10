@@ -8,16 +8,16 @@ designed to be taken independently so if you just want to learn about a specific
 
 To save time during the tutorial, it's best to set up your machine beforehand. The instructions below show the pre-requisites to install and how to avoid lengthy downloads.
 
-### Pre-requisites
+### Prerequisites
 
 To use these guides you need the following pre-requisites:
-1. Download and unzip Java 8 JDK (e.g. https://adoptopenjdk.net/?variant=openjdk8&jvmVariant=openj9)
+1. Download and unzip Java 8 JDK (e.g. https://developer.ibm.com/languages/java/semeru-runtimes/downloads)
    - Set JAVA_HOME to the Java 8 JDK
    - _Note: If using Java 11 and unix system, you may need to set "ulimit -n 1024"_
-1. Download and unzip Apache Maven (https://maven.apache.org/)
-   - Add /<apache-maven-3.6.0>/bin to PATH environment variable
-   - _Note: 3.5.0+ is required for liberty-maven-plugin_
-1. Download and install Git client  (https://git-scm.com/downloads)
+1. Download and unzip Apache Maven (https://maven.apache.org/download.cgi)
+   - Add /<apache-maven-3.9.0>/bin to PATH environment variable
+   - _Note: 3.6.0+ is required for liberty-maven-plugin_
+1. Install Git client  (https://git-scm.com/book/en/v2/Getting-Started-Installing-Git)
 1. An editor with Java support (e.g. Eclipse, VS Code, IntelliJ)
 1. Make sure your command prompt can run "git --version" and "mvn -version"
 1. Docker (Optional - not required for the guides in this tutorial but used in other guides you may wish to try afterwards)
