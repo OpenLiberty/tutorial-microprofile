@@ -153,7 +153,7 @@ The Guide: https://openliberty.io/guides/containerize.html
 Explore how to deploy microservices to Kubernetes and mange them with Kubernetes CLI.
 The Guide: https://openliberty.io/guides/kubernetes-intro.html
 
-Explore how to externize configuration and use Kubernetes ConfigMpas and Secrets to configure your microservices.
+Explore how to externize configuration and use Kubernetes ConfigMaps and Secrets to configure your microservices.
 The Guide: https://openliberty.io/guides/kubernetes-microprofile-config.html
 
 Learn how to check the health of microservices on Kubernetes by setting up readiness and liveness probes to inspect MicroProfile Health Check endpoints.
