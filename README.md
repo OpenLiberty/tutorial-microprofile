@@ -22,17 +22,6 @@ To use these guides you need the following prerequisites:
 1. Make sure your command prompt can run `git --version` and `mvn -version`
 1. Docker (Optional - not required for the guides in this tutorial but used in other guides you may wish to try afterwards)
 
-### Downloads
-
-If you will be taking the tutorial at a location with limited network bandwidth, it is recommended you do the following beforehand in order to populate your local .m2 repo and Docker cache (as before, the Docker step is optional).
-
-```
-git clone https://github.com/OpenLiberty/tutorial-microprofile.git
-cd tutorial-microprofile
-mvn install
-docker build -t prime:mym2 .
-```
-
 ## Introduction
 
 Cloud-native is an approach to application development and deployment.  It's the product of a number of industry movements over the past 10-15 years - agile development practices, DevOps, Microservices and Cloud.  Cloud-native applications are developed using agile practices, use continuous integration/continuous delivery to streamline deployment, are architected around team-aligned microservices, and leverage the cloud for rapid deployment at scale.
