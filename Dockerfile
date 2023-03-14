@@ -1,4 +1,4 @@
-FROM open-liberty as server-setup
+FROM icr.io/appcafe/open-liberty:full-java8-openj9-ubi as server-setup
 COPY /target/mym2.zip /config/
 USER root
 RUN apt-get update \
@@ -9,7 +9,7 @@ RUN unzip /config/mym2.zip && \
     rm -rf /config/mym2.zip
 USER 1001
 
-FROM open-liberty
+FROM icr.io/appcafe/open-liberty:full-java8-openj9-ubi
 LABEL maintainer="Graham Charters" vendor="IBM" github="https://github.com/OpenLiberty"
 COPY --from=server-setup /config/ /config/
 EXPOSE 9080 9443
